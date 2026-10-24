@@ -1,0 +1,1127 @@
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { 
+  ArrowLeft, ArrowRight, Calendar, Clock, CheckCircle2, 
+  AlertCircle, ShieldCheck, User, Mail, Hash, BookOpen, 
+  Library, ChevronLeft, ChevronRight, Check, FileText, Info
+} from 'lucide-react';
+
+/**
+ * Returns today's date in 'YYYY-MM-DD' formatted for the Asia/Kolkata timezone.
+ */
+function getTodayInKolkata() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+  return parts;
+}
+
+/**
+ * Friendly short date formatting: "Wed, 28 Oct 2026"
+ */
+function formatShortDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dateObj = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+  return dateObj.toLocaleDateString('en-US', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/**
+ * Friendly full date formatting: "Wednesday, 28 October 2026"
+ */
+function formatFullDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dateObj = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+  return dateObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+export default function BookingWizard() {
+  const navigate = useNavigate();
+
+  // Wizard logical steps: 1 = Selection (Space + Date + Slot), 2 = Details, 3 = Review
+  const [step, setStep] = useState(1);
+
+  // Configuration from server
+  const [config, setConfig] = useState(null);
+  const [configLoading, setConfigLoading] = useState(true);
+
+  // Form selections
+  const [facilityId, setFacilityId] = useState('reading-room');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [sessionId, setSessionId] = useState('');
+  const [visitorName, setVisitorName] = useState('');
+  const [visitorEmail, setVisitorEmail] = useState('');
+  const [membershipNo, setMembershipNo] = useState('');
+  const [agreeRules, setAgreeRules] = useState(false);
+
+  // Calendar month/year navigation state
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date().getMonth());
+  const [calendarYear, setCalendarYear] = useState(() => new Date().getFullYear());
+
+  // Real-time slot availability
+  const [availability, setAvailability] = useState(null);
+  const [availLoading, setAvailLoading] = useState(false);
+
+  // Form validation errors & submission state
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  // 1. Fetch public configuration on mount
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/config');
+        if (res.ok) {
+          const data = await res.json();
+          setConfig(data);
+
+          // Find first open available date to pre-select
+          findFirstOpenDate(data.settings?.openingDays || ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], data.closureDates || []);
+        }
+      } catch (err) {
+        console.error('Failed to load configuration:', err);
+      } finally {
+        setConfigLoading(false);
+      }
+    }
+    loadConfig();
+  }, []);
+
+  // Helper to calculate first available open date
+  const findFirstOpenDate = (openingDays, closureDates) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const now = new Date();
+    for (let i = 0; i <= 14; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() + i);
+      const dayName = days[d.getDay()];
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+      const isClosure = closureDates.some(c => c.date === dateStr);
+
+      if (openingDays.includes(dayName) && !isClosure) {
+        setSelectedDate(dateStr);
+        setCalendarMonth(d.getMonth());
+        setCalendarYear(d.getFullYear());
+        break;
+      }
+    }
+  };
+
+  // 2. Fetch real-time availability whenever facility or date changes
+  useEffect(() => {
+    if (!facilityId || !selectedDate) return;
+
+    let isMounted = true;
+    async function checkAvail() {
+      setAvailLoading(true);
+      try {
+        const res = await fetch(`/api/availability?facilityId=${facilityId}&date=${selectedDate}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) {
+            setAvailability(data);
+            // If currently selected session is no longer available, reset it
+            if (sessionId) {
+              const stillValid = data.sessions?.find((s) => s.id === sessionId && s.isAvailable);
+              if (!stillValid) {
+                // Auto-pick first available session if none selected
+                const firstAvail = data.sessions?.find((s) => s.isAvailable);
+                setSessionId(firstAvail ? firstAvail.id : '');
+              }
+            } else {
+              // Pre-select first available session for convenience
+              const firstAvail = data.sessions?.find((s) => s.isAvailable);
+              if (firstAvail) {
+                setSessionId(firstAvail.id);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Availability check failed:', err);
+      } finally {
+        if (isMounted) setAvailLoading(false);
+      }
+    }
+
+    checkAvail();
+    return () => { isMounted = false; };
+  }, [facilityId, selectedDate]);
+
+  // Calendar calculations
+  const calendarData = useMemo(() => {
+    const todayStr = getTodayInKolkata();
+    const openingDays = config?.settings?.openingDays || ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const closureDates = (config?.closureDates || []).map(c => c.date);
+    const advanceDays = config?.settings?.advanceBookingDays || 14;
+
+    const daysInWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    // Monday-first index: 0 is Mon, 6 is Sun
+    const firstDayRaw = new Date(calendarYear, calendarMonth, 1).getDay();
+    const firstDayIndex = (firstDayRaw + 6) % 7;
+    const daysInCurrentMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+    const daysInPrevMonth = new Date(calendarYear, calendarMonth, 0).getDate();
+
+    // Calculate max allowed date
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + advanceDays);
+    const maxDateStr = maxDate.toISOString().split('T')[0];
+
+    const cells = [];
+
+    // 1. Previous month trailing padding
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
+      cells.push({
+        dayNumber: daysInPrevMonth - i,
+        isCurrentMonth: false,
+        disabled: true,
+        dateStr: null,
+      });
+    }
+
+    // 2. Current month days
+    for (let day = 1; day <= daysInCurrentMonth; day++) {
+      const yyyy = calendarYear;
+      const mm = String(calendarMonth + 1).padStart(2, '0');
+      const dd = String(day).padStart(2, '0');
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+
+      const dateObj = new Date(calendarYear, calendarMonth, day);
+      const dayOfWeekName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dateObj.getDay()];
+
+      const isPast = dateStr < todayStr;
+      const isBeyondAdvance = dateStr > maxDateStr;
+      const isClosedDay = !openingDays.includes(dayOfWeekName);
+      const isClosureDate = closureDates.includes(dateStr);
+
+      const isDisabled = isPast || isBeyondAdvance || isClosedDay || isClosureDate;
+      const isSelected = dateStr === selectedDate;
+      const hasSessions = !isDisabled;
+
+      cells.push({
+        dayNumber: day,
+        isCurrentMonth: true,
+        disabled: isDisabled,
+        isClosed: isClosedDay || isClosureDate,
+        dateStr,
+        isSelected,
+        hasSessions,
+        isPast,
+      });
+    }
+
+    // 3. Next month leading padding (only complete the active week row, avoid extra 6th row)
+    const remainder = cells.length % 7;
+    if (remainder > 0) {
+      const padCount = 7 - remainder;
+      for (let i = 1; i <= padCount; i++) {
+        cells.push({
+          dayNumber: i,
+          isCurrentMonth: false,
+          disabled: true,
+          dateStr: null,
+        });
+      }
+    }
+
+    // 4. Group into weeks of 7 days
+    const weeks = [];
+    for (let i = 0; i < cells.length; i += 7) {
+      weeks.push(cells.slice(i, i + 7));
+    }
+
+    return {
+      monthName: monthNames[calendarMonth],
+      year: calendarYear,
+      daysInWeek,
+      cells,
+      weeks,
+    };
+  }, [calendarMonth, calendarYear, config, selectedDate]);
+
+  // Calendar month navigation
+  const handlePrevMonth = () => {
+    const now = new Date();
+    if (calendarYear === now.getFullYear() && calendarMonth <= now.getMonth()) return;
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear((y) => y - 1);
+    } else {
+      setCalendarMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear((y) => y + 1);
+    } else {
+      setCalendarMonth((m) => m + 1);
+    }
+  };
+
+  // Step 1 Validation -> Proceed to Step 2
+  const handleProceedToDetails = () => {
+    const errs = {};
+    if (!facilityId) errs.facilityId = 'Please select a library space.';
+    if (!selectedDate) errs.selectedDate = 'Please select an available date.';
+    if (availability && !availability.available) {
+      errs.selectedDate = availability.reason || 'Selected date is not available.';
+    }
+    if (!sessionId) {
+      errs.sessionId = 'Please select a morning or afternoon session.';
+    }
+
+    setErrors(errs);
+    if (Object.keys(errs).length === 0) {
+      setSubmitError('');
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Step 2 Validation -> Proceed to Step 3 (Review)
+  const handleProceedToReview = () => {
+    const errs = {};
+    if (!visitorName.trim()) {
+      errs.visitorName = 'Please enter your full name.';
+    } else if (visitorName.trim().length < 2) {
+      errs.visitorName = 'Name must be at least 2 characters.';
+    }
+
+    if (!visitorEmail.trim()) {
+      errs.visitorEmail = 'Please enter your email address.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(visitorEmail.trim())) {
+      errs.visitorEmail = 'Please provide a valid email format (e.g. name@example.com).';
+    }
+
+    if (!agreeRules) {
+      errs.agreeRules = 'You must agree to the library visit guidelines to proceed.';
+    }
+
+    setErrors(errs);
+    if (Object.keys(errs).length === 0) {
+      setSubmitError('');
+      setStep(3);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Step 3 Submission -> Create Real Reservation
+  const handleConfirmReservation = async (e) => {
+    if (e) e.preventDefault();
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          facilityId,
+          sessionId,
+          visitDate: selectedDate,
+          visitorName: visitorName.trim(),
+          visitorEmail: visitorEmail.trim(),
+          membershipNo: membershipNo ? membershipNo.trim() : null,
+          agreeRules: true,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to complete reservation.');
+      }
+
+      // Route directly to confirmation pass
+      navigate(`/booking/confirmation/${data.booking.bookingRef}?token=${data.booking.managementToken}`, {
+        state: { booking: data.booking },
+      });
+    } catch (err) {
+      setSubmitError(err.message || 'An error occurred while creating your reservation.');
+      // If error is capacity related, bring user back to selection
+      if (err.message.toLowerCase().includes('fill') || err.message.toLowerCase().includes('capacity')) {
+        setStep(1);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (configLoading) {
+    return (
+      <div className="new-booking-page">
+        <div className="new-booking-container">
+          <div className="loading-state" style={{ padding: '6rem 2rem' }}>
+            <div className="loading-spinner" />
+            <p style={{ color: '#7A6F66', fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>
+              Preparing library booking system...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const selectedFacilityObj = config?.facilities?.find((f) => f.id === facilityId) || {
+    id: 'reading-room',
+    name: 'Reading Room',
+    description: 'A calm space for reading, study and research.',
+  };
+
+  const selectedSessionObj = availability?.sessions?.find((s) => s.id === sessionId);
+
+  // Left Photo Editorial Quote per step
+  const photoMeta = {
+    1: {
+      headline: 'A space for reading, culture and curiosity.',
+      caption: 'BOOKS · MANGA · PEOPLE · JAPAN',
+    },
+    2: {
+      headline: 'People, Books and a Little More Japan.',
+      sub: 'A welcoming space for readers in New Delhi',
+      caption: 'A WELCOMING SPACE FOR READERS IN NEW DELHI',
+    },
+    3: {
+      headline: 'Explore. Read. Connect.',
+      sub: 'BOOKS · MANGA · CULTURE · PEOPLE · JAPAN',
+      caption: 'BOOKS · MANGA · CULTURE · PEOPLE · JAPAN',
+    },
+  }[step] || {
+    headline: 'A space for reading, culture and curiosity.',
+    caption: 'BOOKS · MANGA · PEOPLE · JAPAN',
+  };
+
+  return (
+    <div className="new-booking-page">
+      {/* Top Meta Bar */}
+      <nav className="booking-top-bar" aria-label="Page navigation">
+        <div className="booking-top-bar-inner">
+          <Link to="/" className="top-bar-back-link">
+            <ArrowLeft className="w-4 h-4" />
+            <span>Return to Library</span>
+          </Link>
+          <div className="top-bar-meta">
+            <span>RESERVE A VISIT · THE LIBRARY NEW DELHI</span>
+          </div>
+          <Link to="/my-booking" className="top-bar-lookup-link">
+            Find Existing Reservation
+          </Link>
+        </div>
+      </nav>
+
+      {/* Main Two-Column Outer Card Container */}
+      <main className="new-booking-container">
+        {/* =========================================================================
+            LEFT COLUMN: Editorial Photography Panel
+            ========================================================================= */}
+        <aside className="booking-photo-panel" aria-label="Library atmosphere">
+          <div className="photo-panel-bg" style={{ backgroundImage: "url('/images/library-reading-area.webp')" }} />
+          <div className="photo-panel-overlay" />
+
+          <div className="photo-panel-content">
+            {/* Top Emblem & Brand */}
+            <div className="photo-panel-header">
+              <div className="photo-brand-emblem" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+                  <path d="M6 6h10" />
+                  <path d="M6 10h10" />
+                </svg>
+              </div>
+              <div className="photo-brand-text">
+                <span className="photo-brand-title">The Library</span>
+                <span className="photo-brand-subtitle">LIBRARY / NEW DELHI</span>
+              </div>
+            </div>
+
+            {/* Center Editorial Quote */}
+            <div className="photo-panel-quote-box">
+              <div className="photo-quote-line" aria-hidden="true" />
+              <h2 className="photo-quote-heading">{photoMeta.headline}</h2>
+              {photoMeta.sub && <p className="photo-quote-sub">{photoMeta.sub}</p>}
+            </div>
+
+            {/* Bottom Tagline */}
+            <div className="photo-panel-footer">
+              <span className="photo-footer-caption">{photoMeta.caption}</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* =========================================================================
+            RIGHT COLUMN: Interactive Step Panel
+            ========================================================================= */}
+        <section className="booking-interactive-panel" aria-live="polite">
+          {/* Back Icon positioned on the boundary line between photo and content, aligned with 'Reserve your slot' */}
+          {step === 1 ? (
+            <Link 
+              to="/" 
+              className="boundary-back-btn" 
+              aria-label="Return to Library"
+              title="Return to Library"
+            >
+              <ArrowLeft className="w-4 h-4 stroke-[2.25]" />
+            </Link>
+          ) : (
+            <button 
+              type="button"
+              onClick={() => setStep(step - 1)}
+              className="boundary-back-btn" 
+              aria-label="Back to previous step"
+              title="Back to previous step"
+            >
+              <ArrowLeft className="w-4 h-4 stroke-[2.25]" />
+            </button>
+          )}
+          {/* Top Progress Bar (Visible on Steps 2 & 3) */}
+          {step > 1 && (
+            <div className="booking-progress-header" aria-label="Booking steps">
+              <div className="progress-track">
+                {/* Step 1 Node */}
+                <div className="progress-node completed">
+                  <div className="node-circle" onClick={() => setStep(1)} style={{ cursor: 'pointer' }} title="Return to Selection">
+                    <Check className="w-3.5 h-3.5 text-white stroke-[2.5]" />
+                  </div>
+                  <span className="node-label">Select space</span>
+                </div>
+                <div className={`progress-line ${step >= 2 ? 'filled' : ''}`} />
+
+                {/* Step 2 Node */}
+                <div className={`progress-node ${step === 2 ? 'active' : step > 2 ? 'completed' : ''}`}>
+                  <div className="node-circle" onClick={() => step > 2 && setStep(2)} style={{ cursor: step > 2 ? 'pointer' : 'default' }}>
+                    {step > 2 ? <Check className="w-3.5 h-3.5 text-white stroke-[2.5]" /> : '2'}
+                  </div>
+                  <span className="node-label">Your details</span>
+                </div>
+                <div className={`progress-line ${step >= 3 ? 'filled' : ''}`} />
+
+                {/* Step 3 Node */}
+                <div className={`progress-node ${step === 3 ? 'active' : ''}`}>
+                  <div className="node-circle">3</div>
+                  <span className="node-label">Review</span>
+                </div>
+                <div className="progress-line" />
+
+                {/* Step 4 Node */}
+                <div className="progress-node upcoming">
+                  <div className="node-circle">4</div>
+                  <span className="node-label">Confirmation</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* =====================================================================
+              STEP 1: SELECTION VIEW (Facility + Calendar & Slot Side-by-Side)
+              ===================================================================== */}
+          {step === 1 && (
+            <div className="step-selection-layout-clean">
+              <header className="step-intro-header">
+                <div className="category-tag-row">
+                  <span className="category-tag">BOOK A VISIT</span>
+                  <span className="category-rule" />
+                </div>
+                <h1 className="step-main-title">Reserve your slot</h1>
+                <p className="step-main-subtitle">Choose a space, date and time that suits you.</p>
+              </header>
+
+              {/* 1. Facility Selection */}
+              <div className="selection-sub-section facility-sub-section">
+                <div className="section-label-row">
+                  <span className="section-number-badge">1</span>
+                  <h2 className="section-title">Select a facility</h2>
+                </div>
+
+                <div className="facility-cards-row" role="radiogroup" aria-label="Reading facility choices">
+                  {/* Reading Room Option */}
+                  <div 
+                    id="facility-reading-room"
+                    className={`facility-pill-card ${facilityId === 'reading-room' ? 'selected' : ''}`}
+                    onClick={() => setFacilityId('reading-room')}
+                    role="radio"
+                    aria-checked={facilityId === 'reading-room'}
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') setFacilityId('reading-room'); }}
+                  >
+                    <div className="facility-pill-top">
+                      <BookOpen className="facility-pill-icon" />
+                      <div className={`custom-radio-dot ${facilityId === 'reading-room' ? 'checked' : ''}`} />
+                    </div>
+                    <div className="facility-pill-body">
+                      <h3 className="facility-pill-name">Reading Room</h3>
+                      <p className="facility-pill-desc">A calm space for reading, study and research.</p>
+                    </div>
+                  </div>
+
+                  {/* Manga Corner Option */}
+                  <div 
+                    id="facility-manga-corner"
+                    className={`facility-pill-card ${facilityId === 'manga-corner' ? 'selected' : ''}`}
+                    onClick={() => setFacilityId('manga-corner')}
+                    role="radio"
+                    aria-checked={facilityId === 'manga-corner'}
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') setFacilityId('manga-corner'); }}
+                  >
+                    <div className="facility-pill-top">
+                      <Library className="facility-pill-icon" />
+                      <div className={`custom-radio-dot ${facilityId === 'manga-corner' ? 'checked' : ''}`} />
+                    </div>
+                    <div className="facility-pill-body">
+                      <h3 className="facility-pill-name">Manga Corner</h3>
+                      <p className="facility-pill-desc">Explore a wide range of Japanese manga.</p>
+                    </div>
+                  </div>
+                </div>
+                {errors.facilityId && <p className="inline-error-msg">{errors.facilityId}</p>}
+              </div>
+
+              {/* 2 & 3: Date Calendar & Slot Choice Grid */}
+              <div className="step1-date-slot-grid">
+                {/* 2. Date Selection (Custom Calendar) */}
+                <div className="selection-sub-section mb-0">
+                  <div className="section-label-row">
+                    <span className="section-number-badge">2</span>
+                    <h2 className="section-title">Select a date</h2>
+                  </div>
+
+                  <div className="inline-calendar-box" aria-label="Calendar for date selection">
+                    <div className="cal-header">
+                      <button 
+                        type="button" 
+                        onClick={handlePrevMonth}
+                        className="cal-arrow-btn" 
+                        aria-label="Previous month"
+                      >
+                        <ChevronLeft className="w-4 h-4 stroke-[2.25]" />
+                      </button>
+                      <span className="cal-month-title">
+                        {calendarData.monthName} {calendarData.year}
+                      </span>
+                      <button 
+                        type="button" 
+                        onClick={handleNextMonth}
+                        className="cal-arrow-btn" 
+                        aria-label="Next month"
+                      >
+                        <ChevronRight className="w-4 h-4 stroke-[2.25]" />
+                      </button>
+                    </div>
+
+                    <div className="cal-weekdays-row" aria-hidden="true">
+                      {calendarData.daysInWeek.map((day) => (
+                        <div key={day} className="cal-weekday-cell">{day}</div>
+                      ))}
+                    </div>
+
+                    <div className="cal-weeks-list">
+                      {calendarData.weeks.map((week, wIdx) => {
+                        const hasActiveRange = week.some(c => c.isCurrentMonth && !c.disabled);
+                        const hasSelected = week.some(c => c.isSelected);
+                        const isPillRow = hasActiveRange || hasSelected;
+
+                        return (
+                          <div key={wIdx} className={`cal-week-row ${isPillRow ? 'pill-active' : ''}`}>
+                            {week.map((cell, cIdx) => {
+                              if (!cell.isCurrentMonth) {
+                                return (
+                                  <div key={`pad-${wIdx}-${cIdx}`} className="cal-day-cell pad-cell">
+                                    <span className="day-number-bubble pad-bubble">{cell.dayNumber}</span>
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <button
+                                  key={cell.dateStr}
+                                  type="button"
+                                  disabled={cell.disabled}
+                                  onClick={() => {
+                                    setSelectedDate(cell.dateStr);
+                                    setErrors((prev) => ({ ...prev, selectedDate: null }));
+                                  }}
+                                  className={`cal-day-cell ${cell.isSelected ? 'selected' : ''} ${cell.disabled ? 'disabled' : ''} ${cell.isClosed ? 'closed' : ''}`}
+                                  aria-label={`${cell.dateStr}${cell.isSelected ? ' selected' : ''}${cell.disabled ? ' unavailable' : ''}`}
+                                >
+                                  <span className="day-number-bubble">{cell.dayNumber}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {errors.selectedDate && <p className="inline-error-msg">{errors.selectedDate}</p>}
+                </div>
+
+                {/* 3. Session Time Slot Selection & Action CTA */}
+                <div className="selection-sub-section mb-0 slot-choice-col">
+                  <div className="section-label-row">
+                    <span className="section-number-badge">3</span>
+                    <h2 className="section-title">Select a time slot</h2>
+                  </div>
+
+                  {availability && !availability.available ? (
+                    <div className="session-unavailable-notice">
+                      <AlertCircle className="w-5 h-5 text-amber-700 shrink-0" />
+                      <div>
+                        <strong>Library Closed on this date</strong>
+                        <p>{availability.reason || 'The facility is closed on this date according to regular opening schedule.'}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="session-cards-column" role="radiogroup" aria-label="Session time choices">
+                      {/* Morning Slot */}
+                      {(() => {
+                        const mSession = availability?.sessions?.find(s => s.id === 'morning') || {
+                          id: 'morning',
+                          name: 'Morning Session',
+                          startTime: '11:00 AM',
+                          endTime: '2:30 PM',
+                          isAvailable: true,
+                          remainingCapacity: 15,
+                        };
+                        const isSelected = sessionId === 'morning';
+                        const isFull = mSession.isAvailable === false || mSession.remainingCapacity <= 0;
+
+                        return (
+                          <div
+                            id="session-morning"
+                            className={`session-pill-card ${isSelected ? 'selected' : ''} ${isFull ? 'disabled' : ''}`}
+                            onClick={() => !isFull && setSessionId('morning')}
+                            role="radio"
+                            aria-checked={isSelected}
+                            tabIndex={isFull ? -1 : 0}
+                            onKeyDown={(e) => { if (!isFull && (e.key === ' ' || e.key === 'Enter')) setSessionId('morning'); }}
+                          >
+                            <div className="session-pill-top">
+                              <div className={`custom-radio-dot ${isSelected ? 'checked' : ''}`} />
+                              <span className="session-time-text">11:00 AM – 2:30 PM</span>
+                            </div>
+                            <div className="session-pill-bottom">
+                              <span className="session-name-sub">Morning Session</span>
+                              <span className={`capacity-indicator ${isFull ? 'cap-full' : mSession.remainingCapacity <= 4 ? 'cap-low' : 'cap-ok'}`}>
+                                {isFull ? 'Fully Booked' : `${mSession.remainingCapacity ?? 15} spots left`}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      {/* Afternoon Slot */}
+                      {(() => {
+                        const aSession = availability?.sessions?.find(s => s.id === 'afternoon') || {
+                          id: 'afternoon',
+                          name: 'Afternoon Session',
+                          startTime: '3:00 PM',
+                          endTime: '6:30 PM',
+                          isAvailable: true,
+                          remainingCapacity: 15,
+                        };
+                        const isSelected = sessionId === 'afternoon';
+                        const isFull = aSession.isAvailable === false || aSession.remainingCapacity <= 0;
+
+                        return (
+                          <div
+                            id="session-afternoon"
+                            className={`session-pill-card ${isSelected ? 'selected' : ''} ${isFull ? 'disabled' : ''}`}
+                            onClick={() => !isFull && setSessionId('afternoon')}
+                            role="radio"
+                            aria-checked={isSelected}
+                            tabIndex={isFull ? -1 : 0}
+                            onKeyDown={(e) => { if (!isFull && (e.key === ' ' || e.key === 'Enter')) setSessionId('afternoon'); }}
+                          >
+                            <div className="session-pill-top">
+                              <div className={`custom-radio-dot ${isSelected ? 'checked' : ''}`} />
+                              <span className="session-time-text">3:00 PM – 6:30 PM</span>
+                            </div>
+                            <div className="session-pill-bottom">
+                              <span className="session-name-sub">Afternoon Session</span>
+                              <span className={`capacity-indicator ${isFull ? 'cap-full' : aSession.remainingCapacity <= 4 ? 'cap-low' : 'cap-ok'}`}>
+                                {isFull ? 'Fully Booked' : `${aSession.remainingCapacity ?? 15} spots left`}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  {errors.sessionId && <p className="inline-error-msg">{errors.sessionId}</p>}
+
+                  {/* Primary CTA: Continue to details */}
+                  <div className="step1-cta-block">
+                    <button 
+                      type="button" 
+                      id="continue-to-details-btn"
+                      className="primary-espresso-btn step1-primary-btn"
+                      onClick={handleProceedToDetails}
+                    >
+                      <span>Continue to details</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                    <p className="step1-cta-hint">You can review details before confirming your booking.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* =====================================================================
+              STEP 2: VISITOR DETAILS (Mockup 2: "Tell us about yourself")
+              ===================================================================== */}
+          {step === 2 && (
+            <div className="step-selection-layout">
+              {/* Left Sub-column: Form */}
+              <div className="selection-main-col">
+                <header className="step-intro-header">
+                  <div className="category-tag-row">
+                    <span className="category-tag">YOUR DETAILS</span>
+                    <span className="category-rule" />
+                  </div>
+                  <h1 className="step-main-title">Tell us about yourself</h1>
+                  <p className="step-main-subtitle">Please provide your details to complete your reservation.</p>
+                </header>
+
+                <form className="details-form-box" onSubmit={(e) => { e.preventDefault(); handleProceedToReview(); }}>
+                  {/* Full Name */}
+                  <div className="form-field-group">
+                    <label htmlFor="visitor-name" className="field-label">
+                      Full name <span className="req-asterisk">*</span>
+                    </label>
+                    <input
+                      id="visitor-name"
+                      type="text"
+                      className={`field-text-input ${errors.visitorName ? 'error' : ''}`}
+                      placeholder="Enter your full name"
+                      value={visitorName}
+                      onChange={(e) => {
+                        setVisitorName(e.target.value);
+                        if (errors.visitorName) setErrors((prev) => ({ ...prev, visitorName: null }));
+                      }}
+                      autoComplete="name"
+                    />
+                    {errors.visitorName && <p className="inline-error-msg">{errors.visitorName}</p>}
+                  </div>
+
+                  {/* Email Address */}
+                  <div className="form-field-group">
+                    <label htmlFor="visitor-email" className="field-label">
+                      Email address <span className="req-asterisk">*</span>
+                    </label>
+                    <input
+                      id="visitor-email"
+                      type="email"
+                      className={`field-text-input ${errors.visitorEmail ? 'error' : ''}`}
+                      placeholder="Enter your email address"
+                      value={visitorEmail}
+                      onChange={(e) => {
+                        setVisitorEmail(e.target.value);
+                        if (errors.visitorEmail) setErrors((prev) => ({ ...prev, visitorEmail: null }));
+                      }}
+                      autoComplete="email"
+                    />
+                    <span className="field-helper-text">You will receive a confirmation email with your booking details.</span>
+                    {errors.visitorEmail && <p className="inline-error-msg">{errors.visitorEmail}</p>}
+                  </div>
+
+                  {/* Membership Number (Optional) */}
+                  <div className="form-field-group">
+                    <label htmlFor="membership-no" className="field-label">
+                      Membership number (optional)
+                    </label>
+                    <input
+                      id="membership-no"
+                      type="text"
+                      className="field-text-input"
+                      placeholder="Enter your membership number"
+                      value={membershipNo}
+                      onChange={(e) => setMembershipNo(e.target.value)}
+                    />
+                    <span className="field-helper-text">Required only if specified by the library's booking policy.</span>
+                  </div>
+
+                  {/* Agreement Checkbox */}
+                  <div className="guidelines-agreement-box">
+                    <label className="checkbox-flex-label">
+                      <input
+                        id="guidelines-agreement-checkbox"
+                        type="checkbox"
+                        checked={agreeRules}
+                        onChange={(e) => {
+                          setAgreeRules(e.target.checked);
+                          if (errors.agreeRules) setErrors((prev) => ({ ...prev, agreeRules: null }));
+                        }}
+                        className="custom-form-checkbox"
+                      />
+                      <span className="checkbox-text">
+                        I have read and agree to the library's{' '}
+                        <span className="accent-link">visit guidelines</span> and{' '}
+                        <span className="accent-link">booking terms</span>.
+                      </span>
+                    </label>
+                    {errors.agreeRules && <p className="inline-error-msg" style={{ marginTop: '0.5rem' }}>{errors.agreeRules}</p>}
+                  </div>
+
+                  {/* Navigation Actions */}
+                  <div className="form-nav-row">
+                    <button
+                      type="button"
+                      id="back-to-selection-btn"
+                      className="nav-secondary-back-btn"
+                      onClick={() => setStep(1)}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span>Back to selection</span>
+                    </button>
+
+                    <button
+                      type="submit"
+                      id="review-booking-btn"
+                      className="primary-espresso-btn"
+                    >
+                      <span>Review booking</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Right Sub-column: Selection Summary */}
+              <aside className="selection-sidebar-col" aria-label="Current selection">
+                <div className="summary-card-box">
+                  <div className="summary-card-header">
+                    <FileText className="summary-header-icon" />
+                    <h3 className="summary-header-title">Your selection</h3>
+                  </div>
+
+                  <div className="summary-card-items">
+                    <div className="summary-card-item">
+                      <div className="item-icon-col">
+                        <BookOpen className="summary-item-icon" />
+                      </div>
+                      <div className="item-text-col">
+                        <span className="item-label">Facility</span>
+                        <span className="item-value">{selectedFacilityObj.name}</span>
+                        <span className="item-sub-desc">{selectedFacilityObj.description}</span>
+                      </div>
+                    </div>
+
+                    <div className="summary-card-item">
+                      <div className="item-icon-col">
+                        <Calendar className="summary-item-icon" />
+                      </div>
+                      <div className="item-text-col">
+                        <span className="item-label">Date</span>
+                        <span className="item-value">{formatShortDate(selectedDate)}</span>
+                      </div>
+                    </div>
+
+                    <div className="summary-card-item">
+                      <div className="item-icon-col">
+                        <Clock className="summary-item-icon" />
+                      </div>
+                      <div className="item-text-col">
+                        <span className="item-label">Time slot</span>
+                        <span className="item-value">
+                          {sessionId === 'morning' ? '11:00 AM – 2:30 PM' : '3:00 PM – 6:30 PM'}
+                        </span>
+                        <span className="item-sub-desc">
+                          {sessionId === 'morning' ? 'Morning Session' : 'Afternoon Session'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          )}
+
+          {/* =====================================================================
+              STEP 3: REVIEW VIEW (Mockup 3 Left: "Almost there!")
+              ===================================================================== */}
+          {step === 3 && (
+            <div className="step-review-layout">
+              <header className="step-intro-header">
+                <div className="category-tag-row">
+                  <span className="category-tag">REVIEW YOUR VISIT</span>
+                  <span className="category-rule" />
+                </div>
+                <h1 className="step-main-title">Almost there!</h1>
+                <p className="step-main-subtitle">Please review your booking details before confirming.</p>
+              </header>
+
+              {submitError && (
+                <div className="submit-error-banner" role="alert">
+                  <AlertCircle className="w-5 h-5 text-red-700 shrink-0" />
+                  <p>{submitError}</p>
+                </div>
+              )}
+
+              <div className="review-cards-list">
+                {/* 1. Booking Summary Card */}
+                <div className="review-section-card">
+                  <div className="review-card-head">
+                    <div className="head-left">
+                      <FileText className="review-head-icon" />
+                      <h2 className="review-head-title">Booking summary</h2>
+                    </div>
+                    <button
+                      type="button"
+                      id="edit-summary-btn"
+                      className="edit-pill-btn"
+                      onClick={() => setStep(1)}
+                      title="Edit facility, date or session"
+                    >
+                      Edit
+                    </button>
+                  </div>
+
+                  <div className="review-card-rows">
+                    <div className="review-row-item">
+                      <div className="row-icon-col"><BookOpen className="row-icon" /></div>
+                      <div className="row-label-col">Facility</div>
+                      <div className="row-val-col">
+                        <strong>{selectedFacilityObj.name}</strong>
+                        <span className="val-sub">{selectedFacilityObj.description}</span>
+                      </div>
+                    </div>
+
+                    <div className="review-row-item">
+                      <div className="row-icon-col"><Calendar className="row-icon" /></div>
+                      <div className="row-label-col">Date</div>
+                      <div className="row-val-col">
+                        <strong>{formatFullDate(selectedDate)}</strong>
+                      </div>
+                    </div>
+
+                    <div className="review-row-item">
+                      <div className="row-icon-col"><Clock className="row-icon" /></div>
+                      <div className="row-label-col">Time slot</div>
+                      <div className="row-val-col">
+                        <strong>
+                          {sessionId === 'morning' ? '11:00 AM – 2:30 PM' : '3:00 PM – 6:30 PM'}
+                        </strong>
+                        <span className="val-sub">
+                          {sessionId === 'morning' ? 'Morning Session' : 'Afternoon Session'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Visitor Details Card */}
+                <div className="review-section-card">
+                  <div className="review-card-head">
+                    <div className="head-left">
+                      <User className="review-head-icon" />
+                      <h2 className="review-head-title">Visitor details</h2>
+                    </div>
+                    <button
+                      type="button"
+                      id="edit-details-btn"
+                      className="edit-pill-btn"
+                      onClick={() => setStep(2)}
+                      title="Edit visitor name or email"
+                    >
+                      Edit
+                    </button>
+                  </div>
+
+                  <div className="review-card-rows">
+                    <div className="review-row-item">
+                      <div className="row-icon-col"><User className="row-icon" /></div>
+                      <div className="row-label-col">Full name</div>
+                      <div className="row-val-col">
+                        <strong>{visitorName}</strong>
+                      </div>
+                    </div>
+
+                    <div className="review-row-item">
+                      <div className="row-icon-col"><Mail className="row-icon" /></div>
+                      <div className="row-label-col">Email address</div>
+                      <div className="row-val-col">
+                        <strong>{visitorEmail}</strong>
+                      </div>
+                    </div>
+
+                    <div className="review-row-item">
+                      <div className="row-icon-col"><Hash className="row-icon" /></div>
+                      <div className="row-label-col">Membership number</div>
+                      <div className="row-val-col">
+                        <span>{membershipNo ? membershipNo : 'Not provided'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Review Bottom Actions */}
+              <div className="review-actions-bottom">
+                <button
+                  type="button"
+                  id="back-to-details-btn"
+                  className="nav-secondary-back-btn"
+                  onClick={() => setStep(2)}
+                  disabled={submitting}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Back to details</span>
+                </button>
+
+                <div className="submit-action-wrap">
+                  <button
+                    type="button"
+                    id="confirm-reservation-btn"
+                    className="primary-espresso-btn confirm-btn"
+                    onClick={handleConfirmReservation}
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      <>
+                        <div className="mini-spinner-light" />
+                        <span>Reserving slot...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Confirm reservation</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                  <span className="submit-fineprint">Your slot will be reserved only after successful confirmation.</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
