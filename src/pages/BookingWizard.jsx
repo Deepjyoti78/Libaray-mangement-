@@ -421,17 +421,10 @@ export default function BookingWizard() {
     <div className="new-booking-page">
       {/* Top Meta Bar */}
       <nav className="booking-top-bar" aria-label="Page navigation">
-        <div className="booking-top-bar-inner">
-          <Link to="/" className="top-bar-back-link">
-            <ArrowLeft className="w-4 h-4" />
-            <span>Return to Library</span>
-          </Link>
+        <div className="booking-top-bar-inner confirmation-top-bar-inner">
           <div className="top-bar-meta">
             <span>RESERVE A VISIT · THE LIBRARY NEW DELHI</span>
           </div>
-          <Link to="/my-booking" className="top-bar-lookup-link">
-            Find Existing Reservation
-          </Link>
         </div>
       </nav>
 
