@@ -106,8 +106,8 @@ export default function CollectionsStrip({ onBookSlot }) {
           </div>
 
           <div className="booking-callout-actions">
-            <Link
-              to="/book"
+            <button
+              type="button"
               className="btn-primary callout-btn"
               onClick={onBookSlot}
               aria-label="Reserve a Visit"
@@ -115,7 +115,7 @@ export default function CollectionsStrip({ onBookSlot }) {
               <Calendar className="btn-icon" />
               <span>Reserve a Visit</span>
               <ArrowRight className="btn-icon-arrow" />
-            </Link>
+            </button>
             <span className="callout-note">Free entry · Advance slot recommended</span>
           </div>
         </div>

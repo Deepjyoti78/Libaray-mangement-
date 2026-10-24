@@ -209,15 +209,15 @@ export default function EditorialGrid({ onBookSlot }) {
               </div>
             </div>
 
-            <Link
-              to="/book"
+            <button
+              type="button"
               className="btn-primary visit-cta-btn"
               onClick={onBookSlot}
               aria-label="Book a Slot for visiting"
             >
               <span>Book a Slot</span>
               <ArrowRight className="btn-icon-arrow" />
-            </Link>
+            </button>
           </article>
         </div>
       </div>

@@ -20,7 +20,7 @@ export default function App() {
         <Routes>
           {/* Public Visitor Routes */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/book" element={<BookingWizard />} />
+          <Route path="/book" element={<LandingPage initialBookingOpen={true} />} />
           <Route path="/booking/confirmation/:id" element={<ConfirmationPage />} />
           <Route path="/my-booking" element={<MyBookingPage />} />
 

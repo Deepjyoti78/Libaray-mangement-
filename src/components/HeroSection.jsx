@@ -32,8 +32,8 @@ export default function HeroSection({ onBookSlot }) {
             </p>
 
             <div className="hero-actions">
-              <Link
-                to="/book"
+              <button
+                type="button"
                 className="btn-primary"
                 onClick={onBookSlot}
                 aria-label="Reserve a Visit"
@@ -41,7 +41,7 @@ export default function HeroSection({ onBookSlot }) {
                 <Calendar className="btn-icon" />
                 <span>Reserve a Visit</span>
                 <ArrowRight className="btn-icon-arrow" />
-              </Link>
+              </button>
 
               <a
                 href="#info-strip"

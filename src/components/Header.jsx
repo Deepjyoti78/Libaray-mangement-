@@ -68,15 +68,15 @@ export default function Header({ onBookSlot }) {
               <span className="lang-option">日本語</span>
             </div>
 
-            <Link
-              to="/book"
+            <button
+              type="button"
               className="header-book-btn"
               onClick={onBookSlot}
               aria-label="Book a Slot for library visit"
             >
               <Calendar className="btn-icon" />
               <span>Book a Slot</span>
-            </Link>
+            </button>
 
             <button
               className="mobile-menu-btn"
@@ -116,8 +116,8 @@ export default function Header({ onBookSlot }) {
               <span className="lang-sep">/</span>
               <span className="lang-option">日本語</span>
             </div>
-            <Link
-              to="/book"
+            <button
+              type="button"
               className="header-book-btn full-width"
               onClick={() => {
                 onBookSlot?.();
@@ -126,7 +126,7 @@ export default function Header({ onBookSlot }) {
             >
               <Calendar className="btn-icon" />
               <span>Book a Slot</span>
-            </Link>
+            </button>
           </div>
         </div>
       </div>

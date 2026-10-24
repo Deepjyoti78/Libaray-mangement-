@@ -1,14 +1,18 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import InfoStrip from '../components/InfoStrip';
 import EditorialGrid from '../components/EditorialGrid';
 import CollectionsStrip from '../components/CollectionsStrip';
 import Footer from '../components/Footer';
+import BookingWizard from './BookingWizard';
 
-export default function LandingPage() {
-  const navigate = useNavigate();
+export default function LandingPage({ initialBookingOpen = false }) {
+  const location = useLocation();
+  const [isBookingOpen, setIsBookingOpen] = useState(
+    initialBookingOpen || location.pathname === '/book'
+  );
 
   /* Scroll reveal observer */
   useEffect(() => {
@@ -30,8 +34,22 @@ export default function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
+  // Sync state if route is /book
+  useEffect(() => {
+    if (location.pathname === '/book') {
+      setIsBookingOpen(true);
+    }
+  }, [location.pathname]);
+
   const handleOpenBooking = () => {
-    navigate('/book');
+    setIsBookingOpen(true);
+  };
+
+  const handleCloseBooking = () => {
+    setIsBookingOpen(false);
+    if (window.location.pathname === '/book') {
+      window.history.pushState(null, '', '/');
+    }
   };
 
   return (
@@ -44,6 +62,11 @@ export default function LandingPage() {
         <CollectionsStrip onBookSlot={handleOpenBooking} />
       </main>
       <Footer />
+
+      {/* Booking Pop-up Modal */}
+      {isBookingOpen && (
+        <BookingWizard isModal={true} onClose={handleCloseBooking} />
+      )}
     </div>
   );
 }

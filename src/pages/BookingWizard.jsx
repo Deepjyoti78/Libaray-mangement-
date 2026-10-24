@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { 
   ArrowLeft, ArrowRight, Calendar, Clock, CheckCircle2, 
   AlertCircle, ShieldCheck, User, Mail, Hash, BookOpen, 
-  Library, ChevronLeft, ChevronRight, Check, FileText, Info
+  Library, ChevronLeft, ChevronRight, Check, FileText, Info, X
 } from 'lucide-react';
 
 /**
@@ -51,11 +51,21 @@ function formatFullDate(dateStr) {
   });
 }
 
-export default function BookingWizard() {
+export default function BookingWizard({ isModal = false, onClose }) {
   const navigate = useNavigate();
 
   // Wizard logical steps: 1 = Selection (Space + Date + Slot), 2 = Details, 3 = Review
   const [step, setStep] = useState(1);
+
+  // Close on Escape key press if in modal mode
+  useEffect(() => {
+    if (!isModal || !onClose) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModal, onClose]);
 
   // Configuration from server
   const [config, setConfig] = useState(null);
@@ -359,6 +369,9 @@ export default function BookingWizard() {
       }
 
       // Route directly to confirmation pass
+      if (onClose) {
+        onClose();
+      }
       navigate(`/booking/confirmation/${data.booking.bookingRef}?token=${data.booking.managementToken}`, {
         state: { booking: data.booking },
       });
@@ -374,18 +387,29 @@ export default function BookingWizard() {
   };
 
   if (configLoading) {
-    return (
-      <div className="new-booking-page">
-        <div className="new-booking-container">
-          <div className="loading-state" style={{ padding: '6rem 2rem' }}>
+    const loadingCard = (
+      <div className={`new-booking-page ${isModal ? 'modal-view' : ''}`}>
+        <div className="new-booking-container" style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+          <div className="loading-state" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
             <div className="loading-spinner" />
-            <p style={{ color: '#7A6F66', fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>
+            <p style={{ color: '#7A6F66', fontFamily: 'var(--font-serif)', fontSize: '1.15rem', marginTop: '1rem' }}>
               Preparing library booking system...
             </p>
           </div>
         </div>
       </div>
     );
+
+    if (isModal) {
+      return (
+        <div className="booking-modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+          <div className="booking-modal-dialog" onClick={(e) => e.stopPropagation()}>
+            {loadingCard}
+          </div>
+        </div>
+      );
+    }
+    return loadingCard;
   }
 
   const selectedFacilityObj = config?.facilities?.find((f) => f.id === facilityId) || {
@@ -417,16 +441,18 @@ export default function BookingWizard() {
     caption: 'BOOKS · MANGA · PEOPLE · JAPAN',
   };
 
-  return (
-    <div className="new-booking-page">
-      {/* Top Meta Bar */}
-      <nav className="booking-top-bar" aria-label="Page navigation">
-        <div className="booking-top-bar-inner confirmation-top-bar-inner">
-          <div className="top-bar-meta">
-            <span>RESERVE A VISIT · THE LIBRARY NEW DELHI</span>
+  const wizardContent = (
+    <div className={`new-booking-page ${isModal ? 'modal-view' : ''}`}>
+      {/* Top Meta Bar (Only rendered on standalone full-page view) */}
+      {!isModal && (
+        <nav className="booking-top-bar" aria-label="Page navigation">
+          <div className="booking-top-bar-inner confirmation-top-bar-inner">
+            <div className="top-bar-meta">
+              <span>RESERVE A VISIT · THE LIBRARY NEW DELHI</span>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Main Two-Column Outer Card Container */}
       <main className="new-booking-container">
@@ -471,44 +497,50 @@ export default function BookingWizard() {
             RIGHT COLUMN: Interactive Step Panel
             ========================================================================= */}
         <section className="booking-interactive-panel" aria-live="polite">
-          {/* Back Icon positioned on the boundary line between photo and content, aligned with 'Reserve your slot' */}
-          {step === 1 ? (
-            <Link 
-              to="/" 
-              className="boundary-back-btn" 
-              aria-label="Return to Library"
-              title="Return to Library"
-            >
-              <ArrowLeft className="w-4 h-4 stroke-[2.25]" />
-            </Link>
-          ) : (
-            <button 
-              type="button"
-              onClick={() => setStep(step - 1)}
-              className="boundary-back-btn" 
-              aria-label="Back to previous step"
-              title="Back to previous step"
-            >
-              <ArrowLeft className="w-4 h-4 stroke-[2.25]" />
-            </button>
-          )}
-          {/* Top Progress Bar (Visible on Steps 2 & 3) */}
-          {step > 1 && (
+          {/* Top Wizard Header: Navigation, Progress Track, and Close Modal Button */}
+          <div className="wizard-top-header">
+            <div className="wizard-nav-left">
+              {step > 1 ? (
+                <button 
+                  type="button"
+                  onClick={() => setStep(step - 1)}
+                  className="step-inline-back-btn" 
+                  aria-label="Back to previous step"
+                  title="Back to previous step"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Back</span>
+                </button>
+              ) : (
+                <span className="step-tag-pill">STEP 1 / 3</span>
+              )}
+            </div>
+
             <div className="booking-progress-header" aria-label="Booking steps">
               <div className="progress-track">
                 {/* Step 1 Node */}
-                <div className="progress-node completed">
-                  <div className="node-circle" onClick={() => setStep(1)} style={{ cursor: 'pointer' }} title="Return to Selection">
-                    <Check className="w-3.5 h-3.5 text-white stroke-[2.5]" />
+                <div className={`progress-node ${step === 1 ? 'active' : 'completed'}`}>
+                  <div 
+                    className="node-circle" 
+                    onClick={() => step > 1 && setStep(1)} 
+                    style={{ cursor: step > 1 ? 'pointer' : 'default' }} 
+                    title="Return to Space Selection"
+                  >
+                    {step > 1 ? <Check className="w-3 h-3 text-white stroke-[2.5]" /> : '1'}
                   </div>
-                  <span className="node-label">Select space</span>
+                  <span className="node-label">Space & slot</span>
                 </div>
                 <div className={`progress-line ${step >= 2 ? 'filled' : ''}`} />
 
                 {/* Step 2 Node */}
                 <div className={`progress-node ${step === 2 ? 'active' : step > 2 ? 'completed' : ''}`}>
-                  <div className="node-circle" onClick={() => step > 2 && setStep(2)} style={{ cursor: step > 2 ? 'pointer' : 'default' }}>
-                    {step > 2 ? <Check className="w-3.5 h-3.5 text-white stroke-[2.5]" /> : '2'}
+                  <div 
+                    className="node-circle" 
+                    onClick={() => step > 2 && setStep(2)} 
+                    style={{ cursor: step > 2 ? 'pointer' : 'default' }}
+                    title={step > 2 ? 'Return to Details' : undefined}
+                  >
+                    {step > 2 ? <Check className="w-3 h-3 text-white stroke-[2.5]" /> : '2'}
                   </div>
                   <span className="node-label">Your details</span>
                 </div>
@@ -524,11 +556,25 @@ export default function BookingWizard() {
                 {/* Step 4 Node */}
                 <div className="progress-node upcoming">
                   <div className="node-circle">4</div>
-                  <span className="node-label">Confirmation</span>
+                  <span className="node-label">Pass</span>
                 </div>
               </div>
             </div>
-          )}
+
+            <div className="wizard-nav-right">
+              {isModal && (
+                <button
+                  type="button"
+                  className="booking-modal-close-btn"
+                  onClick={onClose}
+                  aria-label="Close reservation modal"
+                  title="Close modal"
+                >
+                  <X className="w-4 h-4 stroke-[2.25]" />
+                </button>
+              )}
+            </div>
+          </div>
 
           {/* =====================================================================
               STEP 1: SELECTION VIEW (Facility + Calendar & Slot Side-by-Side)
@@ -1117,4 +1163,26 @@ export default function BookingWizard() {
       </main>
     </div>
   );
+
+  if (isModal) {
+    return (
+      <div 
+        className="booking-modal-backdrop" 
+        onClick={(e) => {
+          if (e.target === e.currentTarget && onClose) {
+            onClose();
+          }
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Reserve a Visit"
+      >
+        <div className="booking-modal-dialog" onClick={(e) => e.stopPropagation()}>
+          {wizardContent}
+        </div>
+      </div>
+    );
+  }
+
+  return wizardContent;
 }
