@@ -3,7 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { 
   ArrowLeft, ArrowRight, Calendar, Clock, CheckCircle2, 
   AlertCircle, ShieldCheck, User, Mail, Hash, BookOpen, 
-  Library, ChevronLeft, ChevronRight, Check, FileText, Info, X
+  Library, ChevronLeft, ChevronRight, Check, FileText, Info, X,
+  Lightbulb, CreditCard
 } from 'lucide-react';
 
 /**
@@ -363,9 +364,21 @@ export default function BookingWizard({ isModal = false, onClose }) {
         }),
       });
 
-      const data = await res.json();
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (_) {
+        if (!res.ok) {
+          throw new Error(
+            res.status === 502
+              ? 'Unable to reach backend service. Please check that the server is running.'
+              : `Server error (${res.status}). Please try again.`
+          );
+        }
+      }
+
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to complete reservation.');
+        throw new Error(data?.error || `Failed to complete reservation (status ${res.status}).`);
       }
 
       // Route directly to confirmation pass
@@ -481,9 +494,13 @@ export default function BookingWizard({ isModal = false, onClose }) {
 
             {/* Center Editorial Quote */}
             <div className="photo-panel-quote-box">
+              <h2 className="photo-quote-heading">
+                A space for<br />
+                reading, culture<br />
+                and curiosity.
+              </h2>
               <div className="photo-quote-line" aria-hidden="true" />
-              <h2 className="photo-quote-heading">{photoMeta.headline}</h2>
-              {photoMeta.sub && <p className="photo-quote-sub">{photoMeta.sub}</p>}
+              <p className="photo-quote-japanese">読書・マンガ・人・日本</p>
             </div>
 
             {/* Bottom Tagline */}
@@ -496,98 +513,71 @@ export default function BookingWizard({ isModal = false, onClose }) {
         {/* =========================================================================
             RIGHT COLUMN: Interactive Step Panel
             ========================================================================= */}
-        <section className="booking-interactive-panel" aria-live="polite">
-          {/* Top Wizard Header: Navigation, Progress Track, and Close Modal Button */}
-          <div className="wizard-top-header">
-            <div className="wizard-nav-left">
-              {step > 1 ? (
-                <button 
-                  type="button"
-                  onClick={() => setStep(step - 1)}
-                  className="step-inline-back-btn" 
-                  aria-label="Back to previous step"
-                  title="Back to previous step"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Back</span>
-                </button>
-              ) : (
-                <span className="step-tag-pill">STEP 1 / 3</span>
-              )}
-            </div>
-
-            <div className="booking-progress-header" aria-label="Booking steps">
-              <div className="progress-track">
-                {/* Step 1 Node */}
-                <div className={`progress-node ${step === 1 ? 'active' : 'completed'}`}>
-                  <div 
-                    className="node-circle" 
-                    onClick={() => step > 1 && setStep(1)} 
-                    style={{ cursor: step > 1 ? 'pointer' : 'default' }} 
-                    title="Return to Space Selection"
-                  >
-                    {step > 1 ? <Check className="w-3 h-3 text-white stroke-[2.5]" /> : '1'}
-                  </div>
-                  <span className="node-label">Space & slot</span>
-                </div>
-                <div className={`progress-line ${step >= 2 ? 'filled' : ''}`} />
-
-                {/* Step 2 Node */}
-                <div className={`progress-node ${step === 2 ? 'active' : step > 2 ? 'completed' : ''}`}>
-                  <div 
-                    className="node-circle" 
-                    onClick={() => step > 2 && setStep(2)} 
-                    style={{ cursor: step > 2 ? 'pointer' : 'default' }}
-                    title={step > 2 ? 'Return to Details' : undefined}
-                  >
-                    {step > 2 ? <Check className="w-3 h-3 text-white stroke-[2.5]" /> : '2'}
-                  </div>
-                  <span className="node-label">Your details</span>
-                </div>
-                <div className={`progress-line ${step >= 3 ? 'filled' : ''}`} />
-
-                {/* Step 3 Node */}
-                <div className={`progress-node ${step === 3 ? 'active' : ''}`}>
-                  <div className="node-circle">3</div>
-                  <span className="node-label">Review</span>
-                </div>
-                <div className="progress-line" />
-
-                {/* Step 4 Node */}
-                <div className="progress-node upcoming">
-                  <div className="node-circle">4</div>
-                  <span className="node-label">Pass</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="wizard-nav-right">
-              {isModal && (
-                <button
-                  type="button"
-                  className="booking-modal-close-btn"
-                  onClick={onClose}
-                  aria-label="Close reservation modal"
-                  title="Close modal"
-                >
-                  <X className="w-4 h-4 stroke-[2.25]" />
-                </button>
-              )}
-            </div>
-          </div>
+        <section className={`booking-interactive-panel ${submitError ? 'has-submit-error' : ''}`} aria-live="polite">
+          {/* Close Modal Button positioned at top right */}
+          {isModal && (
+            <button
+              type="button"
+              className="booking-modal-close-btn"
+              onClick={onClose}
+              aria-label="Close reservation modal"
+              title="Close modal"
+            >
+              <X className="w-4 h-4 stroke-[2.25]" />
+            </button>
+          )}
 
           {/* =====================================================================
               STEP 1: SELECTION VIEW (Facility + Calendar & Slot Side-by-Side)
               ===================================================================== */}
           {step === 1 && (
             <div className="step-selection-layout-clean">
-              <header className="step-intro-header">
-                <div className="category-tag-row">
-                  <span className="category-tag">BOOK A VISIT</span>
-                  <span className="category-rule" />
+              <header className="step-intro-header-art">
+                <div className="step-intro-text-col">
+                  <div className="category-tag-row">
+                    <span className="category-tag">BOOK A VISIT</span>
+                  </div>
+                  <h1 className="step-main-title">Reserve your slot</h1>
+                  <p className="step-main-subtitle">Choose a space, date and time that suits you.</p>
                 </div>
-                <h1 className="step-main-title">Reserve your slot</h1>
-                <p className="step-main-subtitle">Choose a space, date and time that suits you.</p>
+
+                {/* Subtle Botanical, Spectacles & Open Book Line Art Illustration */}
+                <div className="step-header-art-box" aria-hidden="true">
+                  <svg width="86" height="74" viewBox="0 0 100 85" fill="none" stroke="#7A6858" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="step-header-illustration">
+                    {/* Graceful Botanical Branch */}
+                    <path d="M70 58 C 64 38, 52 20, 36 6" strokeWidth="1.1" opacity="0.6" />
+                    <path d="M60 42 C 52 38, 52 28, 60 31 C 66 33, 65 40, 60 42 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+                    <path d="M52 29 C 43 25, 45 15, 53 18 C 58 21, 57 27, 52 29 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+                    <path d="M44 17 C 37 12, 41 4, 48 8 C 50 12, 48 16, 44 17 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+                    <path d="M36 6 C 31 1, 40 1, 39 5 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+
+                    {/* Open Book Base Thickness & Binding */}
+                    <path d="M42 74 C 54 70, 66 73, 72 78 C 78 73, 90 70, 98 74 L98 77 C 90 73, 78 76, 72 81 C 66 76, 54 73, 42 77 Z" fill="#8C7E72" fillOpacity="0.08" />
+
+                    {/* Open Book Left & Right Pages */}
+                    <path d="M42 74 C 54 70, 66 72, 72 77 L72 61 C 66 56, 54 54, 42 58 Z" fill="#FFFFFF" fillOpacity="0.5" />
+                    <path d="M98 74 C 86 70, 74 72, 72 77 L72 61 C 74 56, 86 54, 98 58 Z" fill="#FFFFFF" fillOpacity="0.5" />
+                    <path d="M72 61 L72 77" strokeWidth="1.3" />
+
+                    {/* Subtle page text lines */}
+                    <path d="M47 62 C 53 60, 61 60, 67 63" opacity="0.45" />
+                    <path d="M47 66 C 53 64, 61 64, 67 67" opacity="0.45" />
+                    <path d="M48 70 C 53 68, 60 68, 66 71" opacity="0.45" />
+                    <path d="M77 63 C 83 60, 91 60, 93 62" opacity="0.45" />
+                    <path d="M77 67 C 83 64, 91 64, 93 66" opacity="0.45" />
+                    <path d="M77 71 C 83 68, 89 68, 92 70" opacity="0.45" />
+
+                    {/* Bookmark Ribbon */}
+                    <path d="M72 77 C 71 80, 73 83, 70 85 L72 83 L74 85 C 74 82, 73 79, 72 77 Z" fill="#AC512E" fillOpacity="0.4" stroke="#AC512E" strokeWidth="0.8" />
+
+                    {/* Reading Spectacles */}
+                    <circle cx="56" cy="46" r="6.5" fill="#FFFFFF" fillOpacity="0.3" strokeWidth="1.1" />
+                    <circle cx="73" cy="46" r="6.5" fill="#FFFFFF" fillOpacity="0.3" strokeWidth="1.1" />
+                    <path d="M62.5 45 C 64.5 43.5, 66.5 43.5, 66.5 45" strokeWidth="1.1" />
+                    <path d="M49.5 46 C 45 44, 42 41, 40 42" strokeWidth="0.9" opacity="0.7" />
+                    <path d="M79.5 46 C 84 44, 87 41, 89 42" strokeWidth="0.9" opacity="0.7" />
+                  </svg>
+                </div>
               </header>
 
               {/* 1. Facility Selection */}
@@ -629,7 +619,11 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') setFacilityId('manga-corner'); }}
                   >
                     <div className="facility-pill-top">
-                      <Library className="facility-pill-icon" />
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="facility-pill-icon">
+                        <line x1="5" y1="4" x2="5" y2="20" />
+                        <line x1="9.5" y1="4" x2="9.5" y2="20" />
+                        <line x1="14" y1="4" x2="18.5" y2="20" />
+                      </svg>
                       <div className={`custom-radio-dot ${facilityId === 'manga-corner' ? 'checked' : ''}`} />
                     </div>
                     <div className="facility-pill-body">
@@ -680,41 +674,35 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     </div>
 
                     <div className="cal-weeks-list">
-                      {calendarData.weeks.map((week, wIdx) => {
-                        const hasActiveRange = week.some(c => c.isCurrentMonth && !c.disabled);
-                        const hasSelected = week.some(c => c.isSelected);
-                        const isPillRow = hasActiveRange || hasSelected;
-
-                        return (
-                          <div key={wIdx} className={`cal-week-row ${isPillRow ? 'pill-active' : ''}`}>
-                            {week.map((cell, cIdx) => {
-                              if (!cell.isCurrentMonth) {
-                                return (
-                                  <div key={`pad-${wIdx}-${cIdx}`} className="cal-day-cell pad-cell">
-                                    <span className="day-number-bubble pad-bubble">{cell.dayNumber}</span>
-                                  </div>
-                                );
-                              }
-
+                      {calendarData.weeks.map((week, wIdx) => (
+                        <div key={wIdx} className="cal-week-row">
+                          {week.map((cell, cIdx) => {
+                            if (!cell.isCurrentMonth) {
                               return (
-                                <button
-                                  key={cell.dateStr}
-                                  type="button"
-                                  disabled={cell.disabled}
-                                  onClick={() => {
-                                    setSelectedDate(cell.dateStr);
-                                    setErrors((prev) => ({ ...prev, selectedDate: null }));
-                                  }}
-                                  className={`cal-day-cell ${cell.isSelected ? 'selected' : ''} ${cell.disabled ? 'disabled' : ''} ${cell.isClosed ? 'closed' : ''}`}
-                                  aria-label={`${cell.dateStr}${cell.isSelected ? ' selected' : ''}${cell.disabled ? ' unavailable' : ''}`}
-                                >
-                                  <span className="day-number-bubble">{cell.dayNumber}</span>
-                                </button>
+                                <div key={`pad-${wIdx}-${cIdx}`} className="cal-day-cell pad-cell">
+                                  <span className="day-number-bubble pad-bubble">{cell.dayNumber}</span>
+                                </div>
                               );
-                            })}
-                          </div>
-                        );
-                      })}
+                            }
+
+                            return (
+                              <button
+                                key={cell.dateStr}
+                                type="button"
+                                disabled={cell.disabled}
+                                onClick={() => {
+                                  setSelectedDate(cell.dateStr);
+                                  setErrors((prev) => ({ ...prev, selectedDate: null }));
+                                }}
+                                className={`cal-day-cell ${cell.isSelected ? 'selected' : ''} ${cell.disabled ? 'disabled' : ''} ${cell.isClosed ? 'closed' : ''}`}
+                                aria-label={`${cell.dateStr}${cell.isSelected ? ' selected' : ''}${cell.disabled ? ' unavailable' : ''}`}
+                              >
+                                <span className="day-number-bubble">{cell.dayNumber}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
                     </div>
                   </div>
                   {errors.selectedDate && <p className="inline-error-msg">{errors.selectedDate}</p>}
@@ -761,8 +749,11 @@ export default function BookingWizard({ isModal = false, onClose }) {
                             onKeyDown={(e) => { if (!isFull && (e.key === ' ' || e.key === 'Enter')) setSessionId('morning'); }}
                           >
                             <div className="session-pill-top">
+                              <div className="session-time-group">
+                                <Clock className={`session-time-clock ${isSelected ? 'clock-active' : ''}`} />
+                                <span className="session-time-text">11:00 AM – 2:30 PM</span>
+                              </div>
                               <div className={`custom-radio-dot ${isSelected ? 'checked' : ''}`} />
-                              <span className="session-time-text">11:00 AM – 2:30 PM</span>
                             </div>
                             <div className="session-pill-bottom">
                               <span className="session-name-sub">Morning Session</span>
@@ -798,8 +789,11 @@ export default function BookingWizard({ isModal = false, onClose }) {
                             onKeyDown={(e) => { if (!isFull && (e.key === ' ' || e.key === 'Enter')) setSessionId('afternoon'); }}
                           >
                             <div className="session-pill-top">
+                              <div className="session-time-group">
+                                <Clock className={`session-time-clock ${isSelected ? 'clock-active' : ''}`} />
+                                <span className="session-time-text">3:00 PM – 6:30 PM</span>
+                              </div>
                               <div className={`custom-radio-dot ${isSelected ? 'checked' : ''}`} />
-                              <span className="session-time-text">3:00 PM – 6:30 PM</span>
                             </div>
                             <div className="session-pill-bottom">
                               <span className="session-name-sub">Afternoon Session</span>
@@ -823,7 +817,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                       onClick={handleProceedToDetails}
                     >
                       <span>Continue to details</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                     <p className="step1-cta-hint">You can review details before confirming your booking.</p>
                   </div>
@@ -836,169 +830,166 @@ export default function BookingWizard({ isModal = false, onClose }) {
               STEP 2: VISITOR DETAILS (Mockup 2: "Tell us about yourself")
               ===================================================================== */}
           {step === 2 && (
-            <div className="step-selection-layout">
-              {/* Left Sub-column: Form */}
-              <div className="selection-main-col">
-                <header className="step-intro-header">
+            <div className="step-details-layout-clean">
+              <header className="step-intro-header-art">
+                <div className="step-intro-text-col">
                   <div className="category-tag-row">
                     <span className="category-tag">YOUR DETAILS</span>
-                    <span className="category-rule" />
                   </div>
                   <h1 className="step-main-title">Tell us about yourself</h1>
                   <p className="step-main-subtitle">Please provide your details to complete your reservation.</p>
-                </header>
+                </div>
 
-                <form className="details-form-box" onSubmit={(e) => { e.preventDefault(); handleProceedToReview(); }}>
-                  {/* Full Name */}
-                  <div className="form-field-group">
-                    <label htmlFor="visitor-name" className="field-label">
-                      Full name <span className="req-asterisk">*</span>
-                    </label>
-                    <input
-                      id="visitor-name"
-                      type="text"
-                      className={`field-text-input ${errors.visitorName ? 'error' : ''}`}
-                      placeholder="Enter your full name"
-                      value={visitorName}
-                      onChange={(e) => {
-                        setVisitorName(e.target.value);
-                        if (errors.visitorName) setErrors((prev) => ({ ...prev, visitorName: null }));
-                      }}
-                      autoComplete="name"
-                    />
-                    {errors.visitorName && <p className="inline-error-msg">{errors.visitorName}</p>}
-                  </div>
+                {/* Subtle Botanical & Book Stack Line Art Illustration */}
+                <div className="step-header-art-box" aria-hidden="true">
+                  <svg width="86" height="74" viewBox="0 0 100 85" fill="none" stroke="#7A6858" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="step-header-illustration">
+                    <path d="M40 70 C 45 45, 60 25, 80 5" strokeWidth="1.1" opacity="0.6" />
+                    <path d="M52 48 C 45 42, 45 32, 54 36 C 60 38, 58 46, 52 48 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+                    <path d="M60 36 C 58 26, 66 18, 72 24 C 74 29, 68 34, 60 36 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+                    <path d="M68 25 C 70 15, 80 10, 84 17 C 85 23, 77 26, 68 25 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+                    <path d="M78 8 C 82 2, 92 2, 90 10 C 86 14, 80 12, 78 8 Z" fill="#8C7E72" fillOpacity="0.08" opacity="0.7" />
+                    
+                    <path d="M62 68 L88 64 L96 72 L70 76 Z" fill="#FFFFFF" fillOpacity="0.4" />
+                    <path d="M62 68 L62 72 L70 80 L96 76 L96 72" />
+                    <path d="M62 72 L70 80" />
+                    
+                    <path d="M64 59 L89 56 L95 63 L70 66 Z" fill="#FFFFFF" fillOpacity="0.4" />
+                    <path d="M64 59 L64 62 L70 69 L95 66 L95 63" />
+                    <path d="M64 62 L70 69" />
+                    
+                    <path d="M67 50 L91 48 L96 54 L72 56 Z" fill="#FFFFFF" fillOpacity="0.5" />
+                    <path d="M67 50 L67 53 L72 59 L96 57 L96 54" />
+                    <path d="M67 53 L72 59" />
+                    
+                    <path d="M69 51 L89 49" opacity="0.5" />
+                    <path d="M66 60 L87 57" opacity="0.5" />
+                    <path d="M64 69 L86 65" opacity="0.5" />
+                  </svg>
+                </div>
+              </header>
 
-                  {/* Email Address */}
-                  <div className="form-field-group">
-                    <label htmlFor="visitor-email" className="field-label">
-                      Email address <span className="req-asterisk">*</span>
-                    </label>
-                    <input
-                      id="visitor-email"
-                      type="email"
-                      className={`field-text-input ${errors.visitorEmail ? 'error' : ''}`}
-                      placeholder="Enter your email address"
-                      value={visitorEmail}
-                      onChange={(e) => {
-                        setVisitorEmail(e.target.value);
-                        if (errors.visitorEmail) setErrors((prev) => ({ ...prev, visitorEmail: null }));
-                      }}
-                      autoComplete="email"
-                    />
-                    <span className="field-helper-text">You will receive a confirmation email with your booking details.</span>
-                    {errors.visitorEmail && <p className="inline-error-msg">{errors.visitorEmail}</p>}
-                  </div>
-
-                  {/* Membership Number (Optional) */}
-                  <div className="form-field-group">
-                    <label htmlFor="membership-no" className="field-label">
-                      Membership number (optional)
-                    </label>
-                    <input
-                      id="membership-no"
-                      type="text"
-                      className="field-text-input"
-                      placeholder="Enter your membership number"
-                      value={membershipNo}
-                      onChange={(e) => setMembershipNo(e.target.value)}
-                    />
-                    <span className="field-helper-text">Required only if specified by the library's booking policy.</span>
-                  </div>
-
-                  {/* Agreement Checkbox */}
-                  <div className="guidelines-agreement-box">
-                    <label className="checkbox-flex-label">
-                      <input
-                        id="guidelines-agreement-checkbox"
-                        type="checkbox"
-                        checked={agreeRules}
-                        onChange={(e) => {
-                          setAgreeRules(e.target.checked);
-                          if (errors.agreeRules) setErrors((prev) => ({ ...prev, agreeRules: null }));
-                        }}
-                        className="custom-form-checkbox"
-                      />
-                      <span className="checkbox-text">
-                        I have read and agree to the library's{' '}
-                        <span className="accent-link">visit guidelines</span> and{' '}
-                        <span className="accent-link">booking terms</span>.
-                      </span>
-                    </label>
-                    {errors.agreeRules && <p className="inline-error-msg" style={{ marginTop: '0.5rem' }}>{errors.agreeRules}</p>}
-                  </div>
-
-                  {/* Navigation Actions */}
-                  <div className="form-nav-row">
-                    <button
-                      type="button"
-                      id="back-to-selection-btn"
-                      className="nav-secondary-back-btn"
-                      onClick={() => setStep(1)}
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      <span>Back to selection</span>
-                    </button>
-
-                    <button
-                      type="submit"
-                      id="review-booking-btn"
-                      className="primary-espresso-btn"
-                    >
-                      <span>Review booking</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </form>
+              {/* Information Callout Banner */}
+              <div className="details-info-callout">
+                <div className="callout-icon-wrap">
+                  <Lightbulb className="callout-bulb-icon" />
+                </div>
+                <div className="callout-text-wrap">
+                  <strong className="callout-title">A few details, a better experience</strong>
+                  <p className="callout-desc">We'll use this information to confirm your booking and keep you updated.</p>
+                </div>
               </div>
 
-              {/* Right Sub-column: Selection Summary */}
-              <aside className="selection-sidebar-col" aria-label="Current selection">
-                <div className="summary-card-box">
-                  <div className="summary-card-header">
-                    <FileText className="summary-header-icon" />
-                    <h3 className="summary-header-title">Your selection</h3>
+              <form className="details-form-box" onSubmit={(e) => { e.preventDefault(); handleProceedToReview(); }}>
+                {/* Full Name */}
+                <div className="form-field-group">
+                  <div className="field-label-row">
+                    <User className="field-label-icon" />
+                    <label htmlFor="visitor-name" className="field-label-text">
+                      FULL NAME <span className="req-asterisk">*</span>
+                    </label>
                   </div>
-
-                  <div className="summary-card-items">
-                    <div className="summary-card-item">
-                      <div className="item-icon-col">
-                        <BookOpen className="summary-item-icon" />
-                      </div>
-                      <div className="item-text-col">
-                        <span className="item-label">Facility</span>
-                        <span className="item-value">{selectedFacilityObj.name}</span>
-                        <span className="item-sub-desc">{selectedFacilityObj.description}</span>
-                      </div>
-                    </div>
-
-                    <div className="summary-card-item">
-                      <div className="item-icon-col">
-                        <Calendar className="summary-item-icon" />
-                      </div>
-                      <div className="item-text-col">
-                        <span className="item-label">Date</span>
-                        <span className="item-value">{formatShortDate(selectedDate)}</span>
-                      </div>
-                    </div>
-
-                    <div className="summary-card-item">
-                      <div className="item-icon-col">
-                        <Clock className="summary-item-icon" />
-                      </div>
-                      <div className="item-text-col">
-                        <span className="item-label">Time slot</span>
-                        <span className="item-value">
-                          {sessionId === 'morning' ? '11:00 AM – 2:30 PM' : '3:00 PM – 6:30 PM'}
-                        </span>
-                        <span className="item-sub-desc">
-                          {sessionId === 'morning' ? 'Morning Session' : 'Afternoon Session'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <input
+                    id="visitor-name"
+                    type="text"
+                    className={`field-text-input ${errors.visitorName ? 'error' : ''}`}
+                    placeholder="Enter your full name"
+                    value={visitorName}
+                    onChange={(e) => {
+                      setVisitorName(e.target.value);
+                      if (errors.visitorName) setErrors((prev) => ({ ...prev, visitorName: null }));
+                    }}
+                    autoComplete="name"
+                  />
+                  {errors.visitorName && <p className="inline-error-msg">{errors.visitorName}</p>}
                 </div>
-              </aside>
+
+                {/* Email Address */}
+                <div className="form-field-group">
+                  <div className="field-label-row">
+                    <Mail className="field-label-icon" />
+                    <label htmlFor="visitor-email" className="field-label-text">
+                      EMAIL ADDRESS <span className="req-asterisk">*</span>
+                    </label>
+                  </div>
+                  <input
+                    id="visitor-email"
+                    type="email"
+                    className={`field-text-input ${errors.visitorEmail ? 'error' : ''}`}
+                    placeholder="Enter your email address"
+                    value={visitorEmail}
+                    onChange={(e) => {
+                      setVisitorEmail(e.target.value);
+                      if (errors.visitorEmail) setErrors((prev) => ({ ...prev, visitorEmail: null }));
+                    }}
+                    autoComplete="email"
+                  />
+                  <span className="field-helper-text">You will receive a confirmation email with your booking details.</span>
+                  {errors.visitorEmail && <p className="inline-error-msg">{errors.visitorEmail}</p>}
+                </div>
+
+                {/* Membership Number (Optional) */}
+                <div className="form-field-group">
+                  <div className="field-label-row">
+                    <CreditCard className="field-label-icon" />
+                    <label htmlFor="membership-no" className="field-label-text">
+                      MEMBERSHIP NUMBER (OPTIONAL)
+                    </label>
+                  </div>
+                  <input
+                    id="membership-no"
+                    type="text"
+                    className="field-text-input"
+                    placeholder="Enter your membership number"
+                    value={membershipNo}
+                    onChange={(e) => setMembershipNo(e.target.value)}
+                  />
+                  <span className="field-helper-text">Required only if specified by the library's booking policy.</span>
+                </div>
+
+                {/* Agreement Checkbox */}
+                <div className="guidelines-agreement-box">
+                  <label className="checkbox-flex-label">
+                    <input
+                      id="guidelines-agreement-checkbox"
+                      type="checkbox"
+                      checked={agreeRules}
+                      onChange={(e) => {
+                        setAgreeRules(e.target.checked);
+                        if (errors.agreeRules) setErrors((prev) => ({ ...prev, agreeRules: null }));
+                      }}
+                      className="custom-form-checkbox"
+                    />
+                    <span className="checkbox-text">
+                      I have read and agree to the library's{' '}
+                      <span className="accent-link">visit guidelines</span> and{' '}
+                      <span className="accent-link">booking terms</span>.
+                    </span>
+                  </label>
+                  {errors.agreeRules && <p className="inline-error-msg" style={{ marginTop: '0.2rem' }}>{errors.agreeRules}</p>}
+                </div>
+
+                {/* Navigation Actions */}
+                <div className="form-nav-row">
+                  <button
+                    type="button"
+                    id="back-to-selection-btn"
+                    className="nav-secondary-back-btn"
+                    onClick={() => setStep(1)}
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Back to selection</span>
+                  </button>
+
+                  <button
+                    type="submit"
+                    id="review-booking-btn"
+                    className="primary-espresso-btn"
+                  >
+                    <span>Review booking</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </form>
             </div>
           )}
 
@@ -1134,28 +1125,25 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <span>Back to details</span>
                 </button>
 
-                <div className="submit-action-wrap">
-                  <button
-                    type="button"
-                    id="confirm-reservation-btn"
-                    className="primary-espresso-btn confirm-btn"
-                    onClick={handleConfirmReservation}
-                    disabled={submitting}
-                  >
-                    {submitting ? (
-                      <>
-                        <div className="mini-spinner-light" />
-                        <span>Reserving slot...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Confirm reservation</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                  <span className="submit-fineprint">Your slot will be reserved only after successful confirmation.</span>
-                </div>
+                <button
+                  type="button"
+                  id="confirm-reservation-btn"
+                  className="primary-espresso-btn confirm-btn"
+                  onClick={handleConfirmReservation}
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <>
+                      <div className="mini-spinner-light" />
+                      <span>Reserving slot...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Confirm reservation</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           )}

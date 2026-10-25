@@ -53,9 +53,35 @@ export async function getDb() {
   if (!dbInstance) {
     if (!fs.existsSync(config.databaseDir)) {
       fs.mkdirSync(config.databaseDir, { recursive: true });
+    } else {
+      // Remove stale lock/pid file if node was abruptly terminated
+      const pidPath = path.join(config.databaseDir, 'postmaster.pid');
+      if (fs.existsSync(pidPath)) {
+        try {
+          fs.unlinkSync(pidPath);
+        } catch (_) {}
+      }
     }
-    dbInstance = new PGlite(config.databaseDir);
-    await dbInstance.waitReady;
+
+    try {
+      dbInstance = new PGlite(config.databaseDir);
+      await dbInstance.waitReady;
+    } catch (initErr) {
+      console.error('PGlite initialization failed, resetting database directory to recover:', initErr);
+      try {
+        if (dbInstance) {
+          try { await dbInstance.close(); } catch (_) {}
+          dbInstance = null;
+        }
+        fs.rmSync(config.databaseDir, { recursive: true, force: true });
+        fs.mkdirSync(config.databaseDir, { recursive: true });
+        dbInstance = new PGlite(config.databaseDir);
+        await dbInstance.waitReady;
+      } catch (recoveryErr) {
+        console.error('Fatal: PGlite database recovery failed:', recoveryErr);
+        throw recoveryErr;
+      }
+    }
   }
 
   return {

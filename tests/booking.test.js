@@ -1,10 +1,27 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { query } from '../server/db/connection.js';
+import { query, getDb } from '../server/db/connection.js';
 import { createReservation, getFacilityAvailability, getBookingByRef, cancelReservation } from '../server/services/bookingService.js';
 import { processCheckin } from '../server/services/checkinService.js';
+import { startServer } from '../server/index.js';
 
 test('Library Booking and Check-in System - Full Specification Test Suite', async (t) => {
+  let serverInstance = null;
+  try {
+    const health = await fetch('http://localhost:3001/api/health').catch(() => null);
+    if (!health || !health.ok) {
+      const init = await startServer();
+      serverInstance = init?.server;
+    }
+  } catch (_) {}
+
+  t.after(async () => {
+    if (serverInstance) {
+      await new Promise((resolve) => serverInstance.close(resolve));
+    }
+    const db = await getDb();
+    await db.close();
+  });
   // Setup: Find a valid upcoming open date (e.g. Wednesday or Thursday within advance window)
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const now = new Date();

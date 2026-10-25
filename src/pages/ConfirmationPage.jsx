@@ -3,7 +3,7 @@ import { useParams, useSearchParams, useLocation, Link, useNavigate } from 'reac
 import { 
   CheckCircle2, Calendar, Clock, MapPin, QrCode, 
   Printer, ArrowLeft, XCircle, AlertCircle, ShieldAlert,
-  BookOpen, User, Check, Info, CalendarPlus, FileText, ArrowRight, Home
+  BookOpen, User, Check, Info, CalendarPlus, FileText, ArrowRight, X, Trash2
 } from 'lucide-react';
 
 /**
@@ -20,6 +20,24 @@ function formatFullDate(dateStr) {
     year: 'numeric',
     timeZone: 'UTC',
   });
+}
+
+/**
+ * 12-hour AM/PM session time slot formatting: "11:00 AM – 2:30 PM"
+ */
+function formatTimeSlot(startTime, endTime) {
+  const formatSingle = (t) => {
+    if (!t) return '';
+    if (t.includes('AM') || t.includes('PM')) return t;
+    const parts = t.split(':');
+    let h = parseInt(parts[0], 10);
+    const m = parts[1] || '00';
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return `${h}:${m} ${ampm}`;
+  };
+  if (!startTime) return '11:00 AM – 2:30 PM';
+  return `${formatSingle(startTime)} – ${formatSingle(endTime)}`;
 }
 
 export default function ConfirmationPage() {
@@ -52,11 +70,13 @@ export default function ConfirmationPage() {
 
       try {
         const res = await fetch(`/api/bookings/${bookingRef}?token=${token}`);
+        let data = null;
+        try {
+          data = await res.json();
+        } catch (_) {}
         if (!res.ok) {
-          const errData = await res.json();
-          throw new Error(errData.error || 'Failed to retrieve booking.');
+          throw new Error(data?.error || `Failed to retrieve booking (status ${res.status}).`);
         }
-        const data = await res.json();
         setBooking(data);
       } catch (err) {
         setError(err.message);
@@ -82,9 +102,12 @@ export default function ConfirmationPage() {
         }),
       });
 
-      const data = await res.json();
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (_) {}
       if (!res.ok) {
-        throw new Error(data.error || 'Cancellation request rejected.');
+        throw new Error(data?.error || `Cancellation request rejected (status ${res.status}).`);
       }
 
       setBooking((prev) => ({
@@ -239,35 +262,15 @@ END:VCALENDAR`;
             RIGHT COLUMN: Confirmation & Visit Pass
             ========================================================================= */}
         <section className="booking-interactive-panel" aria-live="polite">
-          {/* Top 4-Step Progress Track (All Completed) */}
-          <div className="booking-progress-header" aria-label="Booking steps">
-            <div className="progress-track">
-              <div className="progress-node completed">
-                <div className="node-circle"><Check className="w-3.5 h-3.5 text-white stroke-[2.5]" /></div>
-                <span className="node-label">Select space</span>
-              </div>
-              <div className="progress-line filled" />
-
-              <div className="progress-node completed">
-                <div className="node-circle"><Check className="w-3.5 h-3.5 text-white stroke-[2.5]" /></div>
-                <span className="node-label">Your details</span>
-              </div>
-              <div className="progress-line filled" />
-
-              <div className="progress-node completed">
-                <div className="node-circle"><Check className="w-3.5 h-3.5 text-white stroke-[2.5]" /></div>
-                <span className="node-label">Review</span>
-              </div>
-              <div className="progress-line filled" />
-
-              <div className={`progress-node ${isCancelled ? 'cancelled-node' : 'completed'}`}>
-                <div className="node-circle">
-                  {isCancelled ? <XCircle className="w-4 h-4 text-white" /> : <Check className="w-3.5 h-3.5 text-white stroke-[2.5]" />}
-                </div>
-                <span className="node-label">{isCancelled ? 'Cancelled' : 'Confirmation'}</span>
-              </div>
-            </div>
-          </div>
+          <button
+            type="button"
+            className="booking-modal-close-btn"
+            onClick={() => navigate('/')}
+            aria-label="Close"
+            title="Close"
+          >
+            <X className="w-4 h-4 stroke-[2.25]" />
+          </button>
 
           <div className="confirmation-content-box">
             <header className="step-intro-header">
@@ -275,7 +278,6 @@ END:VCALENDAR`;
                 <span className="category-tag">
                   {isCancelled ? 'RESERVATION CANCELLED' : isCheckedIn ? 'CHECKED IN & VERIFIED' : 'BOOKING CONFIRMED'}
                 </span>
-                <span className="category-rule" />
               </div>
               <h1 className="step-main-title">
                 {isCancelled ? 'Reservation Cancelled' : isCheckedIn ? 'Checked In & Verified' : 'Your visit is confirmed!'}
@@ -289,7 +291,7 @@ END:VCALENDAR`;
               </p>
             </header>
 
-            {/* Visit Pass Box (Matching Mockup 3 Right) */}
+            {/* Visit Pass Box */}
             <div className={`visit-pass-card ${isCancelled ? 'cancelled' : ''}`}>
               {/* Left Sub-panel: QR Code and Reference */}
               <div className="pass-qr-col">
@@ -299,12 +301,12 @@ END:VCALENDAR`;
                       src={booking.qrCodeDataUrl}
                       alt={`QR code for reference ${booking.bookingRef}`}
                       className={`pass-qr-image ${isCancelled ? 'grayscale opacity-40' : ''}`}
-                      width={100}
-                      height={100}
+                      width={80}
+                      height={80}
                     />
                   ) : (
                     <div className="qr-fallback-box">
-                      <QrCode className="w-16 h-16 text-stone-400" />
+                      <QrCode className="w-14 h-14 text-stone-400" />
                     </div>
                   )}
                 </div>
@@ -312,11 +314,11 @@ END:VCALENDAR`;
                   <span className="ref-code-text">{booking.bookingRef}</span>
                 </div>
                 <span className="pass-scan-caption">
-                  {isCancelled ? 'Credential revoked upon cancellation' : 'Show this QR code at the library for check-in.'}
+                  {isCancelled ? 'Revoked upon cancellation' : 'Show this QR code at reception for check-in.'}
                 </span>
               </div>
 
-              {/* Right Sub-panel: Metadata List */}
+              {/* Right Sub-panel: Metadata 2x2 Grid */}
               <div className="pass-details-col">
                 <div className="pass-detail-item">
                   <div className="pass-icon-wrap"><BookOpen className="w-4 h-4" /></div>
@@ -337,10 +339,10 @@ END:VCALENDAR`;
                 <div className="pass-detail-item">
                   <div className="pass-icon-wrap"><Clock className="w-4 h-4" /></div>
                   <div className="pass-text-wrap">
-                    <span className="pass-label">Time</span>
+                    <span className="pass-label">Time Slot</span>
                     <span className="pass-val">
-                      <strong>{booking.sessionStartTime || '11:00 AM'} – {booking.sessionEndTime || '2:30 PM'}</strong>
-                      <span className="pass-sub">{booking.sessionName || 'Reading Session'}</span>
+                      <strong>{formatTimeSlot(booking.sessionStartTime, booking.sessionEndTime)}</strong>
+                      <span className="pass-sub">{booking.sessionName || 'Morning Session'}</span>
                     </span>
                   </div>
                 </div>
@@ -360,18 +362,17 @@ END:VCALENDAR`;
 
             {/* Important Information Box */}
             <div className="important-info-box">
-              <div className="info-header">
-                <Info className="w-4 h-4 text-stone-600 shrink-0" />
-                <h3 className="info-title">Important information</h3>
+              <div className="info-icon-circle">
+                <Info className="w-4 h-4 stroke-[2]" />
               </div>
-              <ul className="info-bullets-list">
-                <li>Please arrive a few minutes early for a smooth check-in at the circulation desk.</li>
-                <li>Bring your photo identification or membership card if required by library policy.</li>
-                <li>If you need to cancel or reschedule, use the cancellation button below before the session cutoff.</li>
-              </ul>
+              <div className="info-vertical-divider" />
+              <div className="info-text-col">
+                <h3 className="info-title">Visitor guidelines</h3>
+                <p className="info-guide-line">Please arrive 5–10 minutes early with this digital QR pass or booking reference.</p>
+                <p className="info-guide-line">Bring your photo identification or membership card if requested by library staff.</p>
+              </div>
             </div>
 
-            {/* Bottom Actions Row */}
             {/* Bottom Actions Wrap */}
             <div className="confirmation-actions-wrap">
               <div className="actions-utility-row">
@@ -404,30 +405,21 @@ END:VCALENDAR`;
                     className="action-btn-cancel"
                     onClick={() => setShowCancelModal(true)}
                   >
-                    Cancel reservation
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Cancel reservation</span>
                   </button>
                 )}
               </div>
 
-              {/* Primary Navigation Row: Home button beside My Reservations button */}
+              {/* Full Width Primary Navigation Row (Home button removed as requested) */}
               <div className="actions-nav-row">
-                <Link
-                  to="/"
-                  id="return-home-btn"
-                  className="nav-secondary-back-btn home-nav-btn"
-                  title="Return to Library Home"
-                >
-                  <Home className="w-4 h-4" />
-                  <span>Home</span>
-                </Link>
-
                 <Link
                   to="/my-booking"
                   id="my-bookings-btn"
-                  className="primary-espresso-btn my-reservations-btn"
-                  title="View My Reservations"
+                  className="primary-espresso-btn full-width-reservations-btn"
+                  title="Go to My Reservations"
                 >
-                  <span>My Reservations</span>
+                  <span>Go to My Reservations</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>

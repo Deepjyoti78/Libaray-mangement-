@@ -4,9 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "start": "concurrently -n \"server,client\" -c \"blue,green\" \"node server/index.js\" \"vite\"",
+    "dev": "concurrently -n \"server,client\" -c \"blue,green\" \"node server/index.js\" \"vite\"",
+    "client": "vite",
     "server": "node server/index.js",
+    "db:migrate": "node server/db/migrate.js",
     "migrate": "node server/db/migrate.js",
+    "db:seed": "node server/db/seed.js",
     "seed": "node server/db/seed.js",
     "test": "node --test-concurrency=1 --test tests/booking.test.js",
     "build": "vite build",
@@ -34,6 +38,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
     "oxlint": "^1.88.0",
     "pg": "^8.23.1",
     "vite": "^8.3.4"

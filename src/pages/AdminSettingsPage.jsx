@@ -92,8 +92,11 @@ export default function AdminSettingsPage() {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save settings');
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (_) {}
+      if (!res.ok) throw new Error(data?.error || `Failed to save settings (status ${res.status})`);
 
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 4000);
@@ -123,9 +126,12 @@ export default function AdminSettingsPage() {
         }),
       });
 
+      let errData = null;
+      try {
+        errData = await res.json();
+      } catch (_) {}
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || 'Failed to add closure date');
+        throw new Error(errData?.error || `Failed to add closure date (status ${res.status})`);
       }
 
       setNewClosureDate('');

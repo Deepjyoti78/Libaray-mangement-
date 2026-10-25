@@ -109,9 +109,12 @@ export default function AdminCheckinPage() {
         body: JSON.stringify({ payload }),
       });
 
-      const data = await res.json();
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (_) {}
       if (!res.ok) {
-        throw new Error(data.error || 'Check-in validation failed.');
+        throw new Error(data?.error || `Check-in validation failed (status ${res.status}).`);
       }
 
       setResult(data);

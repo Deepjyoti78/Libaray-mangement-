@@ -4,7 +4,7 @@
 
 # MCP & Test Artifacts
 .playwright-mcp
-/*.png
+*.png
 
 # Logs
 logs
@@ -19,6 +19,7 @@ node_modules
 dist
 dist-ssr
 *.local
+data/
 
 # Editor directories and files
 .vscode/*
@@ -30,4 +31,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-

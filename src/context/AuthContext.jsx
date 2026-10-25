@@ -36,9 +36,12 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json();
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (_) {}
     if (!res.ok) {
-      throw new Error(data.error || 'Authentication failed');
+      throw new Error(data?.error || `Authentication failed (status ${res.status})`);
     }
 
     setUser(data.user);
