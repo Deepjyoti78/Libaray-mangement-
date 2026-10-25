@@ -285,30 +285,24 @@ export default function AdminDashboard() {
           icon={BookOpen}
           label="TOTAL BOOKS"
           value={analyticsData.kpi.totalBooks}
-          trend="+0.94 last month"
           sparklineData={[10, 16, 12, 22, 18, 25, 20, 29]}
         />
         <KpiCard
           icon={ShoppingCart}
           label="TOTAL LOANS"
           value={analyticsData.kpi.totalLoans}
-          subtext="Loans issued"
-          trend="+0.94 last month"
           sparklineData={[8, 14, 18, 15, 20, 24, 28, 30]}
         />
         <KpiCard
           icon={Users}
           label="ACTIVE MEMBERS"
           value={analyticsData.kpi.activeMembers}
-          subtext="New members"
-          trend="+0.94 last month"
           sparklineData={[12, 10, 18, 16, 22, 21, 26, 28]}
         />
         <KpiCard
           icon={AlertCircle}
           label="OVERDUE ITEMS"
           value={analyticsData.kpi.overdueItems}
-          trend="+0.94 last month"
           sparklineData={[14, 20, 16, 24, 19, 28, 22, 31]}
         />
       </section>

@@ -3,14 +3,12 @@ import React from 'react';
 /**
  * KpiCard
  * Four equal-width cards in a single row with monochrome outline icons,
- * large bold numerical values, miniature vertical-bar sparklines, and trend footers.
+ * numerical values, and miniature vertical-bar sparklines.
  */
 export default function KpiCard({
   icon: Icon,
   label,
   value,
-  subtext,
-  trend = '+0.94 last month',
   sparklineData = [8, 14, 18, 12, 22, 26, 20, 28],
 }) {
   const maxVal = Math.max(...sparklineData, 30);
@@ -19,15 +17,16 @@ export default function KpiCard({
     <div className="kpi-metric-card">
       <div className="kpi-card-top">
         <div className="kpi-icon-wrap">
-          <Icon size={18} strokeWidth={1.8} className="kpi-icon" />
+          <Icon size={16} strokeWidth={1.8} className="kpi-icon" />
         </div>
 
         <div className="kpi-content">
           <span className="kpi-label">{label}</span>
           <div className="kpi-value-row">
-            <span className="kpi-value">{typeof value === 'number' ? value.toLocaleString() : value}</span>
+            <span className="kpi-value">
+              {typeof value === 'number' ? value.toLocaleString() : value}
+            </span>
           </div>
-          {subtext && <span className="kpi-subtext">{subtext}</span>}
         </div>
 
         {/* Miniature vertical-bar sparkline graphic */}
@@ -44,13 +43,6 @@ export default function KpiCard({
             );
           })}
         </div>
-      </div>
-
-      <div className="kpi-footer">
-        <span className="kpi-info-icon" title="Compared to previous monthly cycle">ⓘ</span>
-        <span className="kpi-trend">
-          <span className="trend-arrow">⌃</span> {trend}
-        </span>
       </div>
     </div>
   );
