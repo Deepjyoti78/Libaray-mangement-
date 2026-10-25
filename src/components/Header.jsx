@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Calendar, Menu, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, Menu, X, Ticket } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Home', href: '#home' },
@@ -8,11 +8,13 @@ const NAV_LINKS = [
   { label: 'Reading Room', href: '#reading-room' },
   { label: 'Manga Corner', href: '#manga-corner' },
   { label: 'Visit Guide', href: '#visit' },
+  { label: 'My Pass', href: '/my-booking' },
   { label: 'Contact', href: '#contact' },
 ];
 
 export default function Header({ onBookSlot }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleNavClick = (e, href) => {
     if (href.startsWith('#')) {
@@ -21,6 +23,9 @@ export default function Header({ onBookSlot }) {
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
       }
+    } else {
+      e.preventDefault();
+      navigate(href);
     }
     setMobileOpen(false);
   };
@@ -126,6 +131,17 @@ export default function Header({ onBookSlot }) {
             >
               <Calendar className="btn-icon" />
               <span>Book a Slot</span>
+            </button>
+            <button
+              type="button"
+              className="header-book-btn full-width mobile-pass-btn"
+              onClick={() => {
+                navigate('/my-booking');
+                setMobileOpen(false);
+              }}
+            >
+              <Ticket className="btn-icon" />
+              <span>Find My Pass</span>
             </button>
           </div>
         </div>

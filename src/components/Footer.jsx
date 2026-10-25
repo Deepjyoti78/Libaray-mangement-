@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const NAV_LINKS = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
@@ -5,7 +7,9 @@ const NAV_LINKS = [
   { label: 'Manga Corner', href: '#manga-corner' },
   { label: 'Visit Guide', href: '#visit' },
   { label: 'Collections', href: '#collections' },
+  { label: 'My Pass', href: '/my-booking' },
   { label: 'Contact', href: '#contact' },
+  { label: 'Staff Login', href: '/admin/login' },
 ];
 
 export default function Footer() {
@@ -41,13 +45,19 @@ export default function Footer() {
             <ul className="footer-links-list">
               {NAV_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a
-                    className="footer-nav-link"
-                    href={link.href}
-                    onClick={(e) => handleScroll(e, link.href)}
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith('#') ? (
+                    <a
+                      className="footer-nav-link"
+                      href={link.href}
+                      onClick={(e) => handleScroll(e, link.href)}
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link className="footer-nav-link" to={link.href}>
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
