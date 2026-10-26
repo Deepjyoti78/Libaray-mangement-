@@ -4794,3 +4794,346 @@
   transform: translateY(-1px) !important;
   box-shadow: 0 3px 8px rgba(5, 150, 105, 0.15) !important;
 }
+
+/* ==========================================================================
+   Admin Settings & Policy Configuration Polish
+   ========================================================================== */
+
+.admin-settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-toast-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  animation: themeDropdownFade 0.2s ease-out;
+}
+
+.toast-icon-green {
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.settings-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .settings-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.settings-card-box {
+  background-color: #FFFFFF;
+  border: 1px solid var(--mono-border);
+  border-radius: var(--mono-radius);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.settings-box-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.box-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.box-badge-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--mono-text-muted);
+  text-transform: uppercase;
+}
+
+.box-header-icon {
+  color: var(--mono-text-secondary);
+}
+
+.box-main-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.box-description {
+  font-size: 12.5px;
+  color: var(--mono-text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Capacities table & input wrap */
+.settings-cap-table td {
+  padding: 12px 14px;
+}
+
+.cap-facility-name strong {
+  font-size: 13px;
+  color: #111111;
+}
+
+.session-slot-pill {
+  font-size: 11.5px;
+  color: var(--mono-text-secondary);
+  display: inline-flex;
+  align-items: center;
+}
+
+.capacity-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #FAFAFA;
+  border: 1px solid var(--mono-border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  transition: all 0.15s ease;
+}
+
+.capacity-input-wrap:focus-within {
+  border-color: #111111;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.06);
+}
+
+.cap-number-input {
+  width: 48px;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--mono-font);
+  font-size: 13.5px;
+  font-weight: 700;
+  text-align: right;
+  color: #111111;
+  padding: 2px 0;
+}
+
+.cap-unit-label {
+  font-size: 11px;
+  color: var(--mono-text-muted);
+  user-select: none;
+}
+
+/* Policy form fields */
+.settings-policy-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.policy-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  background-color: #FAFAFA;
+  border: 1px solid var(--mono-border-subtle);
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.policy-field-row:hover {
+  background-color: #F8F8F8;
+  border-color: var(--mono-border);
+}
+
+.field-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.field-desc {
+  font-size: 11.5px;
+  color: var(--mono-text-muted);
+  line-height: 1.35;
+}
+
+.field-control-col {
+  flex-shrink: 0;
+}
+
+/* Weekday Schedule Grid */
+.weekday-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.weekday-schedule-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--mono-border);
+  background-color: #FFFFFF;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.weekday-schedule-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.weekday-schedule-card.active-open {
+  border-color: #111111;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 1px #111111;
+}
+
+.weekday-schedule-card.inactive-closed {
+  background-color: #FAFAFA;
+  border-color: #E5E5E5;
+  opacity: 0.7;
+}
+
+.day-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.day-full-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.day-status-icon.open {
+  color: #059669;
+}
+
+.day-status-icon.closed {
+  color: #9CA3AF;
+}
+
+.day-schedule-badge {
+  font-size: 10px;
+  color: var(--mono-text-muted);
+  font-family: var(--mono-font);
+}
+
+/* Holiday closures */
+.closure-add-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.closure-date-field {
+  padding: 7px 10px;
+  border: 1px solid var(--mono-border);
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: #111111;
+  background-color: #FFFFFF;
+  outline: none;
+}
+
+.closure-date-field:focus {
+  border-color: #111111;
+}
+
+.closure-reason-field {
+  flex: 1;
+  min-width: 200px;
+  padding: 7px 12px;
+  border: 1px solid var(--mono-border);
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: #111111;
+  background-color: #FFFFFF;
+  outline: none;
+}
+
+.closure-reason-field:focus {
+  border-color: #111111;
+}
+
+.closures-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.closure-record-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: #FAFAFA;
+  border: 1px solid var(--mono-border-subtle);
+}
+
+.closure-info-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.closure-date-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #111111;
+  background-color: #FFFFFF;
+  border: 1px solid var(--mono-border);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.closure-reason-text {
+  font-size: 12px;
+  color: var(--mono-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.closures-empty-note {
+  font-size: 12px;
+  color: var(--mono-text-muted);
+  padding: 10px 0;
+}
+
