@@ -2609,12 +2609,13 @@ ul, ol {
 }
 
 .modal-card {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  padding: 2rem;
-  max-width: 480px;
+  background-color: #FAF8F5;
+  border: 1px solid #EDE4D8;
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 440px;
   width: 100%;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
 }
 
 .modal-title {
@@ -6376,7 +6377,454 @@ ul, ol {
   .booking-interactive-panel {
     padding: 1.15rem 0.85rem 1.75rem 0.85rem !important;
   }
-
-
 }
+
+/* ==========================================================================
+   CONFIRMATION PASS RESPONSIVE SYSTEM
+   Desktop (> 768px): preserves 100% original 2-column layout
+   Mobile (<= 768px): pixel-perfect match to user target screenshot
+   ========================================================================== */
+
+/* 1. Desktop Visibility & Container */
+.confirmation-mobile-view {
+  display: none;
+}
+
+.confirmation-desktop-view {
+  display: contents;
+}
+
+/* 2. Mobile Responsive Presentation */
+@media (max-width: 768px) {
+  .confirmation-desktop-view {
+    display: none !important;
+  }
+
+  .confirmation-mobile-view {
+    display: block !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+  }
+
+  /* Page root container on mobile: dark olive backdrop */
+  .new-booking-page.confirmation-page-root {
+    background: #252D21 !important;
+    min-height: 100dvh !important;
+    padding: 1rem 0.75rem 2rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Mobile Sheet Card */
+  .confirmation-mobile-card {
+    background: #FAF8F5 !important;
+    border-radius: 28px !important;
+    padding: 14px 16px 20px 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  /* Top Drag Handle */
+  .confirmation-mobile-drag-handle {
+    width: 44px !important;
+    height: 4.5px !important;
+    background: #D8CEBE !important;
+    border-radius: 9999px !important;
+    margin: 0 auto 10px !important;
+  }
+
+  /* Top Header Text */
+  .confirmation-mobile-header-text {
+    font-size: 0.62rem !important;
+    font-weight: 600 !important;
+    color: #8C7E72 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    margin-bottom: 1.15rem !important;
+    padding: 0 32px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Circular Close Button */
+  .confirmation-mobile-close-circle {
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: #EDE5D8 !important;
+    border: none !important;
+    color: #241812 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    transition: background 0.15s ease, transform 0.1s ease !important;
+    z-index: 2 !important;
+  }
+
+  .confirmation-mobile-close-circle:active {
+    transform: scale(0.92) !important;
+  }
+
+  /* Title Block */
+  .confirmation-mobile-title-block {
+    margin-bottom: 1rem !important;
+  }
+
+  .confirmation-mobile-tag {
+    color: #B8532F !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    display: inline-block !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .confirmation-mobile-tag.cancelled {
+    color: #C44026 !important;
+  }
+
+  .confirmation-mobile-tag.checked-in {
+    color: #2D6A4F !important;
+  }
+
+  .confirmation-mobile-title {
+    font-family: var(--font-serif) !important;
+    font-size: 1.85rem !important;
+    font-weight: 500 !important;
+    line-height: 1.15 !important;
+    color: #20140E !important;
+    margin: 0 0 0.35rem 0 !important;
+  }
+
+  .confirmation-mobile-subtitle {
+    font-size: 0.8125rem !important;
+    color: #73655A !important;
+    margin: 0 !important;
+    line-height: 1.35 !important;
+  }
+
+  /* SECTION 1: QR & Booking Code Card */
+  .confirmation-mobile-qr-card {
+    background: #FFFFFF !important;
+    border: 1px solid #EDE4D8 !important;
+    border-radius: 16px !important;
+    padding: 12px 14px !important;
+    margin-bottom: 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    box-shadow: 0 1px 3px rgba(36, 24, 18, 0.03) !important;
+  }
+
+  .confirmation-mobile-qr-frame {
+    width: 92px !important;
+    height: 92px !important;
+    border: 1px solid #EDE4D8 !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+    background: #FFFFFF !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .confirmation-mobile-qr-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+  }
+
+  .confirmation-mobile-qr-divider {
+    width: 1px !important;
+    height: 76px !important;
+    background: #EDE4D8 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .confirmation-mobile-code-col {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .confirmation-mobile-code-label {
+    font-size: 0.6875rem !important;
+    font-weight: 600 !important;
+    color: #8C7E72 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    margin-bottom: 0.35rem !important;
+    display: block !important;
+  }
+
+  .confirmation-mobile-code-pill {
+    background: #F8EFEA !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 6px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .confirmation-mobile-code-pill:hover,
+  .confirmation-mobile-code-pill:active {
+    background: #F2E4DB !important;
+  }
+
+  .confirmation-mobile-code-val {
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+    letter-spacing: 0.04em !important;
+    white-space: nowrap !important;
+  }
+
+  .confirmation-mobile-copy-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .confirmation-mobile-scan-note {
+    font-size: 0.72rem !important;
+    color: #8C7E72 !important;
+    line-height: 1.25 !important;
+    margin-top: 0.45rem !important;
+    display: block !important;
+  }
+
+  /* SECTION 2: Visit Details 2x2 Grid Card */
+  .confirmation-mobile-details-card {
+    background: #FFFFFF !important;
+    border: 1px solid #EDE4D8 !important;
+    border-radius: 16px !important;
+    padding: 12px 14px !important;
+    margin-bottom: 0.75rem !important;
+    box-shadow: 0 1px 3px rgba(36, 24, 18, 0.03) !important;
+  }
+
+  .confirmation-mobile-details-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  .confirmation-mobile-row-divider {
+    height: 1px !important;
+    background: #EDE4D8 !important;
+    margin: 10px 0 !important;
+  }
+
+  .confirmation-mobile-detail-cell {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+  }
+
+  .confirmation-mobile-detail-cell.with-divider {
+    border-left: 1px solid #EDE4D8 !important;
+    padding-left: 12px !important;
+  }
+
+  .confirmation-mobile-detail-badge {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: #FAF0E8 !important;
+    color: #B8532F !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .confirmation-mobile-detail-text {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+  }
+
+  .confirmation-mobile-detail-label {
+    font-size: 0.625rem !important;
+    font-weight: 600 !important;
+    color: #8C7E72 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    line-height: 1 !important;
+    margin-bottom: 0.25rem !important;
+    display: block !important;
+  }
+
+  .confirmation-mobile-detail-val {
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+    line-height: 1.25 !important;
+    display: block !important;
+  }
+
+  .confirmation-mobile-detail-sub {
+    font-size: 0.7rem !important;
+    color: #73655A !important;
+    line-height: 1.25 !important;
+    margin-top: 0.2rem !important;
+    display: block !important;
+  }
+
+  /* SECTION 3: Visitor Guidelines Box */
+  .confirmation-mobile-guide-card {
+    background: #FEF6F0 !important;
+    border: 1px solid #F9DFCD !important;
+    border-radius: 16px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 0.85rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .confirmation-mobile-guide-icon-circle {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    border: 1.5px solid #B8532F !important;
+    color: #B8532F !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .confirmation-mobile-guide-divider {
+    width: 1px !important;
+    height: 38px !important;
+    background: #F2D5BD !important;
+    flex-shrink: 0 !important;
+  }
+
+  .confirmation-mobile-guide-text {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .confirmation-mobile-guide-title {
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+    margin-bottom: 0.15rem !important;
+    display: block !important;
+  }
+
+  .confirmation-mobile-guide-p {
+    font-size: 0.72rem !important;
+    color: #73655A !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+  }
+
+  /* SECTION 4: Actions (3 rows) */
+  .confirmation-mobile-actions-zone {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .confirmation-mobile-actions-row-1 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .confirmation-mobile-btn-outline {
+    background: #FFFFFF !important;
+    border: 1px solid #EDE4D8 !important;
+    border-radius: 12px !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.8125rem !important;
+    color: #20140E !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease, border-color 0.15s ease !important;
+  }
+
+  .confirmation-mobile-btn-outline:active {
+    background: #F8F3ED !important;
+  }
+
+  .confirmation-mobile-btn-cancel {
+    background: #FEF4F2 !important;
+    border: 1px solid #F9D0C8 !important;
+    border-radius: 12px !important;
+    height: 44px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.8125rem !important;
+    color: #C44026 !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease !important;
+  }
+
+  .confirmation-mobile-btn-cancel:active {
+    background: #FEE7E4 !important;
+  }
+
+  .confirmation-mobile-btn-primary {
+    background: #251B14 !important;
+    color: #FFFFFF !important;
+    border-radius: 12px !important;
+    height: 48px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease !important;
+    box-sizing: border-box !important;
+  }
+
+  .confirmation-mobile-btn-primary:active {
+    background: #3B2A20 !important;
+  }
+}
+
 

@@ -3,7 +3,7 @@ import { useParams, useSearchParams, useLocation, Link, useNavigate } from 'reac
 import { 
   CheckCircle2, Calendar, Clock, MapPin, QrCode, 
   Printer, ArrowLeft, XCircle, AlertCircle, ShieldAlert,
-  BookOpen, User, Check, Info, CalendarPlus, FileText, ArrowRight, X, Trash2
+  BookOpen, User, Check, Info, CalendarPlus, FileText, ArrowRight, X, Trash2, Copy
 } from 'lucide-react';
 
 /**
@@ -56,6 +56,14 @@ export default function ConfirmationPage() {
   const [cancelReason, setCancelReason] = useState('');
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = () => {
+    if (!booking?.bookingRef) return;
+    navigator.clipboard.writeText(booking.bookingRef);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   // Load booking from API if not passed via state
   useEffect(() => {
@@ -204,67 +212,252 @@ END:VCALENDAR`;
   const isCheckedIn = booking.status === 'checked_in';
 
   return (
-    <div className="new-booking-page">
-      {/* Top Meta Bar */}
-      <nav className="booking-top-bar" aria-label="Breadcrumb navigation">
-        <div className="booking-top-bar-inner confirmation-top-bar-inner">
-          <div className="top-bar-meta">
-            <span>RESERVATION PASS · THE LIBRARY NEW DELHI</span>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Two-Column Outer Card Container */}
-      <main className="new-booking-container confirmation-card-container">
-        {/* =========================================================================
-            LEFT COLUMN: Editorial Photography Panel
-            ========================================================================= */}
-        <aside className="booking-photo-panel" aria-label="Library atmosphere">
-          <div className="photo-panel-bg" style={{ backgroundImage: "url('/images/library-reading-area.webp')" }} />
-          <div className="photo-panel-overlay" />
-
-          <div className="photo-panel-content">
-            <div className="photo-panel-header">
-              <div className="photo-brand-emblem" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
-                  <path d="M6 6h10" />
-                  <path d="M6 10h10" />
-                </svg>
-              </div>
-              <div className="photo-brand-text">
-                <span className="photo-brand-title">The Library</span>
-                <span className="photo-brand-subtitle">LIBRARY / NEW DELHI</span>
-              </div>
-            </div>
-
-            <div className="photo-panel-quote-box">
-              <div className="photo-quote-line" aria-hidden="true" />
-              <h2 className="photo-quote-heading">
-                {isCancelled
-                  ? 'Reservation cancelled.'
-                  : 'Thank you for being part of our reading community.'}
-              </h2>
-              <p className="photo-quote-sub">
-                {isCancelled
-                  ? 'Your seat has been released for other visitors.'
-                  : 'A QUIETER PLACE TO DISCOVER JAPAN.'}
-              </p>
-            </div>
-
-            <div className="photo-panel-footer">
-              <span className="photo-footer-caption">BOOKS · MANGA · PEOPLE · JAPAN</span>
+    <div className="new-booking-page confirmation-page-root">
+      {/* =========================================================================
+          DESKTOP VIEW (Visible only on desktop > 768px, exactly as original)
+          ========================================================================= */}
+      <div className="confirmation-desktop-view">
+        {/* Top Meta Bar */}
+        <nav className="booking-top-bar" aria-label="Breadcrumb navigation">
+          <div className="booking-top-bar-inner confirmation-top-bar-inner">
+            <div className="top-bar-meta">
+              <span>RESERVATION PASS · THE LIBRARY NEW DELHI</span>
             </div>
           </div>
-        </aside>
+        </nav>
 
-        {/* =========================================================================
-            RIGHT COLUMN: Confirmation & Visit Pass
-            ========================================================================= */}
-        <section className="booking-interactive-panel" aria-live="polite">
+        {/* Main Two-Column Outer Card Container */}
+        <main className="new-booking-container confirmation-card-container">
+          {/* =========================================================================
+              LEFT COLUMN: Editorial Photography Panel
+              ========================================================================= */}
+          <aside className="booking-photo-panel" aria-label="Library atmosphere">
+            <div className="photo-panel-bg" style={{ backgroundImage: "url('/images/library-reading-area.webp')" }} />
+            <div className="photo-panel-overlay" />
+
+            <div className="photo-panel-content">
+              <div className="photo-panel-header">
+                <div className="photo-brand-emblem" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+                    <path d="M6 6h10" />
+                    <path d="M6 10h10" />
+                  </svg>
+                </div>
+                <div className="photo-brand-text">
+                  <span className="photo-brand-title">The Library</span>
+                  <span className="photo-brand-subtitle">LIBRARY / NEW DELHI</span>
+                </div>
+              </div>
+
+              <div className="photo-panel-quote-box">
+                <div className="photo-quote-line" aria-hidden="true" />
+                <h2 className="photo-quote-heading">
+                  {isCancelled
+                    ? 'Reservation cancelled.'
+                    : 'Thank you for being part of our reading community.'}
+                </h2>
+                <p className="photo-quote-sub">
+                  {isCancelled
+                    ? 'Your seat has been released for other visitors.'
+                    : 'A QUIETER PLACE TO DISCOVER JAPAN.'}
+                </p>
+              </div>
+
+              <div className="photo-panel-footer">
+                <span className="photo-footer-caption">BOOKS · MANGA · PEOPLE · JAPAN</span>
+              </div>
+            </div>
+          </aside>
+
+          {/* =========================================================================
+              RIGHT COLUMN: Confirmation & Visit Pass
+              ========================================================================= */}
+          <section className="booking-interactive-panel" aria-live="polite">
+            <button
+              type="button"
+              className="booking-modal-close-btn"
+              onClick={() => navigate('/')}
+              aria-label="Close"
+              title="Close"
+            >
+              <X className="w-4 h-4 stroke-[2.25]" />
+            </button>
+
+            <div className="confirmation-content-box">
+              <header className="step-intro-header">
+                <div className="category-tag-row">
+                  <span className="category-tag">
+                    {isCancelled ? 'RESERVATION CANCELLED' : isCheckedIn ? 'CHECKED IN & VERIFIED' : 'BOOKING CONFIRMED'}
+                  </span>
+                </div>
+                <h1 className="step-main-title">
+                  {isCancelled ? 'Reservation Cancelled' : isCheckedIn ? 'Checked In & Verified' : 'Your visit is confirmed!'}
+                </h1>
+                <p className="step-main-subtitle">
+                  {isCancelled
+                    ? 'This booking was cancelled and its seat capacity released.'
+                    : isCheckedIn
+                    ? 'Welcome to The Library. We hope you enjoy your reading session.'
+                    : 'We look forward to welcoming you to the library.'}
+                </p>
+              </header>
+
+              {/* Visit Pass Box */}
+              <div className={`visit-pass-card ${isCancelled ? 'cancelled' : ''}`}>
+                {/* Left Sub-panel: QR Code and Reference */}
+                <div className="pass-qr-col">
+                  <div className="qr-frame-box">
+                    {booking.qrCodeDataUrl ? (
+                      <img
+                        src={booking.qrCodeDataUrl}
+                        alt={`QR code for reference ${booking.bookingRef}`}
+                        className={`pass-qr-image ${isCancelled ? 'grayscale opacity-40' : ''}`}
+                        width={80}
+                        height={80}
+                      />
+                    ) : (
+                      <div className="qr-fallback-box">
+                        <QrCode className="w-14 h-14 text-stone-400" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="pass-ref-badge">
+                    <span className="ref-code-text">{booking.bookingRef}</span>
+                  </div>
+                  <span className="pass-scan-caption">
+                    {isCancelled ? 'Revoked upon cancellation' : 'Show this QR code at reception for check-in.'}
+                  </span>
+                </div>
+
+                {/* Right Sub-panel: Metadata 2x2 Grid */}
+                <div className="pass-details-col">
+                  <div className="pass-detail-item">
+                    <div className="pass-icon-wrap"><BookOpen className="w-4 h-4" /></div>
+                    <div className="pass-text-wrap">
+                      <span className="pass-label">Facility</span>
+                      <span className="pass-val"><strong>{booking.facilityName || booking.facilityId}</strong></span>
+                    </div>
+                  </div>
+
+                  <div className="pass-detail-item">
+                    <div className="pass-icon-wrap"><Calendar className="w-4 h-4" /></div>
+                    <div className="pass-text-wrap">
+                      <span className="pass-label">Date</span>
+                      <span className="pass-val"><strong>{formatFullDate(booking.visitDate)}</strong></span>
+                    </div>
+                  </div>
+
+                  <div className="pass-detail-item">
+                    <div className="pass-icon-wrap"><Clock className="w-4 h-4" /></div>
+                    <div className="pass-text-wrap">
+                      <span className="pass-label">Time Slot</span>
+                      <span className="pass-val">
+                        <strong>{formatTimeSlot(booking.sessionStartTime, booking.sessionEndTime)}</strong>
+                        <span className="pass-sub">{booking.sessionName || 'Morning Session'}</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pass-detail-item">
+                    <div className="pass-icon-wrap"><User className="w-4 h-4" /></div>
+                    <div className="pass-text-wrap">
+                      <span className="pass-label">Visitor</span>
+                      <span className="pass-val">
+                        <strong>{booking.visitorName}</strong>
+                        <span className="pass-sub">{booking.visitorEmail}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Important Information Box */}
+              <div className="important-info-box">
+                <div className="info-icon-circle">
+                  <Info className="w-4 h-4 stroke-[2]" />
+                </div>
+                <div className="info-vertical-divider" />
+                <div className="info-text-col">
+                  <h3 className="info-title">Visitor guidelines</h3>
+                  <p className="info-guide-line">Please arrive 5–10 minutes early with this digital QR pass or booking reference.</p>
+                  <p className="info-guide-line">Bring your photo identification or membership card if requested by library staff.</p>
+                </div>
+              </div>
+
+              {/* Bottom Actions Wrap */}
+              <div className="confirmation-actions-wrap">
+                <div className="actions-utility-row">
+                  <button
+                    type="button"
+                    id="add-to-calendar-btn"
+                    className="action-btn-outline"
+                    onClick={handleAddToCalendar}
+                    title="Download .ics calendar invitation"
+                  >
+                    <CalendarPlus className="w-4 h-4" />
+                    <span>Add to calendar</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    id="print-pass-btn"
+                    className="action-btn-outline"
+                    onClick={handlePrint}
+                    title="Print paper pass"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>Print pass</span>
+                  </button>
+
+                  {!isCancelled && !isCheckedIn && (
+                    <button
+                      type="button"
+                      id="cancel-reservation-btn"
+                      className="action-btn-cancel"
+                      onClick={() => setShowCancelModal(true)}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Cancel reservation</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Full Width Primary Navigation Row (Home button removed as requested) */}
+                <div className="actions-nav-row">
+                  <Link
+                    to="/my-booking"
+                    id="my-bookings-btn"
+                    className="primary-espresso-btn full-width-reservations-btn"
+                    title="Go to My Reservations"
+                  >
+                    <span>Go to My Reservations</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      {/* =========================================================================
+          MOBILE VIEW (Visible only on mobile <= 768px, exact match to screenshot)
+          ========================================================================= */}
+      <div className="confirmation-mobile-view" aria-live="polite">
+        <div className="confirmation-mobile-card">
+          {/* Top Drag Handle */}
+          <div className="confirmation-mobile-drag-handle" aria-hidden="true" />
+
+          {/* Top Header Text */}
+          <div className="confirmation-mobile-header-text">
+            RESERVATION PASS · THE LIBRARY NEW DELHI
+          </div>
+
+          {/* Circular Close Button */}
           <button
             type="button"
-            className="booking-modal-close-btn"
+            className="confirmation-mobile-close-circle"
             onClick={() => navigate('/')}
             aria-label="Close"
             title="Close"
@@ -272,161 +465,193 @@ END:VCALENDAR`;
             <X className="w-4 h-4 stroke-[2.25]" />
           </button>
 
-          <div className="confirmation-content-box">
-            <header className="step-intro-header">
-              <div className="category-tag-row">
-                <span className="category-tag">
-                  {isCancelled ? 'RESERVATION CANCELLED' : isCheckedIn ? 'CHECKED IN & VERIFIED' : 'BOOKING CONFIRMED'}
-                </span>
-              </div>
-              <h1 className="step-main-title">
-                {isCancelled ? 'Reservation Cancelled' : isCheckedIn ? 'Checked In & Verified' : 'Your visit is confirmed!'}
-              </h1>
-              <p className="step-main-subtitle">
-                {isCancelled
-                  ? 'This booking was cancelled and its seat capacity released.'
-                  : isCheckedIn
-                  ? 'Welcome to The Library. We hope you enjoy your reading session.'
-                  : 'We look forward to welcoming you to the library.'}
-              </p>
-            </header>
+          {/* Title Block */}
+          <header className="confirmation-mobile-title-block">
+            <div className="confirmation-mobile-tag-row">
+              <span className={`confirmation-mobile-tag ${isCancelled ? 'cancelled' : isCheckedIn ? 'checked-in' : ''}`}>
+                {isCancelled ? 'RESERVATION CANCELLED' : isCheckedIn ? 'CHECKED IN & VERIFIED' : 'BOOKING CONFIRMED'}
+              </span>
+            </div>
+            <h1 className="confirmation-mobile-title">
+              {isCancelled ? 'Reservation Cancelled' : isCheckedIn ? 'Checked In & Verified' : 'Your visit is confirmed!'}
+            </h1>
+            <p className="confirmation-mobile-subtitle">
+              {isCancelled
+                ? 'This booking was cancelled and its seat capacity released.'
+                : isCheckedIn
+                ? 'Welcome to The Library. We hope you enjoy your reading session.'
+                : 'We look forward to welcoming you to the library.'}
+            </p>
+          </header>
 
-            {/* Visit Pass Box */}
-            <div className={`visit-pass-card ${isCancelled ? 'cancelled' : ''}`}>
-              {/* Left Sub-panel: QR Code and Reference */}
-              <div className="pass-qr-col">
-                <div className="qr-frame-box">
-                  {booking.qrCodeDataUrl ? (
-                    <img
-                      src={booking.qrCodeDataUrl}
-                      alt={`QR code for reference ${booking.bookingRef}`}
-                      className={`pass-qr-image ${isCancelled ? 'grayscale opacity-40' : ''}`}
-                      width={80}
-                      height={80}
-                    />
+          {/* SECTION 1: QR & Booking Code Card */}
+          <div className="confirmation-mobile-qr-card">
+            <div className="confirmation-mobile-qr-frame">
+              {booking.qrCodeDataUrl ? (
+                <img
+                  src={booking.qrCodeDataUrl}
+                  alt={`QR code for reference ${booking.bookingRef}`}
+                  className={`confirmation-mobile-qr-img ${isCancelled ? 'grayscale opacity-40' : ''}`}
+                  width={84}
+                  height={84}
+                />
+              ) : (
+                <QrCode className="w-16 h-16 text-stone-400" />
+              )}
+            </div>
+
+            <div className="confirmation-mobile-qr-divider" />
+
+            <div className="confirmation-mobile-code-col">
+              <span className="confirmation-mobile-code-label">BOOKING CODE</span>
+              <button
+                type="button"
+                className="confirmation-mobile-code-pill"
+                onClick={handleCopyCode}
+                title="Click to copy booking code"
+              >
+                <span className="confirmation-mobile-code-val">{booking.bookingRef}</span>
+                <span className="confirmation-mobile-copy-icon">
+                  {copied ? (
+                    <Check className="w-4 h-4 text-emerald-700 stroke-[2.5]" />
                   ) : (
-                    <div className="qr-fallback-box">
-                      <QrCode className="w-14 h-14 text-stone-400" />
-                    </div>
+                    <Copy className="w-4 h-4 text-[#B8532F] stroke-[2]" />
                   )}
-                </div>
-                <div className="pass-ref-badge">
-                  <span className="ref-code-text">{booking.bookingRef}</span>
-                </div>
-                <span className="pass-scan-caption">
-                  {isCancelled ? 'Revoked upon cancellation' : 'Show this QR code at reception for check-in.'}
                 </span>
+              </button>
+              <span className="confirmation-mobile-scan-note">
+                {isCancelled ? 'Revoked upon cancellation' : 'Show this QR code at reception for check-in.'}
+              </span>
+            </div>
+          </div>
+
+          {/* SECTION 2: Visit Details 2x2 Grid Card */}
+          <div className="confirmation-mobile-details-card">
+            {/* Top Row: Facility & Date */}
+            <div className="confirmation-mobile-details-row">
+              <div className="confirmation-mobile-detail-cell">
+                <div className="confirmation-mobile-detail-badge">
+                  <BookOpen className="w-4 h-4 stroke-[1.8]" />
+                </div>
+                <div className="confirmation-mobile-detail-text">
+                  <span className="confirmation-mobile-detail-label">FACILITY</span>
+                  <span className="confirmation-mobile-detail-val">{booking.facilityName || 'Reading Room'}</span>
+                  <span className="confirmation-mobile-detail-sub">
+                    {booking.facilityId === 'manga-section' || booking.facilityName?.toLowerCase().includes('manga')
+                      ? 'Explore a wide range of Japanese manga.'
+                      : 'Quiet reading, study and research.'}
+                  </span>
+                </div>
               </div>
 
-              {/* Right Sub-panel: Metadata 2x2 Grid */}
-              <div className="pass-details-col">
-                <div className="pass-detail-item">
-                  <div className="pass-icon-wrap"><BookOpen className="w-4 h-4" /></div>
-                  <div className="pass-text-wrap">
-                    <span className="pass-label">Facility</span>
-                    <span className="pass-val"><strong>{booking.facilityName || booking.facilityId}</strong></span>
-                  </div>
+              <div className="confirmation-mobile-detail-cell with-divider">
+                <div className="confirmation-mobile-detail-badge">
+                  <Calendar className="w-4 h-4 stroke-[1.8]" />
                 </div>
-
-                <div className="pass-detail-item">
-                  <div className="pass-icon-wrap"><Calendar className="w-4 h-4" /></div>
-                  <div className="pass-text-wrap">
-                    <span className="pass-label">Date</span>
-                    <span className="pass-val"><strong>{formatFullDate(booking.visitDate)}</strong></span>
-                  </div>
-                </div>
-
-                <div className="pass-detail-item">
-                  <div className="pass-icon-wrap"><Clock className="w-4 h-4" /></div>
-                  <div className="pass-text-wrap">
-                    <span className="pass-label">Time Slot</span>
-                    <span className="pass-val">
-                      <strong>{formatTimeSlot(booking.sessionStartTime, booking.sessionEndTime)}</strong>
-                      <span className="pass-sub">{booking.sessionName || 'Morning Session'}</span>
-                    </span>
-                  </div>
-                </div>
-
-                <div className="pass-detail-item">
-                  <div className="pass-icon-wrap"><User className="w-4 h-4" /></div>
-                  <div className="pass-text-wrap">
-                    <span className="pass-label">Visitor</span>
-                    <span className="pass-val">
-                      <strong>{booking.visitorName}</strong>
-                      <span className="pass-sub">{booking.visitorEmail}</span>
-                    </span>
-                  </div>
+                <div className="confirmation-mobile-detail-text">
+                  <span className="confirmation-mobile-detail-label">DATE</span>
+                  <span className="confirmation-mobile-detail-val">{formatFullDate(booking.visitDate)}</span>
                 </div>
               </div>
             </div>
 
-            {/* Important Information Box */}
-            <div className="important-info-box">
-              <div className="info-icon-circle">
-                <Info className="w-4 h-4 stroke-[2]" />
-              </div>
-              <div className="info-vertical-divider" />
-              <div className="info-text-col">
-                <h3 className="info-title">Visitor guidelines</h3>
-                <p className="info-guide-line">Please arrive 5–10 minutes early with this digital QR pass or booking reference.</p>
-                <p className="info-guide-line">Bring your photo identification or membership card if requested by library staff.</p>
-              </div>
-            </div>
+            <div className="confirmation-mobile-row-divider" />
 
-            {/* Bottom Actions Wrap */}
-            <div className="confirmation-actions-wrap">
-              <div className="actions-utility-row">
-                <button
-                  type="button"
-                  id="add-to-calendar-btn"
-                  className="action-btn-outline"
-                  onClick={handleAddToCalendar}
-                  title="Download .ics calendar invitation"
-                >
-                  <CalendarPlus className="w-4 h-4" />
-                  <span>Add to calendar</span>
-                </button>
-
-                <button
-                  type="button"
-                  id="print-pass-btn"
-                  className="action-btn-outline"
-                  onClick={handlePrint}
-                  title="Print paper pass"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>Print pass</span>
-                </button>
-
-                {!isCancelled && !isCheckedIn && (
-                  <button
-                    type="button"
-                    id="cancel-reservation-btn"
-                    className="action-btn-cancel"
-                    onClick={() => setShowCancelModal(true)}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Cancel reservation</span>
-                  </button>
-                )}
+            {/* Bottom Row: Time Slot & Visitor */}
+            <div className="confirmation-mobile-details-row">
+              <div className="confirmation-mobile-detail-cell">
+                <div className="confirmation-mobile-detail-badge">
+                  <Clock className="w-4 h-4 stroke-[1.8]" />
+                </div>
+                <div className="confirmation-mobile-detail-text">
+                  <span className="confirmation-mobile-detail-label">TIME SLOT</span>
+                  <span className="confirmation-mobile-detail-val">
+                    {formatTimeSlot(booking.sessionStartTime, booking.sessionEndTime)}
+                  </span>
+                  <span className="confirmation-mobile-detail-sub">{booking.sessionName || 'Morning Session'}</span>
+                </div>
               </div>
 
-              {/* Full Width Primary Navigation Row (Home button removed as requested) */}
-              <div className="actions-nav-row">
-                <Link
-                  to="/my-booking"
-                  id="my-bookings-btn"
-                  className="primary-espresso-btn full-width-reservations-btn"
-                  title="Go to My Reservations"
-                >
-                  <span>Go to My Reservations</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+              <div className="confirmation-mobile-detail-cell with-divider">
+                <div className="confirmation-mobile-detail-badge">
+                  <User className="w-4 h-4 stroke-[1.8]" />
+                </div>
+                <div className="confirmation-mobile-detail-text">
+                  <span className="confirmation-mobile-detail-label">VISITOR</span>
+                  <span className="confirmation-mobile-detail-val">{booking.visitorName}</span>
+                  <span className="confirmation-mobile-detail-sub break-all">{booking.visitorEmail}</span>
+                </div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
+
+          {/* SECTION 3: Visitor Guidelines Box */}
+          <div className="confirmation-mobile-guide-card">
+            <div className="confirmation-mobile-guide-icon-circle">
+              <Info className="w-4 h-4 stroke-[2]" />
+            </div>
+            <div className="confirmation-mobile-guide-divider" />
+            <div className="confirmation-mobile-guide-text">
+              <span className="confirmation-mobile-guide-title">Visitor guidelines</span>
+              <p className="confirmation-mobile-guide-p">
+                Please arrive 5–10 minutes early with this digital QR pass or booking reference. Bring photo identification or membership card if requested.
+              </p>
+            </div>
+          </div>
+
+          {/* SECTION 4: Actions (3 rows) */}
+          <div className="confirmation-mobile-actions-zone">
+            {/* Row 1: Add to calendar & Print pass */}
+            <div className="confirmation-mobile-actions-row-1">
+              <button
+                type="button"
+                id="mobile-add-to-calendar-btn"
+                className="confirmation-mobile-btn-outline"
+                onClick={handleAddToCalendar}
+                title="Download .ics calendar invitation"
+              >
+                <CalendarPlus className="w-4 h-4" />
+                <span>Add to calendar</span>
+              </button>
+
+              <button
+                type="button"
+                id="mobile-print-pass-btn"
+                className="confirmation-mobile-btn-outline"
+                onClick={handlePrint}
+                title="Print paper pass"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Print pass</span>
+              </button>
+            </div>
+
+            {/* Row 2: Cancel reservation */}
+            {!isCancelled && !isCheckedIn && (
+              <button
+                type="button"
+                id="mobile-cancel-reservation-btn"
+                className="confirmation-mobile-btn-cancel"
+                onClick={() => setShowCancelModal(true)}
+              >
+                <Trash2 className="w-4 h-4 stroke-[2]" />
+                <span>Cancel reservation</span>
+              </button>
+            )}
+
+            {/* Row 3: Go to My Reservations */}
+            <Link
+              to="/my-booking"
+              id="mobile-my-bookings-btn"
+              className="confirmation-mobile-btn-primary"
+              title="Go to My Reservations"
+            >
+              <span>Go to My Reservations</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* Cancel Confirmation Modal Dialog */}
       {showCancelModal && (
