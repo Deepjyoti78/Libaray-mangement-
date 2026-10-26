@@ -16,26 +16,31 @@ export default function EditorialGrid({ onBookSlot }) {
         {/* Section Header */}
         <div className="editorial-section-header reveal">
           <div className="editorial-header-left">
-            <span className="label">LIBRARY SPACES &amp; ENVIRONMENT</span>
+            <span className="label">OUR SPACES</span>
             <h2 className="heading-lg editorial-main-title">
-              A space to settle in.
+              A space to settle in
             </h2>
           </div>
           <div className="editorial-header-right">
-            <span className="editorial-header-meta">
-              The Japan Foundation, New Delhi · Reading Facilities
-            </span>
+            <a
+              href="#visit"
+              className="spaces-view-all-btn"
+              onClick={(e) => handleScroll(e, '#visit')}
+            >
+              <span>View all</span>
+              <ArrowRight size={14} />
+            </a>
           </div>
         </div>
 
-        {/* 2-Column Responsive Spaces Showcase Cards */}
+        {/* Responsive Spaces Showcase Cards (2 side-by-side + 1 wide) */}
         <div className="spaces-showcase-grid reveal" id="spaces">
           {/* Space Card 1: Reading Room */}
           <article className="space-showcase-card" id="reading-room">
             <div className="space-card-media">
               <img
-                src="/images/reading-room.jpg"
-                alt="Reading room with natural oak study desks, wooden bookshelves and garden view"
+                src="/images/library-study-room.webp"
+                alt="Reading room with study desks and books"
                 width={700}
                 height={460}
                 loading="lazy"
@@ -48,14 +53,18 @@ export default function EditorialGrid({ onBookSlot }) {
                 <span className="section-number">01</span>
                 <span className="col-tag">Silent Study</span>
               </div>
-              <h3 className="heading-md space-card-title">Reading Room</h3>
+              <div className="space-card-title-row">
+                <h3 className="heading-md space-card-title">Reading Room</h3>
+                <div className="space-circle-arrow-btn" aria-hidden="true">
+                  <ArrowRight size={13} />
+                </div>
+              </div>
               <p className="space-card-desc">
-                A calm sanctuary for deep reading, study and research. Settle into
-                natural oak desks, open bookshelves, and contemplative views.
+                Quiet reading, study and research.
               </p>
               <button
                 type="button"
-                className="text-link space-card-action"
+                className="text-link space-card-action desktop-only-action"
                 onClick={onBookSlot}
                 aria-label="Reserve a slot in Reading Room"
               >
@@ -70,7 +79,7 @@ export default function EditorialGrid({ onBookSlot }) {
             <div className="space-card-media">
               <img
                 src="/images/library-reading-area.webp"
-                alt="Community reading lounge with circular discussion table, armchairs, and floor-to-ceiling bookshelves"
+                alt="Community reading lounge"
                 width={700}
                 height={460}
                 loading="lazy"
@@ -83,14 +92,18 @@ export default function EditorialGrid({ onBookSlot }) {
                 <span className="section-number">02</span>
                 <span className="col-tag">Collaborative</span>
               </div>
-              <h3 className="heading-md space-card-title">Community Area</h3>
+              <div className="space-card-title-row">
+                <h3 className="heading-md space-card-title">Community Area</h3>
+                <div className="space-circle-arrow-btn" aria-hidden="true">
+                  <ArrowRight size={13} />
+                </div>
+              </div>
               <p className="space-card-desc">
-                Comfortable lounge seating, discussion tables, periodicals racks, and
-                open cultural shelves for relaxed browsing and exchange.
+                Relax, read and connect with fellow members.
               </p>
               <a
                 href="#visit"
-                className="text-link space-card-action"
+                className="text-link space-card-action desktop-only-action"
                 onClick={(e) => handleScroll(e, '#visit')}
               >
                 <span>View Visiting Details</span>
@@ -98,47 +111,48 @@ export default function EditorialGrid({ onBookSlot }) {
               </a>
             </div>
           </article>
+
+          {/* Space Card 3: Manga Corner (Wide banner card matching mobile mockup) */}
+          <article className="space-showcase-card space-card-wide" id="manga-corner">
+            <div className="space-card-media">
+              <img
+                src="/images/manga-corner-collection.jpg"
+                alt="Manga collection shelves"
+                width={700}
+                height={380}
+                loading="lazy"
+                className="space-card-img manga-wide-img"
+              />
+              <span className="space-card-tag">Curated Volumes</span>
+            </div>
+            <div className="space-card-content">
+              <div className="space-card-meta">
+                <span className="section-number">03</span>
+                <span className="col-tag">Curated Volumes</span>
+              </div>
+              <div className="space-card-title-row">
+                <h3 className="heading-md space-card-title">Manga Corner</h3>
+                <div className="space-circle-arrow-btn" aria-hidden="true">
+                  <ArrowRight size={13} />
+                </div>
+              </div>
+              <p className="space-card-desc">
+                Explore a wide range of manga and more.
+              </p>
+              <a
+                href="#visit"
+                className="text-link space-card-action desktop-only-action"
+                onClick={(e) => handleScroll(e, '#visit')}
+              >
+                <span>View Details</span>
+                <ArrowRight className="btn-icon-arrow" />
+              </a>
+            </div>
+          </article>
         </div>
 
-        {/* Supporting Editorial Features (Manga Corner & Visit Information) */}
+        {/* Supporting Editorial Features (Plan Your Visit) */}
         <div className="editorial-grid">
-          {/* Item 03: Manga Corner (Authentic Shelving Crop) */}
-          <article className="editorial-col editorial-feature reveal" id="manga-corner">
-            <div className="col-top-meta">
-              <span className="section-number">03</span>
-              <span className="col-tag">Curated Volumes</span>
-            </div>
-
-            <div className="feature-media">
-              <img
-                src="/images/manga-corner.jpg"
-                alt="Authentic Japanese literature and tankōbon manga volumes on library shelves"
-                width={700}
-                height={525}
-                loading="lazy"
-                className="feature-img manga-crop"
-              />
-              <span className="media-caption">Japanese Publications &amp; Tankōbon Shelves</span>
-            </div>
-
-            <div className="feature-text">
-              <h3 className="heading-md">Manga Corner</h3>
-              <p className="feature-desc">
-                Browse popular series, graphic novels, and serialized editions
-                in original Japanese and bilingual translations, curated for
-                in-library reading.
-              </p>
-            </div>
-
-            <a
-              href="#visit"
-              className="text-link"
-              onClick={(e) => handleScroll(e, '#visit')}
-            >
-              <span>View Details</span>
-              <ArrowRight className="btn-icon-arrow" />
-            </a>
-          </article>
 
           {/* Item 04: Plan Your Visit (Circulation Desk + Verified Schedule) */}
           <article className="editorial-col visit-panel reveal" id="visit">

@@ -91,7 +91,7 @@ export default function HeroSection({ onBookSlot }) {
               >
                 <div className="hero-card-img-wrap">
                   <img
-                    src="/images/reading-room.jpg"
+                    src="/images/library-study-room.webp"
                     alt="Reading & Study Room"
                     className="hero-card-img"
                     loading="eager"
@@ -138,7 +138,7 @@ export default function HeroSection({ onBookSlot }) {
               >
                 <div className="hero-card-img-wrap">
                   <img
-                    src="/images/manga-corner.jpg"
+                    src="/images/manga-corner-collection.jpg"
                     alt="Manga Corner"
                     className="hero-card-img"
                     loading="eager"
