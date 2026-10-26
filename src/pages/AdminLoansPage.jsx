@@ -373,10 +373,11 @@ export default function AdminLoansPage() {
 
           <button
             type="button"
-            className="action-primary-btn"
+            className="action-pill-btn"
             onClick={() => setIsNewLoanOpen(true)}
+            title="Issue a new book loan"
           >
-            <Plus size={15} />
+            <Plus size={14} className="pill-cal-icon" />
             <span>New Loan Transaction</span>
           </button>
         </div>

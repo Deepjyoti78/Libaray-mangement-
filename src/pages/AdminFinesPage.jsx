@@ -328,10 +328,11 @@ export default function AdminFinesPage() {
 
           <button
             type="button"
-            className="action-primary-btn"
+            className="action-pill-btn"
             onClick={() => setIsAddFineOpen(true)}
+            title="Record fine or penalty fee"
           >
-            <Plus size={15} />
+            <Plus size={14} className="pill-cal-icon" />
             <span>Record Fine / Fee</span>
           </button>
         </div>

@@ -204,10 +204,11 @@ export default function AdminLibrariansPage() {
         <div className="bookings-header-actions">
           <button
             type="button"
-            className="action-primary-btn"
+            className="action-pill-btn"
             onClick={() => setIsInviteModalOpen(true)}
+            title="Invite a new staff member"
           >
-            <Plus size={15} />
+            <Plus size={14} className="pill-cal-icon" />
             <span>Invite Staff Member</span>
           </button>
         </div>

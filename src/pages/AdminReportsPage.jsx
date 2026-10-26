@@ -82,10 +82,11 @@ export default function AdminReportsPage() {
         <div className="bookings-header-actions">
           <button
             type="button"
-            className="action-primary-btn"
+            className="action-pill-btn"
             onClick={handleExportFullReport}
+            title="Download annual circulation report"
           >
-            <Download size={15} />
+            <Download size={14} className="pill-cal-icon" />
             <span>Export Full Annual Report</span>
           </button>
         </div>

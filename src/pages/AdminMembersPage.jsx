@@ -374,10 +374,11 @@ export default function AdminMembersPage() {
 
           <button
             type="button"
-            className="action-primary-btn"
+            className="action-pill-btn"
             onClick={() => setIsRegisterModalOpen(true)}
+            title="Register a new library member"
           >
-            <Plus size={15} />
+            <Plus size={14} className="pill-cal-icon" />
             <span>Register Member</span>
           </button>
         </div>

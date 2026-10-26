@@ -604,17 +604,30 @@
   font-weight: 500;
   color: #111111;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  height: 38px;
+  box-sizing: border-box;
+  user-select: none;
 }
 
 .action-pill-btn:hover {
-  background-color: var(--mono-hover-bg);
-  border-color: #CCCCCC;
+  background-color: #FAFAFA;
+  border-color: #111111;
+  color: #111111;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .pill-chevron,
 .pill-cal-icon {
   color: var(--mono-text-secondary);
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.action-pill-btn:hover .pill-cal-icon {
+  color: #111111;
 }
 
 .dropdown-action-anchor,

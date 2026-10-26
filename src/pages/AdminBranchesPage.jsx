@@ -143,10 +143,11 @@ export default function AdminBranchesPage() {
         <div className="bookings-header-actions">
           <button
             type="button"
-            className="action-primary-btn"
+            className="action-pill-btn"
             onClick={() => setIsAddBranchOpen(true)}
+            title="Add a new library room or branch"
           >
-            <Plus size={15} />
+            <Plus size={14} className="pill-cal-icon" />
             <span>Add New Room / Facility</span>
           </button>
         </div>

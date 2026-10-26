@@ -443,10 +443,11 @@ export default function AdminCatalogPage() {
 
           <button
             type="button"
-            className="action-primary-btn"
+            className="action-pill-btn"
             onClick={() => setIsAddModalOpen(true)}
+            title="Add a new volume to the catalog"
           >
-            <Plus size={15} />
+            <Plus size={14} className="pill-cal-icon" />
             <span>Add New Book</span>
           </button>
         </div>
