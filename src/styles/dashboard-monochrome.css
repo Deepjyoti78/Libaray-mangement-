@@ -4129,5 +4129,427 @@
   color: #236B36;
 }
 
+/* ==========================================================================
+   Admin Tables & Layout Polish (Catalog, Members, Loans, Fines, Librarians, Reports)
+   ========================================================================== */
+
+/* Unified Table Styling */
+.catalog-table,
+.members-table,
+.loans-table,
+.fines-table,
+.librarians-table,
+.reports-table,
+.bookings-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+  background-color: #FFFFFF;
+}
+
+.catalog-table thead,
+.members-table thead,
+.loans-table thead,
+.fines-table thead,
+.librarians-table thead,
+.reports-table thead,
+.bookings-data-table thead {
+  background-color: #FAFAFA;
+  border-bottom: 1px solid var(--mono-border);
+}
+
+.catalog-table th,
+.members-table th,
+.loans-table th,
+.fines-table th,
+.librarians-table th,
+.reports-table th,
+.bookings-data-table th {
+  padding: 12px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mono-text-secondary);
+  white-space: nowrap;
+}
+
+.catalog-table tbody tr,
+.members-table tbody tr,
+.loans-table tbody tr,
+.fines-table tbody tr,
+.librarians-table tbody tr,
+.reports-table tbody tr,
+.bookings-data-table tbody tr {
+  border-bottom: 1px solid var(--mono-border-subtle);
+  transition: background-color 0.12s ease;
+}
+
+.catalog-table tbody tr:last-child,
+.members-table tbody tr:last-child,
+.loans-table tbody tr:last-child,
+.fines-table tbody tr:last-child,
+.librarians-table tbody tr:last-child,
+.reports-table tbody tr:last-child,
+.bookings-data-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.catalog-table tbody tr:hover,
+.members-table tbody tr:hover,
+.loans-table tbody tr:hover,
+.fines-table tbody tr:hover,
+.librarians-table tbody tr:hover,
+.reports-table tbody tr:hover,
+.bookings-data-table tbody tr:hover {
+  background-color: #FAFAFA;
+}
+
+.catalog-table td,
+.members-table td,
+.loans-table td,
+.fines-table td,
+.librarians-table td,
+.reports-table td,
+.bookings-data-table td {
+  padding: 13px 14px;
+  vertical-align: middle;
+  color: #111111;
+}
+
+/* Card wrappers around tables */
+.catalog-table-card,
+.members-table-card,
+.loans-table-card,
+.fines-table-card,
+.librarians-table-card,
+.reports-table-card,
+.table-card-container {
+  background-color: var(--mono-card-bg);
+  border: 1px solid var(--mono-border);
+  border-radius: var(--mono-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  margin-top: 14px;
+}
+
+/* Unified KPI Card Typography & Structure */
+.kpi-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mono-text-secondary);
+}
+
+.kpi-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background-color: var(--mono-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mono-text-primary);
+}
+
+.kpi-main-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--mono-text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.kpi-footer-row {
+  font-size: 12px;
+  color: var(--mono-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.kpi-trend {
+  font-weight: 500;
+}
+
+.kpi-trend.positive {
+  color: #15803D;
+}
+
+.kpi-trend.negative {
+  color: #DC2626;
+}
+
+.kpi-trend.neutral {
+  color: var(--mono-text-secondary);
+}
+
+.kpi-sub-label {
+  color: var(--mono-text-muted);
+}
+
+/* Unified Search Input Boxes */
+.filter-search-box,
+.catalog-search-box,
+.members-search-box,
+.loans-search-box,
+.fines-search-box,
+.librarians-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #FAFAFA;
+  border: 1px solid var(--mono-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  flex: 1;
+  min-width: 280px;
+  transition: all 0.15s ease;
+}
+
+.filter-search-box:focus-within,
+.catalog-search-box:focus-within,
+.members-search-box:focus-within,
+.loans-search-box:focus-within,
+.fines-search-box:focus-within,
+.librarians-search-box:focus-within {
+  border-color: #111111;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.06);
+}
+
+.filter-search-input {
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  font-size: 13px !important;
+  color: var(--mono-text-primary) !important;
+  width: 100% !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+}
+
+.filter-search-icon {
+  color: var(--mono-text-muted);
+  flex-shrink: 0;
+}
+
+/* Avatar Badges & Staff Cells */
+.staff-avatar,
+.member-avatar-circle,
+.avatar-monogram-circle {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  border-radius: 50% !important;
+  background-color: #111111 !important;
+  color: #FFFFFF !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  letter-spacing: 0.04em !important;
+  border: none !important;
+}
+
+.visitor-cell-wrap,
+.member-profile-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.visitor-text-info,
+.member-text-col,
+.borrower-cell,
+.validity-date-cell,
+.due-date-cell,
+.loans-count-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.visitor-primary-name,
+.member-name-text,
+.borrower-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--mono-text-primary);
+  line-height: 1.2;
+}
+
+.visitor-secondary-email,
+.member-email-text,
+.borrower-id {
+  font-size: 11.5px;
+  color: var(--mono-text-secondary);
+  line-height: 1.2;
+}
+
+.loans-active-count {
+  font-weight: 600;
+  font-size: 13px;
+  color: #111111;
+}
+
+.loans-total-sub {
+  font-size: 11px;
+  color: var(--mono-text-muted);
+}
+
+.validity-expiry {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #111111;
+}
+
+.validity-joined {
+  font-size: 11px;
+  color: var(--mono-text-muted);
+}
+
+.due-fine-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #DC2626;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  padding: 1px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 2px;
+}
+
+.overdue-date {
+  color: #DC2626 !important;
+  font-weight: 600 !important;
+}
+
+.incurred-date {
+  font-size: 12.5px;
+  color: #111111;
+}
+
+.settlement-date {
+  font-size: 11px;
+  color: var(--mono-text-muted);
+}
+
+/* Calligraphic Badge */
+.calligraphy-tile {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #F3F1EC;
+  border: 1px solid #E2DFD8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #241D17;
+  flex-shrink: 0;
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+}
+
+.book-title-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.book-meta-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.book-main-title {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #111111;
+  line-height: 1.25;
+}
+
+.book-japanese-title {
+  font-size: 11.5px;
+  color: #777777;
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  line-height: 1.2;
+}
+
+.book-author-pub {
+  font-size: 11px;
+  color: #888888;
+  line-height: 1.2;
+}
+
+/* Rapid Return Bar in Circulation Desk */
+.rapid-return-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #FFFFFF;
+  border: 1.5px solid var(--mono-border);
+  border-radius: var(--mono-radius);
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.15s ease;
+}
+
+.rapid-return-bar:focus-within {
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
+}
+
+.rapid-return-icon {
+  color: var(--mono-text-muted);
+  flex-shrink: 0;
+}
+
+.rapid-return-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13.5px;
+  font-family: var(--mono-font);
+  color: var(--mono-text-primary);
+  flex: 1;
+}
+
+.rapid-return-btn {
+  background-color: #111111;
+  color: #FFFFFF;
+  border: 1px solid #111111;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.rapid-return-btn:hover {
+  background-color: #2D2D2D;
+}
+
+
 
 
