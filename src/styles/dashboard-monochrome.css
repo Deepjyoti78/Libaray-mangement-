@@ -3299,10 +3299,16 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background-color: #FFFFFF;
+  background-color: var(--mono-card-bg, #FFFFFF);
   border: 1px solid var(--mono-border);
   border-radius: var(--mono-radius);
-  padding: 14px 18px;
+  padding: 10px 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rapid-return-bar-wrap:focus-within {
+  border-color: #111111;
+  box-shadow: 0 0 0 1px #111111;
 }
 
 .rapid-return-form {
@@ -3316,16 +3322,18 @@
   align-items: center;
   gap: 10px;
   flex: 1;
-  background-color: #F9F9F9;
-  border: 1px solid var(--mono-border);
-  border-radius: var(--mono-radius-pill);
-  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 4px;
 }
 
+input.rapid-scanner-input,
 .rapid-scanner-input {
-  border: none;
-  background: transparent;
-  outline: none;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
   font-size: 13.5px;
   width: 100%;
   color: var(--mono-text-primary);
@@ -7695,34 +7703,67 @@ body.dark-theme,
   background-color: #111115 !important;
   border: 1px solid #202026 !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  padding: 10px 14px !important;
+}
+
+.monochrome-dashboard-layout.black-theme .rapid-return-bar-wrap:focus-within,
+.monochrome-dashboard-layout.black-theme .rapid-return-bar:focus-within,
+[data-theme="dark"] .rapid-return-bar-wrap:focus-within,
+[data-theme="dark"] .rapid-return-bar:focus-within,
+.black-theme .rapid-return-bar-wrap:focus-within,
+.black-theme .rapid-return-bar:focus-within {
+  border-color: #52525E !important;
+  box-shadow: 0 0 0 1px #52525E !important;
 }
 
 .monochrome-dashboard-layout.black-theme .scanner-input-box,
 [data-theme="dark"] .scanner-input-box,
 .black-theme .scanner-input-box {
-  background-color: #16161D !important;
-  border: 1px solid #262634 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 4px !important;
 }
 
 .monochrome-dashboard-layout.black-theme .scanner-input-box:focus-within,
-.monochrome-dashboard-layout.black-theme .rapid-return-bar:focus-within,
 [data-theme="dark"] .scanner-input-box:focus-within,
-[data-theme="dark"] .rapid-return-bar:focus-within,
-.black-theme .scanner-input-box:focus-within,
-.black-theme .rapid-return-bar:focus-within {
-  background-color: #1A1A24 !important;
-  border-color: #FFFFFF !important;
-  box-shadow: 0 0 0 1px #FFFFFF !important;
+.black-theme .scanner-input-box:focus-within {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
+.monochrome-dashboard-layout.black-theme input.rapid-scanner-input,
 .monochrome-dashboard-layout.black-theme .rapid-scanner-input,
 .monochrome-dashboard-layout.black-theme .rapid-return-input,
+[data-theme="dark"] input.rapid-scanner-input,
 [data-theme="dark"] .rapid-scanner-input,
 [data-theme="dark"] .rapid-return-input,
+.black-theme input.rapid-scanner-input,
 .black-theme .rapid-scanner-input,
 .black-theme .rapid-return-input {
   color: #FFFFFF !important;
+  background: transparent !important;
   background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.monochrome-dashboard-layout.black-theme input.rapid-scanner-input:focus,
+.monochrome-dashboard-layout.black-theme .rapid-scanner-input:focus,
+.monochrome-dashboard-layout.black-theme .rapid-return-input:focus,
+[data-theme="dark"] input.rapid-scanner-input:focus,
+[data-theme="dark"] .rapid-scanner-input:focus,
+[data-theme="dark"] .rapid-return-input:focus,
+.black-theme input.rapid-scanner-input:focus,
+.black-theme .rapid-scanner-input:focus,
+.black-theme .rapid-return-input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .monochrome-dashboard-layout.black-theme .rapid-scanner-input::placeholder,
