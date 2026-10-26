@@ -88,17 +88,6 @@ export default function Header({ onBookSlot }) {
 
             <button
               type="button"
-              className="header-dashboard-btn"
-              onClick={() => navigate('/admin')}
-              aria-label="Staff Management Console and Dashboard"
-              title="Open Management Dashboard"
-            >
-              <LayoutDashboard className="btn-icon" />
-              <span>Dashboard</span>
-            </button>
-
-            <button
-              type="button"
               className="header-book-btn"
               onClick={onBookSlot}
               aria-label="Book a Slot for library visit"
