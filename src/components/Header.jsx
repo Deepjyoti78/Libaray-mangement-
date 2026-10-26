@@ -61,6 +61,9 @@ export default function Header({ onBookSlot }) {
             </div>
           </a>
 
+          {/* Partition 1: Between Brand and Navigation Links */}
+          <span className="header-partition" aria-hidden="true" />
+
           <nav className="header-nav" aria-label="Main navigation">
             <ul className="header-nav-links">
               {NAV_LINKS.map((link) => (
@@ -76,6 +79,9 @@ export default function Header({ onBookSlot }) {
               ))}
             </ul>
           </nav>
+
+          {/* Partition 2: Between Contact and Language Switcher */}
+          <span className="header-partition" aria-hidden="true" />
 
           <div className="header-actions">
             <div className="header-lang" role="group" aria-label="Language selection">
@@ -95,6 +101,9 @@ export default function Header({ onBookSlot }) {
                 日本語
               </button>
             </div>
+
+            {/* Partition 3: Between Language Switcher and Reserve a Visit */}
+            <span className="header-partition" aria-hidden="true" />
 
             <button
               type="button"
