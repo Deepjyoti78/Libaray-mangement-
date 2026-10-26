@@ -7685,6 +7685,104 @@ body.dark-theme,
   border: 1px solid rgba(251, 191, 36, 0.3) !important;
 }
 
+/* 5. Loans & Returns Desk Rapid Return / Barcode Scanner Search Bar */
+.monochrome-dashboard-layout.black-theme .rapid-return-bar-wrap,
+.monochrome-dashboard-layout.black-theme .rapid-return-bar,
+[data-theme="dark"] .rapid-return-bar-wrap,
+[data-theme="dark"] .rapid-return-bar,
+.black-theme .rapid-return-bar-wrap,
+.black-theme .rapid-return-bar {
+  background-color: #111115 !important;
+  border: 1px solid #202026 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .scanner-input-box,
+[data-theme="dark"] .scanner-input-box,
+.black-theme .scanner-input-box {
+  background-color: #16161D !important;
+  border: 1px solid #262634 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .scanner-input-box:focus-within,
+.monochrome-dashboard-layout.black-theme .rapid-return-bar:focus-within,
+[data-theme="dark"] .scanner-input-box:focus-within,
+[data-theme="dark"] .rapid-return-bar:focus-within,
+.black-theme .scanner-input-box:focus-within,
+.black-theme .rapid-return-bar:focus-within {
+  background-color: #1A1A24 !important;
+  border-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .rapid-scanner-input,
+.monochrome-dashboard-layout.black-theme .rapid-return-input,
+[data-theme="dark"] .rapid-scanner-input,
+[data-theme="dark"] .rapid-return-input,
+.black-theme .rapid-scanner-input,
+.black-theme .rapid-return-input {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
+}
+
+.monochrome-dashboard-layout.black-theme .rapid-scanner-input::placeholder,
+.monochrome-dashboard-layout.black-theme .rapid-return-input::placeholder,
+[data-theme="dark"] .rapid-scanner-input::placeholder,
+[data-theme="dark"] .rapid-return-input::placeholder,
+.black-theme .rapid-scanner-input::placeholder,
+.black-theme .rapid-return-input::placeholder {
+  color: #71717A !important;
+}
+
+.monochrome-dashboard-layout.black-theme .barcode-icon,
+.monochrome-dashboard-layout.black-theme .rapid-return-icon,
+[data-theme="dark"] .barcode-icon,
+[data-theme="dark"] .rapid-return-icon,
+.black-theme .barcode-icon,
+.black-theme .rapid-return-icon {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .rapid-return-btn,
+[data-theme="dark"] .rapid-return-btn,
+.black-theme .rapid-return-btn {
+  background-color: #FFFFFF !important;
+  border: 1px solid #FFFFFF !important;
+  color: #09090C !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .rapid-return-btn:hover,
+[data-theme="dark"] .rapid-return-btn:hover,
+.black-theme .rapid-return-btn:hover {
+  background-color: #E4E4E7 !important;
+  border-color: #E4E4E7 !important;
+  color: #09090C !important;
+}
+
+.monochrome-dashboard-layout.black-theme .rapid-return-btn svg,
+[data-theme="dark"] .rapid-return-btn svg,
+.black-theme .rapid-return-btn svg {
+  color: #09090C !important;
+}
+
+.monochrome-dashboard-layout.black-theme .feedback-green,
+[data-theme="dark"] .feedback-green,
+.black-theme .feedback-green {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #4ADE80 !important;
+  border: 1px solid rgba(74, 222, 128, 0.3) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .feedback-amber,
+[data-theme="dark"] .feedback-amber,
+.black-theme .feedback-amber {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #FBBF24 !important;
+  border: 1px solid rgba(251, 191, 36, 0.3) !important;
+}
+
+
 
 
 
