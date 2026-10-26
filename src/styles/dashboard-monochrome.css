@@ -7226,5 +7226,466 @@ body.dark-theme,
   color: #FFFFFF !important;
 }
 
+/* ==========================================================================
+   BLACK MODE EXTENSION: MEMBERS, RESERVATIONS, REPORTS, & BRANCHES FIXES
+   ========================================================================== */
+
+/* 1. Members Page & KPI Grid Cards Hover / Active States */
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card,
+[data-theme="dark"] .bookings-kpi-card,
+.black-theme .bookings-kpi-card {
+  background-color: #111115 !important;
+  border: 1px solid #202026 !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card:hover,
+[data-theme="dark"] .bookings-kpi-card:hover,
+.black-theme .bookings-kpi-card:hover {
+  background-color: #161620 !important;
+  border-color: #383848 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card.active,
+[data-theme="dark"] .bookings-kpi-card.active,
+.black-theme .bookings-kpi-card.active {
+  background-color: #161622 !important;
+  border-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1.5px #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .kpi-label,
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .bookings-kpi-label,
+[data-theme="dark"] .bookings-kpi-card .kpi-label,
+[data-theme="dark"] .bookings-kpi-card .bookings-kpi-label,
+.black-theme .bookings-kpi-card .kpi-label,
+.black-theme .bookings-kpi-card .bookings-kpi-label {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .kpi-main-number,
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .bookings-kpi-val,
+[data-theme="dark"] .bookings-kpi-card .kpi-main-number,
+[data-theme="dark"] .bookings-kpi-card .bookings-kpi-val,
+.black-theme .bookings-kpi-card .kpi-main-number,
+.black-theme .bookings-kpi-card .bookings-kpi-val {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card:hover .kpi-main-number,
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card:hover .bookings-kpi-val,
+[data-theme="dark"] .bookings-kpi-card:hover .kpi-main-number,
+[data-theme="dark"] .bookings-kpi-card:hover .bookings-kpi-val,
+.black-theme .bookings-kpi-card:hover .kpi-main-number,
+.black-theme .bookings-kpi-card:hover .bookings-kpi-val {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card:hover .kpi-label,
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card:hover .bookings-kpi-label,
+[data-theme="dark"] .bookings-kpi-card:hover .kpi-label,
+[data-theme="dark"] .bookings-kpi-card:hover .bookings-kpi-label,
+.black-theme .bookings-kpi-card:hover .kpi-label,
+.black-theme .bookings-kpi-card:hover .bookings-kpi-label {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .kpi-icon-wrap,
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .bookings-kpi-icon-wrap,
+[data-theme="dark"] .bookings-kpi-card .kpi-icon-wrap,
+[data-theme="dark"] .bookings-kpi-card .bookings-kpi-icon-wrap,
+.black-theme .bookings-kpi-card .kpi-icon-wrap,
+.black-theme .bookings-kpi-card .bookings-kpi-icon-wrap {
+  background-color: #1A1A22 !important;
+  border: 1px solid #282836 !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .kpi-sub-label,
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card .bookings-kpi-sub,
+[data-theme="dark"] .bookings-kpi-card .kpi-sub-label,
+[data-theme="dark"] .bookings-kpi-card .bookings-kpi-sub,
+.black-theme .bookings-kpi-card .kpi-sub-label,
+.black-theme .bookings-kpi-card .bookings-kpi-sub {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .dot-all,
+[data-theme="dark"] .dot-all {
+  background-color: #FFFFFF !important;
+}
+
+/* 2. Reservations & Loans Filter Panels, Inputs, & Reference Badges */
+.monochrome-dashboard-layout.black-theme .bookings-filter-card,
+[data-theme="dark"] .bookings-filter-card,
+.black-theme .bookings-filter-card {
+  background-color: #111115 !important;
+  border: 1px solid #202026 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .filter-status-tab,
+[data-theme="dark"] .filter-status-tab,
+.black-theme .filter-status-tab {
+  color: #A1A1AA !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
+.monochrome-dashboard-layout.black-theme .filter-status-tab:hover,
+[data-theme="dark"] .filter-status-tab:hover,
+.black-theme .filter-status-tab:hover {
+  color: #FFFFFF !important;
+  background-color: #181822 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .filter-status-tab.active,
+[data-theme="dark"] .filter-status-tab.active,
+.black-theme .filter-status-tab.active {
+  background-color: #FFFFFF !important;
+  color: #09090C !important;
+  border-color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .filter-status-tab.active .tab-count-badge,
+[data-theme="dark"] .filter-status-tab.active .tab-count-badge,
+.black-theme .filter-status-tab.active .tab-count-badge {
+  background-color: #09090C !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .tab-count-badge,
+[data-theme="dark"] .tab-count-badge,
+.black-theme .tab-count-badge {
+  background-color: #1E1E28 !important;
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-search-wrap,
+[data-theme="dark"] .bookings-search-wrap,
+.black-theme .bookings-search-wrap {
+  background-color: #141419 !important;
+  border: 1px solid #24242E !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-search-wrap:focus-within,
+[data-theme="dark"] .bookings-search-wrap:focus-within,
+.black-theme .bookings-search-wrap:focus-within {
+  background-color: #181822 !important;
+  border-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-search-input,
+[data-theme="dark"] .bookings-search-input,
+.black-theme .bookings-search-input {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-search-input::placeholder,
+[data-theme="dark"] .bookings-search-input::placeholder,
+.black-theme .bookings-search-input::placeholder {
+  color: #71717A !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-date-filter-wrap,
+.monochrome-dashboard-layout.black-theme .bookings-date-input,
+.monochrome-dashboard-layout.black-theme .bookings-select-filter,
+[data-theme="dark"] .bookings-date-filter-wrap,
+[data-theme="dark"] .bookings-date-input,
+[data-theme="dark"] .bookings-select-filter,
+.black-theme .bookings-date-filter-wrap,
+.black-theme .bookings-date-input,
+.black-theme .bookings-select-filter {
+  background-color: #141419 !important;
+  border: 1px solid #24242E !important;
+  color: #D4D4D8 !important;
+  color-scheme: dark !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-select-filter option,
+[data-theme="dark"] .bookings-select-filter option,
+.black-theme .bookings-select-filter option {
+  background-color: #141419 !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-date-input:focus,
+.monochrome-dashboard-layout.black-theme .bookings-select-filter:focus,
+[data-theme="dark"] .bookings-date-input:focus,
+[data-theme="dark"] .bookings-select-filter:focus,
+.black-theme .bookings-date-input:focus,
+.black-theme .bookings-select-filter:focus {
+  border-color: #FFFFFF !important;
+  background-color: #181822 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .booking-ref-badge,
+[data-theme="dark"] .booking-ref-badge,
+.black-theme .booking-ref-badge {
+  background-color: #161622 !important;
+  border: 1px solid #282838 !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .booking-ref-badge:hover,
+[data-theme="dark"] .booking-ref-badge:hover,
+.black-theme .booking-ref-badge:hover {
+  background-color: #20202E !important;
+  border-color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .copy-icon-subtle,
+[data-theme="dark"] .copy-icon-subtle,
+.black-theme .copy-icon-subtle {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .visit-date-main,
+.monochrome-dashboard-layout.black-theme .facility-name-text,
+.monochrome-dashboard-layout.black-theme .visitor-main-name,
+[data-theme="dark"] .visit-date-main,
+[data-theme="dark"] .facility-name-text,
+[data-theme="dark"] .visitor-main-name,
+.black-theme .visit-date-main,
+.black-theme .facility-name-text,
+.black-theme .visitor-main-name {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .visit-date-day,
+.monochrome-dashboard-layout.black-theme .session-time-text,
+.monochrome-dashboard-layout.black-theme .visitor-sub-email,
+[data-theme="dark"] .visit-date-day,
+[data-theme="dark"] .session-time-text,
+[data-theme="dark"] .visitor-sub-email,
+.black-theme .visit-date-day,
+.black-theme .session-time-text,
+.black-theme .visitor-sub-email {
+  color: #A1A1AA !important;
+}
+
+/* 3. Reports & Analytics Page */
+.monochrome-dashboard-layout.black-theme .reports-card-panel,
+[data-theme="dark"] .reports-card-panel,
+.black-theme .reports-card-panel {
+  background-color: #111115 !important;
+  border: 1px solid #202026 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .reports-card-title,
+[data-theme="dark"] .reports-card-title,
+.black-theme .reports-card-title {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .reports-card-subtitle,
+[data-theme="dark"] .reports-card-subtitle,
+.black-theme .reports-card-subtitle {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .reports-table th,
+[data-theme="dark"] .reports-table th,
+.black-theme .reports-table th {
+  color: #A1A1AA !important;
+  border-bottom: 1px solid #22222A !important;
+  background-color: #15151B !important;
+}
+
+.monochrome-dashboard-layout.black-theme .reports-table td,
+[data-theme="dark"] .reports-table td,
+.black-theme .reports-table td {
+  color: #E4E4E7 !important;
+  border-bottom: 1px solid #1C1C24 !important;
+  background-color: transparent !important;
+}
+
+.monochrome-dashboard-layout.black-theme .reports-table tbody tr:hover td,
+[data-theme="dark"] .reports-table tbody tr:hover td,
+.black-theme .reports-table tbody tr:hover td {
+  background-color: #171720 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .mini-chart-bar-track,
+[data-theme="dark"] .mini-chart-bar-track,
+.black-theme .mini-chart-bar-track {
+  background-color: #1F1F28 !important;
+  border: 1px solid #282834 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .mini-chart-bar-fill,
+[data-theme="dark"] .mini-chart-bar-fill,
+.black-theme .mini-chart-bar-fill {
+  background-color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .cat-name,
+[data-theme="dark"] .cat-name,
+.black-theme .cat-name {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .cat-count-pct,
+[data-theme="dark"] .cat-count-pct,
+.black-theme .cat-count-pct {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .copies-progress-track,
+[data-theme="dark"] .copies-progress-track,
+.black-theme .copies-progress-track {
+  background-color: #1F1F28 !important;
+  border: 1px solid #282834 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .copies-progress-bar,
+[data-theme="dark"] .copies-progress-bar,
+.black-theme .copies-progress-bar {
+  background-color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .section-small-title,
+[data-theme="dark"] .section-small-title,
+.black-theme .section-small-title {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .reports-top-titles-section,
+[data-theme="dark"] .reports-top-titles-section,
+.black-theme .reports-top-titles-section {
+  border-top: 1px solid #202028 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .top-title-row,
+[data-theme="dark"] .top-title-row,
+.black-theme .top-title-row {
+  background-color: #15151B !important;
+  border: 1px solid #22222A !important;
+}
+
+.monochrome-dashboard-layout.black-theme .top-title-row:hover,
+[data-theme="dark"] .top-title-row:hover,
+.black-theme .top-title-row:hover {
+  background-color: #1B1B24 !important;
+  border-color: #383848 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .top-rank-badge,
+[data-theme="dark"] .top-rank-badge,
+.black-theme .top-rank-badge {
+  background-color: #242432 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #363648 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .top-book-name,
+[data-theme="dark"] .top-book-name,
+.black-theme .top-book-name {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .top-author,
+[data-theme="dark"] .top-author,
+.black-theme .top-author {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .top-borrow-count,
+[data-theme="dark"] .top-borrow-count,
+.black-theme .top-borrow-count {
+  color: #34D399 !important;
+}
+
+/* 4. Branches Section Cards */
+.monochrome-dashboard-layout.black-theme .branch-facility-card,
+[data-theme="dark"] .branch-facility-card,
+.black-theme .branch-facility-card {
+  background-color: #111115 !important;
+  border: 1px solid #202026 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .branch-facility-card:hover,
+[data-theme="dark"] .branch-facility-card:hover,
+.black-theme .branch-facility-card:hover {
+  border-color: #383848 !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .branch-en-title,
+[data-theme="dark"] .branch-en-title,
+.black-theme .branch-en-title {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .branch-ja-title,
+[data-theme="dark"] .branch-ja-title,
+.black-theme .branch-ja-title {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .branch-location-line,
+[data-theme="dark"] .branch-location-line,
+.black-theme .branch-location-line {
+  color: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .branch-occupancy-box,
+[data-theme="dark"] .branch-occupancy-box,
+.black-theme .branch-occupancy-box {
+  background-color: #15151B !important;
+  border: 1px solid #22222A !important;
+}
+
+.monochrome-dashboard-layout.black-theme .occupancy-labels .label-text,
+[data-theme="dark"] .occupancy-labels .label-text,
+.black-theme .occupancy-labels .label-text {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .occupancy-labels .label-val,
+[data-theme="dark"] .occupancy-labels .label-val,
+.black-theme .occupancy-labels .label-val {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .branch-details-grid,
+.monochrome-dashboard-layout.black-theme .branch-detail-item,
+[data-theme="dark"] .branch-details-grid,
+[data-theme="dark"] .branch-detail-item,
+.black-theme .branch-details-grid,
+.black-theme .branch-detail-item {
+  color: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .amenity-chip,
+[data-theme="dark"] .amenity-chip,
+.black-theme .amenity-chip {
+  background-color: #1B1B24 !important;
+  border: 1px solid #2C2C3C !important;
+  color: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .pill-active,
+[data-theme="dark"] .pill-active,
+.black-theme .pill-active {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #4ADE80 !important;
+  border: 1px solid rgba(74, 222, 128, 0.3) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .pill-amber,
+[data-theme="dark"] .pill-amber,
+.black-theme .pill-amber {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #FBBF24 !important;
+  border: 1px solid rgba(251, 191, 36, 0.3) !important;
+}
+
+
+
 
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import {
   BarChart2,
   TrendingUp,
@@ -46,6 +47,7 @@ const CATEGORY_DISTRIBUTION = [
 ];
 
 export default function AdminReportsPage() {
+  const { isDark } = useTheme();
   const [reportPeriod, setReportPeriod] = useState('2026');
 
   // Export full report CSV
@@ -164,11 +166,19 @@ export default function AdminReportsPage() {
               <tbody>
                 {MONTHLY_CIRCULATION.map((m) => (
                   <tr key={m.month}>
-                    <td className="font-semibold">{m.month}</td>
-                    <td className="font-mono text-sm">{m.issued.toLocaleString()}</td>
-                    <td className="font-mono text-sm">{m.returned.toLocaleString()}</td>
+                    <td style={{ fontWeight: 600, color: isDark ? '#FFFFFF' : '#111111' }}>{m.month}</td>
+                    <td style={{ fontFamily: 'monospace', fontSize: '13px', color: isDark ? '#E4E4E7' : '#111111' }}>{m.issued.toLocaleString()}</td>
+                    <td style={{ fontFamily: 'monospace', fontSize: '13px', color: isDark ? '#D4D4D8' : '#333333' }}>{m.returned.toLocaleString()}</td>
                     <td>
-                      <span className={`text-xs font-semibold ${m.net.startsWith('+') ? 'text-emerald-700' : 'text-amber-700'}`}>
+                      <span
+                        style={{
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          color: m.net.startsWith('+')
+                            ? (isDark ? '#34D399' : '#047857')
+                            : (isDark ? '#F87171' : '#B91C1C'),
+                        }}
+                      >
                         {m.net}
                       </span>
                     </td>
@@ -176,7 +186,10 @@ export default function AdminReportsPage() {
                       <div className="mini-chart-bar-track">
                         <div
                           className="mini-chart-bar-fill"
-                          style={{ width: `${Math.min(100, (m.issued / 4500) * 100)}%` }}
+                          style={{
+                            width: `${Math.min(100, (m.issued / 4500) * 100)}%`,
+                            backgroundColor: isDark ? '#FFFFFF' : '#111111',
+                          }}
                         />
                       </div>
                     </td>
@@ -197,22 +210,28 @@ export default function AdminReportsPage() {
           </div>
 
           <div className="category-bars-list">
-            {CATEGORY_DISTRIBUTION.map((cat) => (
-              <div key={cat.name} className="cat-bar-item">
-                <div className="cat-bar-labels">
-                  <span className="cat-name">{cat.name}</span>
-                  <span className="cat-count-pct">
-                    {cat.count.toLocaleString()} titles ({cat.percent}%)
-                  </span>
+            {CATEGORY_DISTRIBUTION.map((cat, idx) => {
+              const darkColors = ['#FFFFFF', '#E4E4E7', '#A1A1AA', '#71717A', '#52525B'];
+              return (
+                <div key={cat.name} className="cat-bar-item">
+                  <div className="cat-bar-labels">
+                    <span className="cat-name">{cat.name}</span>
+                    <span className="cat-count-pct">
+                      {cat.count.toLocaleString()} titles ({cat.percent}%)
+                    </span>
+                  </div>
+                  <div className="copies-progress-track">
+                    <div
+                      className="copies-progress-bar"
+                      style={{
+                        width: `${cat.percent}%`,
+                        backgroundColor: isDark ? (darkColors[idx] || '#FFFFFF') : cat.color,
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="copies-progress-track">
-                  <div
-                    className="copies-progress-bar"
-                    style={{ width: `${cat.percent}%`, backgroundColor: cat.color }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Top Borrowed Titles */}

@@ -170,6 +170,31 @@ export default function SquareBlockChart({
             );
           })}
 
+          {/* Smooth-Animated Vertical Hover Guide Line */}
+          {(() => {
+            const activeColX =
+              hoveredIdx !== null
+                ? paddingLeft + hoveredIdx * colSpacing + colSpacing / 2
+                : paddingLeft + 5 * colSpacing + colSpacing / 2;
+            return (
+              <line
+                x1={0}
+                y1={paddingTop - 6}
+                x2={0}
+                y2={paddingTop + chartHeight}
+                stroke={isDark ? '#FFFFFF' : '#9E9E9E'}
+                strokeWidth="1.2"
+                strokeDasharray="3 3"
+                pointerEvents="none"
+                style={{
+                  transform: `translateX(${activeColX}px)`,
+                  transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease',
+                  opacity: hoveredIdx !== null ? 0.9 : 0,
+                }}
+              />
+            );
+          })()}
+
           {/* Render Each Month's Square-Block Bar */}
           {data.map((item, colIdx) => {
             const colCenterX = paddingLeft + colIdx * colSpacing + colSpacing / 2;
@@ -194,7 +219,11 @@ export default function SquareBlockChart({
                 className={`chart-bar-column ${isHovered ? 'hovered' : ''}`}
                 onMouseEnter={() => setHoveredIdx(colIdx)}
                 onClick={() => setHoveredIdx(colIdx)}
-                style={{ cursor: 'pointer' }}
+                style={{
+                  cursor: 'pointer',
+                  opacity: hoveredIdx === null || isHovered ? 1 : 0.65,
+                  transition: 'opacity 0.2s ease',
+                }}
               >
                 {/* Transparent hit area for easy hover/touch */}
                 <rect
@@ -204,19 +233,6 @@ export default function SquareBlockChart({
                   height={chartHeight}
                   fill="transparent"
                 />
-
-                {/* Vertical Dashed Hover Guide Line */}
-                {isHovered && (
-                  <line
-                    x1={colCenterX}
-                    y1={paddingTop - 6}
-                    x2={colCenterX}
-                    y2={paddingTop + chartHeight}
-                    stroke={isDark ? '#FFFFFF' : '#9E9E9E'}
-                    strokeWidth="1.2"
-                    strokeDasharray="3 3"
-                  />
-                )}
 
                 {/* 2-Column Square Cells Stack */}
                 {[0, 1].map((blockCol) => {
@@ -238,6 +254,7 @@ export default function SquareBlockChart({
                             rx={0.6}
                             fill={isDark ? '#FFFFFF' : '#111111'}
                             className="pixel-cell cell-issued"
+                            style={{ transition: 'fill 0.15s ease' }}
                           />
                         );
                       })}
@@ -259,6 +276,7 @@ export default function SquareBlockChart({
                             rx={0.6}
                             fill={isDark ? '#4B4B58' : '#D4D4D4'}
                             className="pixel-cell cell-returned"
+                            style={{ transition: 'fill 0.15s ease' }}
                           />
                         );
                       })}
@@ -273,6 +291,7 @@ export default function SquareBlockChart({
                   textAnchor="middle"
                   className={`x-axis-label ${isHovered ? 'x-label-active' : ''}`}
                   fill={isHovered ? (isDark ? '#FFFFFF' : '#111111') : (isDark ? '#A1A1AA' : '#737373')}
+                  style={{ transition: 'fill 0.15s ease' }}
                 >
                   {item.label?.toUpperCase() || item.key}
                 </text>
@@ -280,43 +299,53 @@ export default function SquareBlockChart({
             );
           })}
 
-          {/* Render Active Tooltip if a month is hovered */}
-          {hoveredIdx !== null && data[hoveredIdx] && (() => {
-            const activeItem = data[hoveredIdx];
+          {/* Render Active Smooth Floating Tooltip */}
+          {(() => {
+            const hasData = hoveredIdx !== null && data[hoveredIdx];
+            const activeItem = hasData ? data[hoveredIdx] : (data[5] || data[0] || {});
+            const targetIdx = hoveredIdx !== null ? hoveredIdx : 5;
             const colCenterX =
-              paddingLeft + hoveredIdx * colSpacing + colSpacing / 2;
+              paddingLeft + targetIdx * colSpacing + colSpacing / 2;
 
-            // Constrain tooltip horizontally to stay inside chart
             const tooltipWidth = 145;
             const tooltipHeight = 70;
             const tooltipX = Math.min(
               chartWidth + paddingLeft - tooltipWidth,
               Math.max(paddingLeft, colCenterX + 12)
             );
-            const tooltipY = Math.max(
-              paddingTop,
-              paddingTop + 60
-            );
+            const tooltipY = Math.max(paddingTop, paddingTop + 60);
 
             return (
-              <g className="chart-tooltip-group" pointerEvents="none">
+              <g
+                className="chart-tooltip-group"
+                pointerEvents="none"
+                style={{
+                  transform: `translate(${tooltipX}px, ${tooltipY}px)`,
+                  transition: 'transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease',
+                  opacity: hasData ? 1 : 0,
+                }}
+              >
                 {/* Tooltip Background Card */}
                 <rect
-                  x={tooltipX}
-                  y={tooltipY}
+                  x={0}
+                  y={0}
                   width={tooltipWidth}
                   height={tooltipHeight}
                   rx="6"
                   fill={isDark ? '#181822' : '#FFFFFF'}
                   stroke={isDark ? '#2E2E3E' : '#E0E0E0'}
                   strokeWidth="1"
-                  filter={isDark ? "drop-shadow(0px 4px 12px rgba(0,0,0,0.8))" : "drop-shadow(0px 4px 8px rgba(0,0,0,0.06))"}
+                  filter={
+                    isDark
+                      ? 'drop-shadow(0px 4px 12px rgba(0,0,0,0.8))'
+                      : 'drop-shadow(0px 4px 8px rgba(0,0,0,0.06))'
+                  }
                 />
 
                 {/* Tooltip Header: Month & Year */}
                 <text
-                  x={tooltipX + 12}
-                  y={tooltipY + 18}
+                  x={12}
+                  y={18}
                   className="tooltip-header"
                   fill={isDark ? '#FFFFFF' : '#111111'}
                 >
@@ -325,56 +354,56 @@ export default function SquareBlockChart({
 
                 {/* Tooltip Row 1: Books Issued */}
                 <rect
-                  x={tooltipX + 12}
-                  y={tooltipY + 28}
+                  x={12}
+                  y={28}
                   width="7"
                   height="7"
                   rx="0.5"
                   fill={isDark ? '#FFFFFF' : '#111111'}
                 />
                 <text
-                  x={tooltipX + 24}
-                  y={tooltipY + 35}
+                  x={24}
+                  y={35}
                   className="tooltip-label"
                   fill={isDark ? '#A1A1AA' : '#666666'}
                 >
                   Books Issued
                 </text>
                 <text
-                  x={tooltipX + tooltipWidth - 12}
-                  y={tooltipY + 35}
+                  x={tooltipWidth - 12}
+                  y={35}
                   textAnchor="end"
                   className="tooltip-value"
                   fill={isDark ? '#FFFFFF' : '#111111'}
                 >
-                  {formatK(activeItem.issued)}
+                  {formatK(activeItem.issued || 0)}
                 </text>
 
                 {/* Tooltip Row 2: Books Returned */}
                 <rect
-                  x={tooltipX + 12}
-                  y={tooltipY + 46}
+                  x={12}
+                  y={46}
                   width="7"
                   height="7"
                   rx="0.5"
                   fill={isDark ? '#4B4B58' : '#D4D4D4'}
                 />
                 <text
-                  x={tooltipX + 24}
-                  y={tooltipY + 53}
+                  x={24}
+                  y={53}
                   className="tooltip-label"
                   fill={isDark ? '#A1A1AA' : '#666666'}
                 >
                   Books Returned
                 </text>
                 <text
-                  x={tooltipX + tooltipWidth - 12}
-                  y={tooltipY + 53}
+                  x={tooltipWidth - 12}
+                  y={53}
                   textAnchor="end"
                   className="tooltip-value"
                   fill={isDark ? '#FFFFFF' : '#111111'}
                 >
-                  {formatK(activeItem.returned)}
+                  {formatK(activeItem.returned || 0)}
                 </text>
               </g>
             );
