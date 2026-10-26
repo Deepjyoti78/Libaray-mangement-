@@ -11,6 +11,13 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminBookingsPage from './pages/AdminBookingsPage';
 import AdminCheckinPage from './pages/AdminCheckinPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
+import AdminCatalogPage from './pages/AdminCatalogPage';
+import AdminMembersPage from './pages/AdminMembersPage';
+import AdminLoansPage from './pages/AdminLoansPage';
+import AdminFinesPage from './pages/AdminFinesPage';
+import AdminReportsPage from './pages/AdminReportsPage';
+import AdminLibrariansPage from './pages/AdminLibrariansPage';
+import AdminBranchesPage from './pages/AdminBranchesPage';
 import AdminLayout from './components/AdminLayout';
 
 export default function App() {
@@ -31,16 +38,17 @@ export default function App() {
           {/* Protected Staff Operations Routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="catalog" element={<AdminCatalogPage />} />
+            <Route path="members" element={<AdminMembersPage />} />
+            <Route path="loans" element={<AdminLoansPage />} />
             <Route path="bookings" element={<AdminBookingsPage />} />
+            <Route path="reservations" element={<AdminBookingsPage />} />
+            <Route path="fines" element={<AdminFinesPage />} />
+            <Route path="reports" element={<AdminReportsPage />} />
+            <Route path="librarians" element={<AdminLibrariansPage />} />
+            <Route path="branches" element={<AdminBranchesPage />} />
             <Route path="check-in" element={<AdminCheckinPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
-            <Route path="catalog" element={<Navigate to="/admin" replace />} />
-            <Route path="members" element={<Navigate to="/admin" replace />} />
-            <Route path="loans" element={<Navigate to="/admin" replace />} />
-            <Route path="fines" element={<Navigate to="/admin" replace />} />
-            <Route path="reports" element={<Navigate to="/admin" replace />} />
-            <Route path="librarians" element={<Navigate to="/admin" replace />} />
-            <Route path="branches" element={<Navigate to="/admin" replace />} />
           </Route>
 
           {/* Catch-all redirect */}

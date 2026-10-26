@@ -56,17 +56,39 @@ export default function AdminLayout() {
 
   // Derive active breadcrumb
   const getBreadcrumb = () => {
-    if (location.pathname === '/admin' || location.pathname === '/admin/') {
+    const p = location.pathname;
+    if (p === '/admin' || p === '/admin/') {
       return { parent: 'Dashboard', current: 'Overview' };
     }
-    if (location.pathname.includes('bookings')) {
-      return { parent: 'Dashboard', current: 'Reservations' };
+    if (p.includes('catalog')) {
+      return { parent: 'Collections', current: 'Book Catalog' };
     }
-    if (location.pathname.includes('check-in')) {
-      return { parent: 'Dashboard', current: 'Circulation Check-in' };
+    if (p.includes('members')) {
+      return { parent: 'Patrons', current: 'Members Directory' };
     }
-    if (location.pathname.includes('settings')) {
-      return { parent: 'Administration', current: 'Settings' };
+    if (p.includes('loans')) {
+      return { parent: 'Circulation', current: 'Loans & Returns Desk' };
+    }
+    if (p.includes('bookings') || p.includes('reservations')) {
+      return { parent: 'Operations', current: 'Reservations' };
+    }
+    if (p.includes('fines')) {
+      return { parent: 'Circulation', current: 'Fines & Payments' };
+    }
+    if (p.includes('reports')) {
+      return { parent: 'Analytics', current: 'Reports & Circulation' };
+    }
+    if (p.includes('librarians')) {
+      return { parent: 'Administration', current: 'Librarians & Roles' };
+    }
+    if (p.includes('branches')) {
+      return { parent: 'Administration', current: 'Branches & Spaces' };
+    }
+    if (p.includes('check-in')) {
+      return { parent: 'Operations', current: 'QR Check-in Station' };
+    }
+    if (p.includes('settings')) {
+      return { parent: 'Administration', current: 'System Settings' };
     }
     return { parent: 'Dashboard', current: 'Overview' };
   };
@@ -118,12 +140,6 @@ export default function AdminLayout() {
               <NavLink
                 to="/admin/catalog"
                 className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
-                onClick={(e) => {
-                  if (location.pathname === '/admin') {
-                    e.preventDefault();
-                    setSearchModalOpen(true);
-                  }
-                }}
               >
                 <BookOpen size={18} className="nav-link-icon" />
                 <span className="nav-link-text">Book Catalog</span>
@@ -132,12 +148,6 @@ export default function AdminLayout() {
               <NavLink
                 to="/admin/members"
                 className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
-                onClick={(e) => {
-                  if (location.pathname === '/admin') {
-                    e.preventDefault();
-                    setSearchModalOpen(true);
-                  }
-                }}
               >
                 <Users size={18} className="nav-link-icon" />
                 <span className="nav-link-text">Members</span>
@@ -146,13 +156,6 @@ export default function AdminLayout() {
               <NavLink
                 to="/admin/loans"
                 className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
-                onClick={(e) => {
-                  if (location.pathname === '/admin') {
-                    e.preventDefault();
-                    const tbl = document.querySelector('.recent-activity-card');
-                    tbl?.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
               >
                 <ArrowLeftRight size={18} className="nav-link-icon" />
                 <span className="nav-link-text">Loans &amp; Returns</span>
