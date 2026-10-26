@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check } from 'lucide-react';
+import { X, Check, ArrowLeftRight, Calendar, User, BookOpen, Clock, AlertCircle } from 'lucide-react';
 
 export default function AddTransactionModal({ isOpen, onClose, onCreated }) {
   const [memberName, setMemberName] = useState('');
@@ -13,6 +13,21 @@ export default function AddTransactionModal({ isOpen, onClose, onCreated }) {
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
+
+  const handlePresetDays = (days) => {
+    const base = issueDate ? new Date(issueDate) : new Date();
+    const newDue = new Date(base.getTime() + days * 86400000);
+    setDueDate(newDue.toISOString().split('T')[0]);
+  };
+
+  const handleIssueDateChange = (val) => {
+    setIssueDate(val);
+    if (val) {
+      const base = new Date(val);
+      const newDue = new Date(base.getTime() + 14 * 86400000);
+      setDueDate(newDue.toISOString().split('T')[0]);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,72 +66,116 @@ export default function AddTransactionModal({ isOpen, onClose, onCreated }) {
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">Add Loan Transaction</h3>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Close dialog">
+    <div className="modal-backdrop-overlay" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="modal-card-dialog add-transaction-modal-card" onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="modal-dialog-header">
+          <div className="modal-header-text">
+            <span className="dialog-eyebrow">
+              <ArrowLeftRight size={12} className="eyebrow-icon" />
+              CIRCULATION DESK
+            </span>
+            <h2 className="dialog-title">Add Loan Transaction</h2>
+          </div>
+          <button
+            type="button"
+            className="dialog-close-btn"
+            onClick={onClose}
+            aria-label="Close dialog"
+          >
             <X size={18} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          {error && <div className="modal-error-banner">{error}</div>}
-
-          <div className="form-field">
-            <label className="field-label">Member Full Name</label>
-            <input
-              type="text"
-              className="field-input"
-              placeholder="e.g. Ryan Korsgaard"
-              value={memberName}
-              onChange={(e) => setMemberName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-field">
-            <label className="field-label">Book Title</label>
-            <input
-              type="text"
-              className="field-input"
-              placeholder="e.g. Clean Code"
-              value={bookTitle}
-              onChange={(e) => setBookTitle(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-field-row">
-            <div className="form-field">
-              <label className="field-label">Transaction Type</label>
-              <select
-                className="field-select"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
-                <option value="Loan">Loan</option>
-                <option value="Renewal">Renewal</option>
-                <option value="Return">Return</option>
-              </select>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="catalog-modal-form add-transaction-form">
+          {error && (
+            <div className="dialog-error-banner">
+              <AlertCircle size={15} />
+              <span>{error}</span>
             </div>
+          )}
 
-            <div className="form-field">
-              <label className="field-label">Issue Date</label>
+          {/* Member Name */}
+          <div className="form-field-item">
+            <label htmlFor="txn-member-name">
+              Member Full Name <span className="required-star">*</span>
+            </label>
+            <div className="input-with-icon">
+              <User size={15} className="field-adornment-icon" />
               <input
+                id="txn-member-name"
+                type="text"
+                placeholder="e.g. Ryan Korsgaard or Aoi Kinoshita"
+                value={memberName}
+                onChange={(e) => setMemberName(e.target.value)}
+                autoFocus
+                required
+              />
+            </div>
+          </div>
+
+          {/* Book Title */}
+          <div className="form-field-item">
+            <label htmlFor="txn-book-title">
+              Book Title <span className="required-star">*</span>
+            </label>
+            <div className="input-with-icon">
+              <BookOpen size={15} className="field-adornment-icon" />
+              <input
+                id="txn-book-title"
+                type="text"
+                placeholder="e.g. Clean Code or Norwegian Wood"
+                value={bookTitle}
+                onChange={(e) => setBookTitle(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Transaction Type Segmented Selection */}
+          <div className="form-field-item">
+            <label>Transaction Type</label>
+            <div className="transaction-type-selector" role="radiogroup" aria-label="Transaction Type">
+              {['Loan', 'Renewal', 'Return'].map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="radio"
+                  aria-checked={type === t}
+                  className={`type-pill-btn ${type === t ? 'active' : ''}`}
+                  onClick={() => setType(t)}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Date Range: Issue Date & Due Date side-by-side in 2 columns */}
+          <div className="form-grid-2col dates-grid-row">
+            <div className="form-field-item">
+              <label htmlFor="txn-issue-date">
+                <Calendar size={13} className="label-icon" />
+                Issue Date <span className="required-star">*</span>
+              </label>
+              <input
+                id="txn-issue-date"
                 type="date"
-                className="field-input"
                 value={issueDate}
-                onChange={(e) => setIssueDate(e.target.value)}
+                onChange={(e) => handleIssueDateChange(e.target.value)}
                 required
               />
             </div>
 
-            <div className="form-field">
-              <label className="field-label">Due Date</label>
+            <div className="form-field-item">
+              <label htmlFor="txn-due-date">
+                <Clock size={13} className="label-icon" />
+                Due Date <span className="required-star">*</span>
+              </label>
               <input
+                id="txn-due-date"
                 type="date"
-                className="field-input"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
                 required
@@ -124,12 +183,56 @@ export default function AddTransactionModal({ isOpen, onClose, onCreated }) {
             </div>
           </div>
 
-          <div className="modal-footer">
-            <button type="button" className="btn-cancel" onClick={onClose}>
+          {/* Quick Duration Presets */}
+          <div className="duration-presets-row">
+            <span className="presets-caption">Quick Presets:</span>
+            <button
+              type="button"
+              className="duration-chip-btn"
+              onClick={() => handlePresetDays(7)}
+            >
+              +7 Days
+            </button>
+            <button
+              type="button"
+              className="duration-chip-btn active"
+              onClick={() => handlePresetDays(14)}
+            >
+              +14 Days (Standard)
+            </button>
+            <button
+              type="button"
+              className="duration-chip-btn"
+              onClick={() => handlePresetDays(21)}
+            >
+              +21 Days
+            </button>
+            <button
+              type="button"
+              className="duration-chip-btn"
+              onClick={() => handlePresetDays(28)}
+            >
+              +28 Days
+            </button>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="modal-dialog-footer">
+            <button
+              type="button"
+              className="dialog-secondary-btn"
+              onClick={onClose}
+              disabled={loading}
+            >
               Cancel
             </button>
-            <button type="submit" className="btn-confirm" disabled={loading}>
-              {loading ? 'Recording...' : 'Confirm Transaction'}
+            <button
+              type="submit"
+              className="action-primary-btn"
+              disabled={loading}
+            >
+              <Check size={16} />
+              <span>{loading ? 'Recording...' : 'Confirm Transaction'}</span>
             </button>
           </div>
         </form>

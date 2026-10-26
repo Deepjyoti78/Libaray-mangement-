@@ -3758,6 +3758,148 @@ input.rapid-scanner-input,
   max-width: 490px;
 }
 
+/* Add Loan Transaction Modal Enhancement */
+.add-transaction-modal-card {
+  max-width: 550px !important;
+}
+
+.add-transaction-form {
+  padding: 22px 26px 20px 26px !important;
+  gap: 16px !important;
+}
+
+.dialog-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: 8px;
+  color: #B91C1C;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.eyebrow-icon {
+  margin-right: 5px;
+  vertical-align: -1px;
+}
+
+.label-icon {
+  margin-right: 5px;
+  vertical-align: -2px;
+  color: var(--mono-text-muted);
+}
+
+.required-star {
+  color: #EF4444;
+  margin-left: 2px;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.field-adornment-icon {
+  position: absolute;
+  left: 12px;
+  pointer-events: none;
+  color: var(--mono-text-muted);
+  transition: color 0.15s ease;
+  z-index: 2;
+}
+
+.input-with-icon input {
+  padding-left: 36px !important;
+  width: 100%;
+}
+
+.input-with-icon input:focus + .field-adornment-icon,
+.input-with-icon:focus-within .field-adornment-icon {
+  color: var(--mono-text-primary);
+}
+
+.transaction-type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  background-color: #F1F3F5;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--mono-border);
+}
+
+.type-pill-btn {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--mono-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.type-pill-btn:hover {
+  color: var(--mono-text-primary);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.type-pill-btn.active {
+  background-color: #FFFFFF;
+  color: #111111;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.duration-presets-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: -6px;
+}
+
+.presets-caption {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--mono-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+}
+
+.duration-chip-btn {
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 500;
+  border-radius: 9999px;
+  border: 1px solid var(--mono-border);
+  background-color: #F9FAFB;
+  color: var(--mono-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.duration-chip-btn:hover {
+  background-color: #F3F4F6;
+  border-color: #D1D5DB;
+  color: #111111;
+}
+
+.duration-chip-btn.active {
+  background-color: #111111;
+  color: #FFFFFF;
+  border-color: #111111;
+}
+
 .admin-confirm-header,
 .retire-modal-header {
   display: flex;
@@ -8845,6 +8987,75 @@ body.black-theme .editorial-header-left .label,
 .black-theme .inspector-synopsis-box p {
   color: #F4F4F6 !important;
 }
+
+/* Dark mode for Add Loan Transaction Modal */
+.monochrome-dashboard-layout.black-theme .add-transaction-modal-card,
+[data-theme="dark"] .add-transaction-modal-card,
+.black-theme .add-transaction-modal-card {
+  background-color: #141416 !important;
+  border-color: #262632 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .dialog-error-banner,
+[data-theme="dark"] .dialog-error-banner,
+.black-theme .dialog-error-banner {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #F87171 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .transaction-type-selector,
+[data-theme="dark"] .transaction-type-selector,
+.black-theme .transaction-type-selector {
+  background-color: #0E0E12 !important;
+  border-color: #242430 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .type-pill-btn,
+[data-theme="dark"] .type-pill-btn,
+.black-theme .type-pill-btn {
+  color: #9CA3AF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .type-pill-btn:hover,
+[data-theme="dark"] .type-pill-btn:hover,
+.black-theme .type-pill-btn:hover {
+  color: #FFFFFF !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .type-pill-btn.active,
+[data-theme="dark"] .type-pill-btn.active,
+.black-theme .type-pill-btn.active {
+  background-color: #262634 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .duration-chip-btn,
+[data-theme="dark"] .duration-chip-btn,
+.black-theme .duration-chip-btn {
+  background-color: #181820 !important;
+  border-color: #282836 !important;
+  color: #9CA3AF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .duration-chip-btn:hover,
+[data-theme="dark"] .duration-chip-btn:hover,
+.black-theme .duration-chip-btn:hover {
+  background-color: #22222E !important;
+  color: #FFFFFF !important;
+  border-color: #3C3C4E !important;
+}
+
+.monochrome-dashboard-layout.black-theme .duration-chip-btn.active,
+[data-theme="dark"] .duration-chip-btn.active,
+.black-theme .duration-chip-btn.active {
+  background-color: #FFFFFF !important;
+  color: #111116 !important;
+  border-color: #FFFFFF !important;
+}
+
 
 
 
