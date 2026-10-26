@@ -1,6 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Calendar, Menu, X, Ticket, LayoutDashboard, ArrowRight } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  Calendar,
+  Menu,
+  X,
+  Ticket,
+  LayoutDashboard,
+  ArrowRight,
+  Home,
+  Info,
+  BookOpen,
+  Sprout,
+  Map,
+  CreditCard,
+  Phone,
+  ChevronRight,
+  ChevronsLeft
+} from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Home', href: '#home' },
@@ -12,11 +28,22 @@ const NAV_LINKS = [
   { label: 'Contact', href: '#contact' },
 ];
 
+const MOBILE_NAV_ITEMS = [
+  { label: 'Home', href: '#home', icon: Home },
+  { label: 'About', href: '#about', icon: Info },
+  { label: 'Reading Room', href: '#reading-room', icon: BookOpen },
+  { label: 'Manga Corner', href: '#manga-corner', icon: Sprout },
+  { label: 'Visit Guide', href: '#visit', icon: Map },
+  { label: 'My Pass', href: '/my-booking', icon: CreditCard },
+  { label: 'Contact', href: '#contact', icon: Phone },
+];
+
 export default function Header({ onBookSlot }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeLang, setActiveLang] = useState('EN');
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,18 +54,44 @@ export default function Header({ onBookSlot }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
   const handleNavClick = (e, href) => {
     if (href.startsWith('#')) {
       e.preventDefault();
-      const el = document.querySelector(href);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+      if (location.pathname !== '/') {
+        navigate('/' + href);
+      } else {
+        const el = document.querySelector(href);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     } else {
       e.preventDefault();
       navigate(href);
     }
     setMobileOpen(false);
+  };
+
+  const isItemActive = (item) => {
+    if (item.href === '#home') {
+      return location.pathname === '/' && (!location.hash || location.hash === '#home' || location.hash === '');
+    }
+    if (item.href.startsWith('#')) {
+      return location.pathname === '/' && location.hash === item.href;
+    }
+    return location.pathname === item.href;
   };
 
   return (
@@ -128,82 +181,140 @@ export default function Header({ onBookSlot }) {
         </div>
       </header>
 
-      {/* Mobile navigation drawer */}
-      <div
-        className={`mobile-menu${mobileOpen ? ' open' : ''}`}
-        role="dialog"
-        aria-label="Mobile navigation"
-      >
-        <div className="mobile-menu-inner">
-          <div className="mobile-nav-links">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="mobile-nav-link"
-                onClick={(e) => handleNavClick(e, link.href)}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
+      {/* Mobile Navigation Drawer Backdrop */}
+      {mobileOpen && (
+        <div
+          className="mobile-drawer-backdrop"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-          <div className="mobile-menu-actions">
-            <div className="header-lang" role="group" aria-label="Language selection">
-              <button
-                type="button"
-                className={`lang-option ${activeLang === 'EN' ? 'active' : ''}`}
-                onClick={() => setActiveLang('EN')}
-              >
-                EN
-              </button>
-              <span className="lang-sep" aria-hidden="true">/</span>
-              <button
-                type="button"
-                className={`lang-option ${activeLang === 'JA' ? 'active' : ''}`}
-                onClick={() => setActiveLang('JA')}
-              >
-                日本語
-              </button>
+      {/* Mobile Navigation Drawer Panel matching reference mockup */}
+      <aside
+        className={`mobile-drawer-panel ${mobileOpen ? 'open' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation drawer"
+      >
+        <div className="mobile-drawer-inner">
+          {/* Drawer Top Header */}
+          <div className="mobile-drawer-header">
+            <div className="drawer-brand-group">
+              <div className="drawer-book-icon-wrap" aria-hidden="true">
+                <BookOpen size={24} className="drawer-book-icon" />
+              </div>
+              <div className="drawer-wordmark">
+                <span className="drawer-title">The Library</span>
+                <span className="drawer-tagline">Read · Explore · Belong</span>
+              </div>
             </div>
+
             <button
               type="button"
-              className="header-book-btn full-width"
+              className="drawer-close-btn"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close navigation drawer"
+            >
+              <ChevronsLeft size={18} />
+            </button>
+          </div>
+
+          {/* Navigation Links List */}
+          <nav className="drawer-nav-list" aria-label="Mobile Navigation">
+            {MOBILE_NAV_ITEMS.map((item) => {
+              const IconComp = item.icon;
+              const active = isItemActive(item);
+
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={`drawer-nav-item ${active ? 'active' : ''}`}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                >
+                  <div className="drawer-item-left">
+                    <span className="drawer-item-icon-box">
+                      <IconComp size={18} className="drawer-item-icon" />
+                    </span>
+                    <span className="drawer-item-label">{item.label}</span>
+                  </div>
+                  <ChevronRight size={16} className="drawer-item-chevron" />
+                </a>
+              );
+            })}
+          </nav>
+
+          <div className="drawer-section-divider" aria-hidden="true" />
+
+          {/* Action CTAs */}
+          <div className="drawer-actions-stack">
+            <button
+              type="button"
+              className="drawer-action-primary"
               onClick={() => {
                 onBookSlot?.();
                 setMobileOpen(false);
               }}
               aria-label="Reserve a Visit"
             >
-              <Calendar className="btn-icon" />
-              <span>Reserve a Visit</span>
-              <ArrowRight className="btn-icon-arrow" />
+              <div className="drawer-btn-left">
+                <Calendar size={18} />
+                <span>Reserve a Visit</span>
+              </div>
+              <ArrowRight size={16} />
             </button>
+
             <button
               type="button"
-              className="header-book-btn full-width mobile-pass-btn"
+              className="drawer-action-secondary"
               onClick={() => {
                 navigate('/my-booking');
                 setMobileOpen(false);
               }}
             >
-              <Ticket className="btn-icon" />
-              <span>Find My Pass</span>
+              <div className="drawer-btn-left">
+                <Ticket size={18} />
+                <span>Find My Pass</span>
+              </div>
+              <ChevronRight size={16} />
             </button>
+
             <button
               type="button"
-              className="header-book-btn full-width mobile-dashboard-btn"
+              className="drawer-action-secondary"
               onClick={() => {
                 navigate('/admin');
                 setMobileOpen(false);
               }}
             >
-              <LayoutDashboard className="btn-icon" />
-              <span>Staff Dashboard</span>
+              <div className="drawer-btn-left">
+                <LayoutDashboard size={18} />
+                <span>Staff Dashboard</span>
+              </div>
+              <ChevronRight size={16} />
             </button>
           </div>
+
+          {/* Bottom Ambient Inspiration Card */}
+          <div className="drawer-ambient-card">
+            <div className="drawer-ambient-content">
+              <p className="drawer-ambient-quote">
+                A quiet place<br />
+                for curious minds.
+              </p>
+              <div className="drawer-ambient-line" aria-hidden="true" />
+            </div>
+            <div className="drawer-ambient-img-wrap" aria-hidden="true">
+              <img
+                src="/images/books-literature.jpg"
+                alt=""
+                className="drawer-ambient-img"
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 }
