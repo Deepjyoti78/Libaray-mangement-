@@ -113,7 +113,7 @@ export default function HeroSection({ onBookSlot }) {
               >
                 <div className="hero-card-img-wrap">
                   <img
-                    src="/images/community-lounge.jpg"
+                    src="/images/library-reading-area.webp"
                     alt="Community Area"
                     className="hero-card-img"
                     loading="eager"
