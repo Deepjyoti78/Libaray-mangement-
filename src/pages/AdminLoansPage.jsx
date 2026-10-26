@@ -435,7 +435,15 @@ export default function AdminLoansPage() {
 
       {/* 3. KPI Metrics Bar */}
       <div className="bookings-kpi-grid">
-        <div className="bookings-kpi-card">
+        <div
+          className={`bookings-kpi-card ${activeTab === 'active' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab(activeTab === 'active' ? 'all' : 'active');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-top-row">
             <span className="kpi-label">ACTIVE BORROWINGS</span>
             <div className="kpi-icon-wrap"><ArrowLeftRight size={17} /></div>
@@ -446,7 +454,15 @@ export default function AdminLoansPage() {
           </div>
         </div>
 
-        <div className="bookings-kpi-card">
+        <div
+          className={`bookings-kpi-card ${activeTab === 'due_soon' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab(activeTab === 'due_soon' ? 'all' : 'due_soon');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-top-row">
             <span className="kpi-label">DUE TODAY / SOON</span>
             <div className="kpi-icon-wrap"><Clock size={17} /></div>
@@ -457,7 +473,15 @@ export default function AdminLoansPage() {
           </div>
         </div>
 
-        <div className="bookings-kpi-card">
+        <div
+          className={`bookings-kpi-card ${activeTab === 'overdue' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab(activeTab === 'overdue' ? 'all' : 'overdue');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-top-row">
             <span className="kpi-label">OVERDUE ITEMS</span>
             <div className="kpi-icon-wrap"><AlertCircle size={17} /></div>
@@ -468,7 +492,15 @@ export default function AdminLoansPage() {
           </div>
         </div>
 
-        <div className="bookings-kpi-card">
+        <div
+          className={`bookings-kpi-card ${activeTab === 'returned' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab(activeTab === 'returned' ? 'all' : 'returned');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-top-row">
             <span className="kpi-label">CHECKED IN TODAY</span>
             <div className="kpi-icon-wrap"><CheckCircle2 size={17} /></div>
@@ -531,7 +563,7 @@ export default function AdminLoansPage() {
       </div>
 
       {/* 5. Loans Data Table */}
-      <div className="bookings-table-wrapper">
+      <div key={`${activeTab}-${currentPage}`} className="bookings-table-wrapper table-transition-wrap">
         <table className="bookings-data-table">
           <thead>
             <tr>

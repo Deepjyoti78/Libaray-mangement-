@@ -4771,7 +4771,10 @@ ul, ol {
   border-radius: 8px;
   padding: 0.5rem 0.8rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -4784,12 +4787,18 @@ ul, ol {
 
 .facility-pill-card:hover {
   border-color: #B8ADA2;
+  transform: translateY(-1px);
+}
+
+.facility-pill-card:active {
+  transform: translateY(0);
 }
 
 .facility-pill-card.selected {
   border: 1.5px solid #AC512E;
   background: #FAF6F2;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(172, 81, 46, 0.12);
+  transform: translateY(-1px);
 }
 
 .facility-pill-top {
@@ -5017,7 +5026,10 @@ ul, ol {
   border-radius: 8px;
   padding: 0.5rem 0.8rem;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -5030,18 +5042,41 @@ ul, ol {
 
 .session-pill-card:hover:not(.disabled) {
   border-color: #B8ADA2;
+  transform: translateY(-1px);
+}
+
+.session-pill-card:active:not(.disabled) {
+  transform: translateY(0);
 }
 
 .session-pill-card.selected {
   border: 1.5px solid #AC512E;
   background: #FAF6F2;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(172, 81, 46, 0.12);
+  transform: translateY(-1px);
 }
 
 .session-pill-card.disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background: #EFEBE4;
+}
+
+/* Wizard Smooth Step Transitions */
+@keyframes wizardStepFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wizard-step-transition {
+  animation: wizardStepFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
 }
 
 .session-pill-top {

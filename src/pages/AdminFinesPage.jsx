@@ -341,7 +341,15 @@ export default function AdminFinesPage() {
 
       {/* 2. KPI Metrics Bar */}
       <div className="bookings-kpi-grid">
-        <div className="bookings-kpi-card">
+        <div
+          className={`bookings-kpi-card ${activeTab === 'pending' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab(activeTab === 'pending' ? 'all' : 'pending');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-top-row">
             <span className="kpi-label">OUTSTANDING UNPAID</span>
             <div className="kpi-icon-wrap"><AlertCircle size={17} /></div>
@@ -352,7 +360,15 @@ export default function AdminFinesPage() {
           </div>
         </div>
 
-        <div className="bookings-kpi-card">
+        <div
+          className={`bookings-kpi-card ${activeTab === 'paid' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab(activeTab === 'paid' ? 'all' : 'paid');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-top-row">
             <span className="kpi-label">COLLECTED THIS MONTH</span>
             <div className="kpi-icon-wrap"><Receipt size={17} /></div>
@@ -363,7 +379,15 @@ export default function AdminFinesPage() {
           </div>
         </div>
 
-        <div className="bookings-kpi-card">
+        <div
+          className={`bookings-kpi-card ${activeTab === 'waived' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab(activeTab === 'waived' ? 'all' : 'waived');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-top-row">
             <span className="kpi-label">WAIVED / EXEMPTED</span>
             <div className="kpi-icon-wrap"><CheckCircle2 size={17} /></div>
@@ -437,7 +461,7 @@ export default function AdminFinesPage() {
       </div>
 
       {/* 4. Fines Ledger Table */}
-      <div className="bookings-table-wrapper">
+      <div key={`${activeTab}-${currentPage}`} className="bookings-table-wrapper table-transition-wrap">
         <table className="bookings-data-table">
           <thead>
             <tr>

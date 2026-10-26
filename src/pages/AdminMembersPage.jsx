@@ -557,7 +557,7 @@ export default function AdminMembersPage() {
       </div>
 
       {/* 4. Members Table */}
-      <div className="bookings-table-wrapper">
+      <div key={`${selectedTier}-${statusFilter}-${currentPage}`} className="bookings-table-wrapper table-transition-wrap">
         <table className="bookings-data-table">
           <thead>
             <tr>

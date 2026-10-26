@@ -536,11 +536,14 @@ export default function AdminBookingsPage() {
       </div>
 
       {/* 2. KPI Summary Cards */}
-      <section className="bookings-kpi-grid" aria-label="Key booking metrics">
+      <section className="bookings-kpi-grid five-cols" aria-label="Key booking metrics">
         {/* Total Bookings */}
         <div
           className={`bookings-kpi-card ${filterStatus === '' ? 'active' : ''}`}
-          onClick={() => setFilterStatus('')}
+          onClick={() => {
+            setFilterStatus('');
+            setCurrentPage(1);
+          }}
           role="button"
           tabIndex={0}
         >
@@ -560,7 +563,10 @@ export default function AdminBookingsPage() {
         {/* Confirmed / Expected */}
         <div
           className={`bookings-kpi-card ${filterStatus === 'confirmed' ? 'active' : ''}`}
-          onClick={() => setFilterStatus(filterStatus === 'confirmed' ? '' : 'confirmed')}
+          onClick={() => {
+            setFilterStatus(filterStatus === 'confirmed' ? '' : 'confirmed');
+            setCurrentPage(1);
+          }}
           role="button"
           tabIndex={0}
         >
@@ -580,7 +586,10 @@ export default function AdminBookingsPage() {
         {/* Checked In */}
         <div
           className={`bookings-kpi-card ${filterStatus === 'checked_in' ? 'active' : ''}`}
-          onClick={() => setFilterStatus(filterStatus === 'checked_in' ? '' : 'checked_in')}
+          onClick={() => {
+            setFilterStatus(filterStatus === 'checked_in' ? '' : 'checked_in');
+            setCurrentPage(1);
+          }}
           role="button"
           tabIndex={0}
         >
@@ -597,10 +606,36 @@ export default function AdminBookingsPage() {
           </div>
         </div>
 
+        {/* Completed */}
+        <div
+          className={`bookings-kpi-card ${filterStatus === 'completed' ? 'active' : ''}`}
+          onClick={() => {
+            setFilterStatus(filterStatus === 'completed' ? '' : 'completed');
+            setCurrentPage(1);
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="bookings-kpi-top">
+            <span className="bookings-kpi-label">COMPLETED</span>
+            <div className="bookings-kpi-icon-wrap">
+              <CheckCircle2 size={15} />
+            </div>
+          </div>
+          <div className="bookings-kpi-val">{statusCounts.completed}</div>
+          <div className="bookings-kpi-sub">
+            <span className="kpi-indicator-dot dot-completed" />
+            <span>Finished sessions</span>
+          </div>
+        </div>
+
         {/* Cancelled / Missed */}
         <div
           className={`bookings-kpi-card ${filterStatus === 'cancelled' ? 'active' : ''}`}
-          onClick={() => setFilterStatus(filterStatus === 'cancelled' ? '' : 'cancelled')}
+          onClick={() => {
+            setFilterStatus(filterStatus === 'cancelled' ? '' : 'cancelled');
+            setCurrentPage(1);
+          }}
           role="button"
           tabIndex={0}
         >
@@ -634,7 +669,10 @@ export default function AdminBookingsPage() {
               key={tab.id}
               type="button"
               className={`filter-status-tab ${filterStatus === tab.id ? 'active' : ''}`}
-              onClick={() => setFilterStatus(tab.id)}
+              onClick={() => {
+                setFilterStatus(tab.id);
+                setCurrentPage(1);
+              }}
               role="tab"
               aria-selected={filterStatus === tab.id}
             >
@@ -816,7 +854,7 @@ export default function AdminBookingsPage() {
             </p>
           </div>
         ) : bookings.length === 0 ? (
-          <div className="td-empty" style={{ padding: '60px 20px' }}>
+          <div key={`empty-${filterStatus}`} className="td-empty table-transition-wrap" style={{ padding: '60px 20px' }}>
             <CalendarDays size={36} style={{ color: 'var(--mono-text-muted)', marginBottom: '12px' }} />
             <p style={{ margin: '0 0 6px 0', fontWeight: 600, color: 'var(--mono-text-primary)' }}>
               No reservation passes found
@@ -833,7 +871,7 @@ export default function AdminBookingsPage() {
             )}
           </div>
         ) : (
-          <div className="table-responsive-container">
+          <div key={`table-${filterStatus}-${currentPage}`} className="table-responsive-container table-transition-wrap">
             <table className="monochrome-table">
               <thead>
                 <tr>

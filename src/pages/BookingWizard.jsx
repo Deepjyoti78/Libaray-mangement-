@@ -531,7 +531,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
               STEP 1: SELECTION VIEW (Facility + Calendar & Slot Side-by-Side)
               ===================================================================== */}
           {step === 1 && (
-            <div className="step-selection-layout-clean">
+            <div key="step-1" className="step-selection-layout-clean wizard-step-transition">
               <header className="step-intro-header-art">
                 <div className="step-intro-text-col">
                   <div className="category-tag-row">
@@ -830,7 +830,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
               STEP 2: VISITOR DETAILS (Mockup 2: "Tell us about yourself")
               ===================================================================== */}
           {step === 2 && (
-            <div className="step-details-layout-clean">
+            <div key="step-2" className="step-details-layout-clean wizard-step-transition">
               <header className="step-intro-header-art">
                 <div className="step-intro-text-col">
                   <div className="category-tag-row">
@@ -997,7 +997,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
               STEP 3: REVIEW VIEW (Mockup 3 Left: "Almost there!")
               ===================================================================== */}
           {step === 3 && (
-            <div className="step-review-layout">
+            <div key="step-3" className="step-review-layout wizard-step-transition">
               <header className="step-intro-header">
                 <div className="category-tag-row">
                   <span className="category-tag">REVIEW YOUR VISIT</span>

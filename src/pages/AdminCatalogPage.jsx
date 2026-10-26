@@ -604,7 +604,7 @@ export default function AdminCatalogPage() {
       </div>
 
       {/* 4. Catalog Data Table */}
-      <div className="bookings-table-wrapper">
+      <div key={`${selectedCategory}-${statusFilter}-${currentPage}`} className="bookings-table-wrapper table-transition-wrap">
         <table className="bookings-data-table">
           <thead>
             <tr>

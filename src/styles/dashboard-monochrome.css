@@ -2313,14 +2313,28 @@
   gap: 16px;
 }
 
+.bookings-kpi-grid.five-cols {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 1280px) {
+  .bookings-kpi-grid.five-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 1024px) {
   .bookings-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bookings-kpi-grid.five-cols {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 640px) {
-  .bookings-kpi-grid {
+  .bookings-kpi-grid,
+  .bookings-kpi-grid.five-cols {
     grid-template-columns: 1fr;
   }
 }
@@ -2334,22 +2348,30 @@
   flex-direction: column;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   text-align: left;
 }
 
 .bookings-kpi-card:hover {
-  border-color: #BBBBBB;
+  border-color: #999999;
   background-color: #FAFAFA;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.bookings-kpi-card:active {
+  transform: translateY(0);
 }
 
 .bookings-kpi-card.active {
   border-color: #111111;
   background-color: #FFFFFF;
-  box-shadow: 0 0 0 1.5px #111111;
+  box-shadow: 0 0 0 1.5px #111111, 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .bookings-kpi-top {
@@ -2440,12 +2462,21 @@
   align-items: center;
   gap: 8px;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .filter-status-tab:hover {
   background-color: var(--mono-hover-bg);
   color: var(--mono-text-primary);
+  transform: translateY(-1px);
+}
+
+.filter-status-tab:active {
+  transform: translateY(0);
 }
 
 .filter-status-tab.active {
@@ -2453,6 +2484,8 @@
   color: #FFFFFF;
   border-color: #111111;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
 }
 
 .tab-count-badge {
@@ -2462,6 +2495,8 @@
   padding: 1px 7px;
   border-radius: 10px;
   font-weight: 600;
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .filter-status-tab.active .tab-count-badge {
@@ -2651,6 +2686,30 @@ input.bookings-search-input,
 .btn-bulk-deselect:hover {
   color: #FFFFFF;
   text-decoration: underline;
+}
+
+/* Smooth Table & Section Transitions */
+@keyframes tableSectionFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table-transition-wrap {
+  animation: tableSectionFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table-transition-wrap {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* Table Enhancements */
@@ -3272,19 +3331,30 @@ input.bookings-search-input,
   color: var(--mono-text-secondary);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cat-pill-tab:hover {
   background-color: #F4F4F4;
   color: var(--mono-text-primary);
   border-color: #CCCCCC;
+  transform: translateY(-1px);
+}
+
+.cat-pill-tab:active {
+  transform: translateY(0);
 }
 
 .cat-pill-tab.active {
   background-color: var(--mono-text-primary);
   color: #FFFFFF;
   border-color: var(--mono-text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
 }
 
 .cat-pill-tab .cat-count {
@@ -3293,6 +3363,8 @@ input.bookings-search-input,
   border-radius: var(--mono-radius-pill);
   background-color: rgba(0, 0, 0, 0.06);
   font-family: var(--mono-font);
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cat-pill-tab.active .cat-count {
@@ -7727,6 +7799,10 @@ body.black-theme .editorial-header-left .label,
   background-color: #111115 !important;
   border: 1px solid #202026 !important;
   color: #FFFFFF !important;
+  transition: border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .monochrome-dashboard-layout.black-theme .bookings-kpi-card:hover,
@@ -7734,8 +7810,14 @@ body.black-theme .editorial-header-left .label,
 .black-theme .bookings-kpi-card:hover {
   background-color: #161620 !important;
   border-color: #383848 !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .bookings-kpi-card:active,
+[data-theme="dark"] .bookings-kpi-card:active,
+.black-theme .bookings-kpi-card:active {
+  transform: translateY(0) !important;
 }
 
 .monochrome-dashboard-layout.black-theme .bookings-kpi-card.active,
@@ -7743,7 +7825,8 @@ body.black-theme .editorial-header-left .label,
 .black-theme .bookings-kpi-card.active {
   background-color: #161622 !important;
   border-color: #FFFFFF !important;
-  box-shadow: 0 0 0 1.5px #FFFFFF !important;
+  box-shadow: 0 0 0 1.5px #FFFFFF, 0 6px 20px rgba(255, 255, 255, 0.08) !important;
+  transform: translateY(-2px) !important;
 }
 
 .monochrome-dashboard-layout.black-theme .bookings-kpi-card .kpi-label,
