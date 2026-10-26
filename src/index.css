@@ -6450,14 +6450,15 @@ ul, ol {
 
   .facility-cards-row {
     grid-template-columns: 1fr 1fr;
-    gap: 0.65rem;
+    gap: 0.5rem;
   }
 
   .facility-pill-card {
     height: auto !important;
-    min-height: 64px !important;
+    min-height: 52px !important;
     max-height: none !important;
-    padding: 0.75rem 0.85rem !important;
+    padding: 0.45rem 0.65rem !important;
+    border-radius: 10px !important;
   }
 
   .facility-pill-desc {
@@ -6468,38 +6469,56 @@ ul, ol {
   .session-cards-column {
     display: flex !important;
     flex-direction: column !important;
-    gap: 0.65rem !important;
+    gap: 0.45rem !important;
     width: 100% !important;
   }
 
   .session-pill-card {
     height: auto !important;
-    min-height: 64px !important;
+    min-height: 48px !important;
     max-height: none !important;
-    padding: 0.75rem 0.85rem !important;
+    padding: 0.45rem 0.65rem !important;
+    border-radius: 10px !important;
     width: 100% !important;
+  }
+
+  .session-pill-top {
+    margin-bottom: 0.2rem !important;
+  }
+
+  .session-time-text {
+    font-size: 0.8rem !important;
+  }
+
+  .session-name-sub {
+    font-size: 0.68rem !important;
+  }
+
+  .capacity-indicator {
+    font-size: 0.65rem !important;
+    padding: 1px 6px !important;
   }
 
   .step1-cta-block {
     width: 100% !important;
     align-items: stretch !important;
-    margin-top: 1.25rem !important;
+    margin-top: 0.65rem !important;
   }
 
   .step1-primary-btn {
     width: 100% !important;
     justify-content: center !important;
-    padding: 0.85rem 1.25rem !important;
-    font-size: 0.92rem !important;
+    padding: 0.65rem 1rem !important;
+    font-size: 0.88rem !important;
     font-weight: 600 !important;
     border-radius: 10px !important;
-    min-height: 48px !important;
+    min-height: 44px !important;
   }
 
   .step1-cta-hint {
     text-align: center !important;
-    margin-top: 0.35rem !important;
-    font-size: 0.74rem !important;
+    margin-top: 0.25rem !important;
+    font-size: 0.68rem !important;
   }
 
   /* STEP 2: Form responsive adjustments */
@@ -6593,27 +6612,27 @@ ul, ol {
     border-radius: 8px !important;
   }
 
-  /* Terracotta CTA Button for Confirm Booking on mobile */
+  /* Espresso CTA Button for Confirm Booking on mobile (matching Continue to details) */
   .review-actions-bottom .confirm-btn,
   #confirm-reservation-btn,
   .confirm-btn {
-    background-color: var(--terracotta, #AC512E) !important;
-    background: var(--terracotta, #AC512E) !important;
+    background-color: var(--espresso, #352319) !important;
+    background: var(--espresso, #352319) !important;
     color: #FFFFFF !important;
-    border: 1px solid #944222 !important;
-    box-shadow: 0 4px 14px rgba(172, 81, 46, 0.28) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(53, 35, 25, 0.22) !important;
   }
 
   .review-actions-bottom .confirm-btn:hover:not(:disabled),
   #confirm-reservation-btn:hover:not(:disabled) {
-    background-color: #944222 !important;
-    background: #944222 !important;
+    background-color: #23160e !important;
+    background: #23160e !important;
   }
 
   .review-actions-bottom .confirm-btn:active,
   #confirm-reservation-btn:active {
-    background-color: #7D3518 !important;
-    background: #7D3518 !important;
+    background-color: #1a0f08 !important;
+    background: #1a0f08 !important;
     transform: scale(0.98) !important;
   }
 
@@ -6695,11 +6714,11 @@ ul, ol {
   /* Dialog transforms into an elegant native rounded card with sharper edges */
   .booking-modal-dialog {
     width: 100% !important;
-    max-width: 420px !important;
+    max-width: 410px !important;
     height: auto !important;
-    max-height: 82dvh !important;
+    max-height: 88dvh !important;
     margin: auto !important;
-    border-radius: 14px !important;
+    border-radius: 18px !important;
     overflow: hidden !important;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45) !important;
     animation: mobileModalSheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -6719,9 +6738,9 @@ ul, ol {
   /* Modal View inside page */
   .new-booking-page.modal-view {
     height: auto !important;
-    max-height: 82dvh !important;
+    max-height: 88dvh !important;
     min-height: auto !important;
-    border-radius: 14px !important;
+    border-radius: 18px !important;
     background: #FAF8F5 !important;
     display: flex !important;
     flex-direction: column !important;
@@ -6733,19 +6752,19 @@ ul, ol {
   .new-booking-page.modal-view::before {
     content: '';
     display: block;
-    width: 38px;
-    height: 4px;
+    width: 36px;
+    height: 3.5px;
     background: #D8CEBE;
     border-radius: 9999px;
-    margin: 10px auto 3px;
+    margin: 8px auto 2px;
     flex-shrink: 0;
   }
 
   .new-booking-page.modal-view .new-booking-container {
     height: auto !important;
     min-height: auto !important;
-    max-height: calc(82dvh - 16px) !important;
-    border-radius: 14px !important;
+    max-height: calc(88dvh - 14px) !important;
+    border-radius: 18px !important;
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
@@ -6754,13 +6773,13 @@ ul, ol {
 
   .new-booking-page.modal-view .booking-interactive-panel {
     height: auto !important;
-    max-height: calc(82dvh - 16px) !important;
+    max-height: calc(88dvh - 14px) !important;
     min-height: auto !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
-    padding: 0.35rem 1rem 1rem 1rem !important;
+    padding: 0.35rem 0.85rem 0.85rem 0.85rem !important;
   }
 
   .new-booking-page.modal-view .booking-interactive-panel::-webkit-scrollbar {
@@ -7055,7 +7074,7 @@ ul, ol {
   .step-review-layout .review-actions-bottom .confirm-btn {
     width: 100% !important;
     min-height: 48px !important;
-    background: #BA532B !important;
+    background: var(--espresso, #352319) !important;
     color: #FFFFFF !important;
     border: none !important;
     border-radius: 12px !important;
@@ -7066,14 +7085,14 @@ ul, ol {
     align-items: center !important;
     justify-content: center !important;
     gap: 0.5rem !important;
-    box-shadow: 0 4px 12px rgba(186, 83, 43, 0.22) !important;
+    box-shadow: 0 4px 12px rgba(53, 35, 25, 0.22) !important;
     cursor: pointer !important;
     padding: 0.75rem 1rem !important;
     transition: background-color 0.15s ease, transform 0.1s ease !important;
   }
 
   .step-review-layout .review-actions-bottom .confirm-btn:hover:not(:disabled) {
-    background: #A04523 !important;
+    background: #23160e !important;
   }
 
   .step-review-layout .review-actions-bottom .confirm-btn:active:not(:disabled) {
@@ -7123,70 +7142,86 @@ ul, ol {
     background: #DFD5C5 !important;
   }
 
-  /* Facility choices on smaller screens */
+  /* Facility choices on smaller screens - side-by-side & compact */
   .facility-cards-row {
-    grid-template-columns: 1fr !important;
-    gap: 0.55rem;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .facility-pill-card {
+    min-height: 52px !important;
+    height: auto !important;
+    padding: 0.45rem 0.65rem !important;
+    border-radius: 10px !important;
+  }
+
+  .step-selection-layout-clean .facility-sub-section {
+    margin-bottom: 0.55rem !important;
+  }
+
+  .step1-date-slot-grid {
+    gap: 0.55rem !important;
   }
 
   /* Calendar sizing & touch targets on mobile */
   .inline-calendar-box {
-    padding: 0.75rem 0.6rem !important;
+    padding: 0.45rem 0.55rem !important;
     border-radius: 10px !important;
   }
 
   .cal-header {
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.25rem !important;
     padding: 0 0.25rem !important;
   }
 
   .cal-arrow-btn {
-    width: 34px !important;
-    height: 34px !important;
+    width: 28px !important;
+    height: 28px !important;
     border-radius: 6px !important;
   }
 
   .cal-month-title {
-    font-size: 0.95rem !important;
+    font-size: 0.88rem !important;
   }
 
   .cal-weekdays-row {
-    margin-bottom: 0.35rem !important;
+    margin-bottom: 0.2rem !important;
   }
 
   .cal-weekday-cell {
-    font-size: 0.75rem !important;
+    font-size: 0.7rem !important;
     font-weight: 600 !important;
-    padding: 0.25rem 0 !important;
+    padding: 0.15rem 0 !important;
   }
 
   .cal-day-cell {
-    height: 38px !important;
+    height: 29px !important;
   }
 
   .day-number-bubble {
-    width: 34px !important;
-    height: 34px !important;
-    font-size: 0.88rem !important;
+    width: 27px !important;
+    height: 27px !important;
+    font-size: 0.8rem !important;
     font-weight: 500 !important;
-    border-radius: 7px !important;
+    border-radius: 6px !important;
   }
 
   .step-intro-header,
   .step-intro-header-art {
-    margin-bottom: 1.15rem !important;
-    padding-right: 2.5rem; /* Room for close button */
+    margin-bottom: 0.5rem !important;
+    padding-right: 2.25rem; /* Room for close button */
   }
 
   .step-main-title {
     font-size: 1.35rem !important;
-    line-height: 1.2 !important;
-    margin-bottom: 0.25rem !important;
+    line-height: 1.15 !important;
+    margin-bottom: 0.15rem !important;
   }
 
   .step-main-subtitle {
-    font-size: 0.8rem !important;
-    line-height: 1.4 !important;
+    font-size: 0.74rem !important;
+    line-height: 1.3 !important;
   }
 }
 
@@ -7291,17 +7326,15 @@ ul, ol {
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
-    max-width: 420px !important;
-    margin: auto !important;
+    max-width: 440px !important;
+    margin: auto 0 !important;
   }
 
-  /* Page root container on mobile: centered in screen with backdrop matching other card popups */
+  /* Page root container on mobile: centered in screen with elegant dark charcoal slate backdrop */
   .new-booking-page.confirmation-page-root {
-    background: rgba(18, 12, 8, 0.68) !important;
-    backdrop-filter: blur(5px) !important;
-    -webkit-backdrop-filter: blur(5px) !important;
+    background: #232527 !important;
     min-height: 100dvh !important;
-    padding: 1rem 0.75rem !important;
+    padding: 0.75rem 0.65rem 1.25rem !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -7309,10 +7342,10 @@ ul, ol {
     box-sizing: border-box !important;
   }
 
-  /* Mobile Sheet Card: compact floating rounded pass card with sharper modern edges matching popups */
+  /* Mobile Sheet Card: compact floating rounded pass card with soft ambient drop-shadow */
   .confirmation-mobile-card {
     background: #FAF8F5 !important;
-    border-radius: 14px !important;
+    border-radius: 18px !important;
     padding: 12px 14px 14px 14px !important;
     width: 100% !important;
     box-sizing: border-box !important;
