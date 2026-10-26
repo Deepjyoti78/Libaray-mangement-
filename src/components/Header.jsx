@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Menu, X, Ticket, LayoutDashboard, ArrowRight } from 'lucide-react';
 
@@ -15,7 +15,17 @@ const NAV_LINKS = [
 export default function Header({ onBookSlot }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeLang, setActiveLang] = useState('EN');
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleNavClick = (e, href) => {
     if (href.startsWith('#')) {
@@ -33,7 +43,7 @@ export default function Header({ onBookSlot }) {
 
   return (
     <>
-      <header className="header" role="banner">
+      <header className={`header ${isScrolled ? 'header-scrolled' : 'header-transparent'}`} role="banner">
         <div className="container header-inner">
           <a
             href="#home"

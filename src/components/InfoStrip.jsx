@@ -1,45 +1,43 @@
-import { BookOpen, Armchair, Layers, CalendarCheck } from 'lucide-react';
+import { BookOpen, Armchair, Sparkles } from 'lucide-react';
 
-const INFO_ITEMS = [
+const HIGHLIGHTS = [
   {
     icon: BookOpen,
-    title: 'Extensive Collection',
-    desc: 'Japanese literature, manga, periodicals, and language learning materials.',
+    number: '01',
+    title: 'Books & Manga',
+    desc: 'Over 20,000 literature volumes, Japanese language learning resources, and curated manga editions.',
   },
   {
     icon: Armchair,
-    title: 'Reading Spaces',
-    desc: 'Quiet study desks, lounge seating, and natural light for contemplative reading.',
+    number: '02',
+    title: 'Study Spaces',
+    desc: 'Quiet wooden study desks, comfortable reading lounges, and open views for contemplative reading.',
   },
   {
-    icon: Layers,
-    title: 'Cultural Resources',
-    desc: 'Art, design, history, craft archives, and curated multimedia collections.',
-  },
-  {
-    icon: CalendarCheck,
-    title: 'Library Visits',
-    desc: 'Open Tuesday to Saturday with dedicated morning and afternoon sessions.',
+    icon: Sparkles,
+    number: '03',
+    title: 'Japanese Culture',
+    desc: 'Contemporary periodicals, arts and crafts archives, cinema monographs, and cultural screenings.',
   },
 ];
 
 export default function InfoStrip() {
   return (
-    <section className="info-strip" id="info-strip" aria-label="Library Overview Highlights">
+    <section className="info-strip" id="info-strip" aria-label="Feature Highlights">
       <div className="container">
-        <div className="info-strip-grid">
-          {INFO_ITEMS.map((item, idx) => {
+        <div className="feature-highlights-grid">
+          {HIGHLIGHTS.map((item) => {
             const Icon = item.icon;
             return (
-              <div className="info-strip-col reveal" key={item.title}>
-                <div className="info-strip-header">
-                  <span className="info-strip-icon" aria-hidden="true">
-                    <Icon />
-                  </span>
-                  <span className="info-strip-num">0{idx + 1}</span>
+              <div className="feature-highlight-col reveal" key={item.title}>
+                <div className="feature-highlight-header">
+                  <div className="feature-highlight-icon-wrap" aria-hidden="true">
+                    <Icon className="feature-highlight-icon" />
+                  </div>
+                  <span className="feature-highlight-num">{item.number}</span>
                 </div>
-                <h3 className="info-strip-title">{item.title}</h3>
-                <p className="info-strip-desc">{item.desc}</p>
+                <h3 className="feature-highlight-title">{item.title}</h3>
+                <p className="feature-highlight-desc">{item.desc}</p>
               </div>
             );
           })}

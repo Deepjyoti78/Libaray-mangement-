@@ -54,8 +54,40 @@ export default function CollectionsStrip({ onBookSlot }) {
           </div>
         </div>
 
+        {/* Editorial Image-Backed Collection Banner */}
+        <div className="collection-feature-banner reveal">
+          <div className="collection-banner-bg" aria-hidden="true">
+            <img
+              src="/images/books-literature.jpg"
+              alt="Japanese bookshelf with literature, art monographs, and periodicals"
+              className="collection-banner-img"
+              loading="lazy"
+            />
+            <div className="collection-banner-overlay" />
+          </div>
+          <div className="collection-banner-content">
+            <span className="collection-banner-eyebrow">CURATED HOLDINGS</span>
+            <h2 className="collection-banner-heading">Explore the collection</h2>
+            <p className="collection-banner-desc">
+              Over 20,000 volumes of Japanese prose, manga, contemporary periodicals,
+              and language learning resources available for in-library browsing and research.
+            </p>
+            <a
+              href="#collections-grid"
+              className="collection-banner-link"
+              onClick={(e) => {
+                e.preventDefault();
+                document.querySelector('#collections-grid')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              <span>Browse Library Holdings</span>
+              <ArrowRight className="btn-icon-arrow" />
+            </a>
+          </div>
+        </div>
+
         {/* Compact Editorial Collection Strip */}
-        <div className="collections-strip-grid">
+        <div className="collections-strip-grid" id="collections-grid">
           {COLLECTIONS.map((item, idx) => (
             <div className="collection-card reveal" key={item.title}>
               <div className="collection-img-frame">
