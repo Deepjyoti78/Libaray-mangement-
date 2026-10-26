@@ -23,6 +23,7 @@ import {
   User,
 } from 'lucide-react';
 import ConfirmationModal from '../components/ConfirmationModal';
+import TablePagination from '../components/TablePagination';
 
 export default function AdminBookingsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -1088,63 +1089,15 @@ export default function AdminBookingsPage() {
         )}
 
         {/* 6. Pagination Footer */}
-        {!loading && bookings.length > 0 && (
-          <div className="table-pagination-bar">
-            <span className="pagination-info">
-              Showing {(currentPage - 1) * pageSize + 1} to{' '}
-              {Math.min(currentPage * pageSize, bookings.length)} of {bookings.length} reservations
-            </span>
-
-            <div className="pagination-controls">
-              <button
-                type="button"
-                className="pagination-btn"
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                aria-label="Previous page"
-              >
-                <ChevronLeft size={14} />
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNo) => {
-                // Show first, last, and window around current page
-                if (
-                  pageNo === 1 ||
-                  pageNo === totalPages ||
-                  (pageNo >= currentPage - 1 && pageNo <= currentPage + 1)
-                ) {
-                  return (
-                    <button
-                      key={pageNo}
-                      type="button"
-                      className={`pagination-number ${currentPage === pageNo ? 'active' : ''}`}
-                      onClick={() => setCurrentPage(pageNo)}
-                    >
-                      {pageNo}
-                    </button>
-                  );
-                }
-                if (pageNo === currentPage - 2 || pageNo === currentPage + 2) {
-                  return (
-                    <span key={pageNo} className="pagination-ellipsis">
-                      …
-                    </span>
-                  );
-                }
-                return null;
-              })}
-
-              <button
-                type="button"
-                className="pagination-btn"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                aria-label="Next page"
-              >
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
+        {!loading && (
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={bookings.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            itemName="reservations"
+          />
         )}
       </div>
 

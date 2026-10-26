@@ -20,6 +20,7 @@ import {
   ExternalLink,
   ShieldAlert,
 } from 'lucide-react';
+import TablePagination from '../components/TablePagination';
 
 const INITIAL_LOANS = [
   {
@@ -640,36 +641,14 @@ export default function AdminLoansPage() {
         </table>
 
         {/* Pagination Footer */}
-        <div className="bookings-pagination-footer">
-          <div className="pagination-info">
-            Showing {(currentPage - 1) * pageSize + 1} to{' '}
-            {Math.min(currentPage * pageSize, filteredLoans.length)} of {filteredLoans.length} loans
-          </div>
-
-          <div className="pagination-nav-group">
-            <button
-              type="button"
-              className="page-nav-btn"
-              disabled={currentPage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            >
-              <ChevronLeft size={15} />
-              <span>Previous</span>
-            </button>
-            <span className="page-indicator">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              type="button"
-              className="page-nav-btn"
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            >
-              <span>Next</span>
-              <ChevronRight size={15} />
-            </button>
-          </div>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredLoans.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          itemName="loans"
+        />
       </div>
 
       {/* 6. ISSUE NEW LOAN MODAL */}

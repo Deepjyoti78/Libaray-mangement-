@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   Calendar,
 } from 'lucide-react';
+import TablePagination from '../components/TablePagination';
 
 const INITIAL_FINES = [
   {
@@ -543,36 +544,14 @@ export default function AdminFinesPage() {
         </table>
 
         {/* Pagination Footer */}
-        <div className="bookings-pagination-footer">
-          <div className="pagination-info">
-            Showing {(currentPage - 1) * pageSize + 1} to{' '}
-            {Math.min(currentPage * pageSize, filteredFines.length)} of {filteredFines.length} records
-          </div>
-
-          <div className="pagination-nav-group">
-            <button
-              type="button"
-              className="page-nav-btn"
-              disabled={currentPage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            >
-              <ChevronLeft size={15} />
-              <span>Previous</span>
-            </button>
-            <span className="page-indicator">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              type="button"
-              className="page-nav-btn"
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            >
-              <span>Next</span>
-              <ChevronRight size={15} />
-            </button>
-          </div>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredFines.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          itemName="records"
+        />
       </div>
 
       {/* 5. COLLECT PAYMENT MODAL */}

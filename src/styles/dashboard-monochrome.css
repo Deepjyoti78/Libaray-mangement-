@@ -1538,6 +1538,17 @@
   border-color: var(--mono-border);
 }
 
+.pagination-controls .pagination-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
 .pagination-number {
   min-width: 32px;
   height: 32px;

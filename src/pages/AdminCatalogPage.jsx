@@ -24,6 +24,7 @@ import {
   MapPin,
   ExternalLink,
 } from 'lucide-react';
+import TablePagination from '../components/TablePagination';
 
 // Initial curated Japanese and bilingual library catalog
 const INITIAL_BOOKS = [
@@ -738,66 +739,14 @@ export default function AdminCatalogPage() {
         </table>
 
         {/* Pagination Footer */}
-        <div className="bookings-pagination-footer table-pagination-bar">
-          <div className="pagination-info">
-            Showing <strong className="pagination-highlight">{(currentPage - 1) * pageSize + 1}</strong> to{' '}
-            <strong className="pagination-highlight">{Math.min(currentPage * pageSize, filteredBooks.length)}</strong> of{' '}
-            <strong className="pagination-highlight">{filteredBooks.length}</strong> titles
-          </div>
-
-          <div className="pagination-nav-group pagination-controls">
-            <button
-              type="button"
-              className="page-nav-btn pagination-btn"
-              disabled={currentPage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              aria-label="Previous page"
-            >
-              <ChevronLeft size={14} />
-              <span>Previous</span>
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNo) => {
-              if (
-                pageNo === 1 ||
-                pageNo === totalPages ||
-                (pageNo >= currentPage - 1 && pageNo <= currentPage + 1)
-              ) {
-                return (
-                  <button
-                    key={pageNo}
-                    type="button"
-                    className={`pagination-number ${currentPage === pageNo ? 'active' : ''}`}
-                    onClick={() => setCurrentPage(pageNo)}
-                    aria-label={`Page ${pageNo}`}
-                    aria-current={currentPage === pageNo ? 'page' : undefined}
-                  >
-                    {pageNo}
-                  </button>
-                );
-              }
-              if (pageNo === currentPage - 2 || pageNo === currentPage + 2) {
-                return (
-                  <span key={pageNo} className="pagination-ellipsis">
-                    …
-                  </span>
-                );
-              }
-              return null;
-            })}
-
-            <button
-              type="button"
-              className="page-nav-btn pagination-btn"
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              aria-label="Next page"
-            >
-              <span>Next</span>
-              <ChevronRight size={14} />
-            </button>
-          </div>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredBooks.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          itemName="titles"
+        />
       </div>
 
       {/* 5. ADD NEW BOOK MODAL */}

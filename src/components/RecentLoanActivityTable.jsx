@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, MoreHorizontal, Check, RefreshCw } from 'lucide-react';
+import TablePagination from './TablePagination';
 
 export default function RecentLoanActivityTable({
   loans = [],
@@ -254,33 +255,14 @@ export default function RecentLoanActivityTable({
       </div>
 
       {/* Pagination Bar */}
-      {totalPages > 1 && (
-        <div className="table-pagination-bar">
-          <span className="pagination-count">
-            Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total} records
-          </span>
-
-          <div className="pagination-buttons">
-            <button
-              className="page-btn"
-              disabled={page <= 1}
-              onClick={() => onPageChange?.(page - 1)}
-            >
-              Previous
-            </button>
-            <span className="page-current">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              className="page-btn"
-              disabled={page >= totalPages}
-              onClick={() => onPageChange?.(page + 1)}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+      <TablePagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={total}
+        pageSize={limit}
+        onPageChange={onPageChange}
+        itemName="records"
+      />
     </div>
   );
 }

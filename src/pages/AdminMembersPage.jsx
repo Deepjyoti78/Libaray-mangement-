@@ -26,6 +26,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import ConfirmationModal from '../components/ConfirmationModal';
+import TablePagination from '../components/TablePagination';
 
 const INITIAL_MEMBERS = [
   {
@@ -658,36 +659,14 @@ export default function AdminMembersPage() {
         </table>
 
         {/* Pagination Footer */}
-        <div className="bookings-pagination-footer">
-          <div className="pagination-info">
-            Showing {(currentPage - 1) * pageSize + 1} to{' '}
-            {Math.min(currentPage * pageSize, filteredMembers.length)} of {filteredMembers.length} members
-          </div>
-
-          <div className="pagination-nav-group">
-            <button
-              type="button"
-              className="page-nav-btn"
-              disabled={currentPage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            >
-              <ChevronLeft size={15} />
-              <span>Previous</span>
-            </button>
-            <span className="page-indicator">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              type="button"
-              className="page-nav-btn"
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            >
-              <span>Next</span>
-              <ChevronRight size={15} />
-            </button>
-          </div>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredMembers.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          itemName="members"
+        />
       </div>
 
       {/* 5. REGISTER NEW MEMBER MODAL */}
