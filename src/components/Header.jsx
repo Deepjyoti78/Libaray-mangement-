@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Menu, X, Ticket } from 'lucide-react';
+import { Calendar, Menu, X, Ticket, LayoutDashboard } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Home', href: '#home' },
@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: 'Manga Corner', href: '#manga-corner' },
   { label: 'Visit Guide', href: '#visit' },
   { label: 'My Pass', href: '/my-booking' },
+  { label: 'Dashboard', href: '/admin' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -72,6 +73,17 @@ export default function Header({ onBookSlot }) {
               <span className="lang-sep">/</span>
               <span className="lang-option">日本語</span>
             </div>
+
+            <button
+              type="button"
+              className="header-dashboard-btn"
+              onClick={() => navigate('/admin')}
+              aria-label="Staff Management Console and Dashboard"
+              title="Open Management Dashboard"
+            >
+              <LayoutDashboard className="btn-icon" />
+              <span>Dashboard</span>
+            </button>
 
             <button
               type="button"
@@ -142,6 +154,17 @@ export default function Header({ onBookSlot }) {
             >
               <Ticket className="btn-icon" />
               <span>Find My Pass</span>
+            </button>
+            <button
+              type="button"
+              className="header-book-btn full-width mobile-dashboard-btn"
+              onClick={() => {
+                navigate('/admin');
+                setMobileOpen(false);
+              }}
+            >
+              <LayoutDashboard className="btn-icon" />
+              <span>Staff Dashboard</span>
             </button>
           </div>
         </div>

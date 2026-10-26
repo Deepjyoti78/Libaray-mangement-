@@ -23,6 +23,7 @@ export default function App() {
           <Route path="/book" element={<LandingPage initialBookingOpen={true} />} />
           <Route path="/booking/confirmation/:id" element={<ConfirmationPage />} />
           <Route path="/my-booking" element={<MyBookingPage />} />
+          <Route path="/dashboard" element={<Navigate to="/admin" replace />} />
 
           {/* Staff Authentication */}
           <Route path="/admin/login" element={<AdminLoginPage />} />

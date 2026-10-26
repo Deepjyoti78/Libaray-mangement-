@@ -427,6 +427,29 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
+.utility-public-site-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333333;
+  background-color: #FFFFFF;
+  border: 1px solid var(--mono-border);
+  border-radius: var(--mono-radius-pill);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.utility-public-site-btn:hover {
+  background-color: #F4F4F4;
+  border-color: #CCCCCC;
+  color: #000000;
+}
+
 .utility-notification-wrap {
   position: relative;
 }

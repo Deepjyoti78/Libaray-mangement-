@@ -454,6 +454,46 @@ ul, ol {
   height: 13px;
 }
 
+/* Header Dashboard Button */
+.header-dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--charcoal);
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.header-dashboard-btn:hover {
+  background-color: var(--cream);
+  border-color: var(--charcoal);
+  color: var(--espresso);
+}
+
+.header-dashboard-btn .btn-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.mobile-dashboard-btn {
+  background-color: #f7f6f2 !important;
+  color: var(--espresso) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.mobile-dashboard-btn:hover {
+  background-color: #ece9e2 !important;
+}
+
 /* Mobile Menu Button */
 .mobile-menu-btn {
   display: none;
@@ -1500,6 +1540,7 @@ ul, ol {
   .header-nav { display: none; }
   .header-lang { display: none; }
   .header-actions .header-book-btn { display: none; }
+  .header-actions .header-dashboard-btn { display: none; }
   .mobile-menu-btn { display: block; }
 
   .hero-grid {

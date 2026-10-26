@@ -313,6 +313,16 @@ export default function AdminLayout() {
               )}
             </div>
 
+            {/* Return to Public Website */}
+            <Link
+              to="/"
+              className="utility-public-site-btn"
+              title="Return to Public Visitor Site"
+            >
+              <ExternalLink size={13} />
+              <span>Public Site</span>
+            </Link>
+
             {/* User Avatar Circle */}
             <div className="utility-user-avatar">
               <span className="utility-avatar-initials">
