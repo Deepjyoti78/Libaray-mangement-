@@ -113,7 +113,7 @@ export default function HeroSection({ onBookSlot }) {
               >
                 <div className="hero-card-img-wrap">
                   <img
-                    src="/images/library-reading-area.webp"
+                    src="/images/community-lounge.jpg"
                     alt="Community Area"
                     className="hero-card-img"
                     loading="eager"
@@ -127,16 +127,8 @@ export default function HeroSection({ onBookSlot }) {
               </a>
             </div>
 
-            {/* Right Stack: Handwritten Script Accent + Manga Corner */}
+            {/* Right Stack: Manga Corner */}
             <div className="hero-collage-right-stack">
-              {/* Decorative Calligraphy Script Accent */}
-              <div className="hero-collage-script" aria-hidden="true">
-                <span className="script-line line-1">Books</span>
-                <span className="script-line line-2">People</span>
-                <span className="script-line line-3">— Culture</span>
-                <span className="script-line line-4">Japan</span>
-              </div>
-
               {/* Card 3: Manga Corner */}
               <a
                 href="#manga-corner"
