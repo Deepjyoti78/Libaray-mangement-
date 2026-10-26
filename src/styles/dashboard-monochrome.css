@@ -5434,12 +5434,50 @@ body.dark-theme,
   --mono-hover-bg: #1A1A22;
 }
 
-/* Base Body & Shell */
-body.dark-theme,
-[data-theme="dark"] body {
+/* Base Body & Shell - Strictly scoped to Admin Console so public site remains untouched */
+body:has(.monochrome-dashboard-layout) {
   background-color: #09090c !important;
   color: #F4F4F6 !important;
 }
+
+/* Explicit public site protection: Under no circumstances should public site elements receive dark mode colors */
+html[data-theme="dark"] .site-wrapper,
+body.dark-theme .site-wrapper,
+body.black-theme .site-wrapper,
+.site-wrapper {
+  background-color: var(--paper, #F2EDE3) !important;
+  color: var(--espresso, #352319) !important;
+}
+
+html[data-theme="dark"] .editorial,
+body.dark-theme .editorial,
+body.black-theme .editorial,
+.editorial {
+  background-color: var(--paper, #F2EDE3) !important;
+  color: var(--espresso, #352319) !important;
+}
+
+html[data-theme="dark"] .editorial-main-title,
+body.dark-theme .editorial-main-title,
+body.black-theme .editorial-main-title,
+.editorial-main-title {
+  color: var(--espresso, #352319) !important;
+}
+
+html[data-theme="dark"] .editorial-header-meta,
+body.dark-theme .editorial-header-meta,
+body.black-theme .editorial-header-meta,
+.editorial-header-meta {
+  color: var(--espresso-muted, rgba(53, 35, 25, 0.52)) !important;
+}
+
+html[data-theme="dark"] .editorial-header-left .label,
+body.dark-theme .editorial-header-left .label,
+body.black-theme .editorial-header-left .label,
+.editorial-header-left .label {
+  color: var(--terracotta, #AC512E) !important;
+}
+
 
 .monochrome-dashboard-layout.black-theme,
 [data-theme="dark"] .monochrome-dashboard-layout {

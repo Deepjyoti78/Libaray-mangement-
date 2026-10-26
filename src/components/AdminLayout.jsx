@@ -45,6 +45,21 @@ export default function AdminLayout() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Synchronize admin theme on root and body when admin console is active
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    if (isDark) {
+      root.setAttribute('data-theme', 'dark');
+      root.classList.add('dark', 'black-theme');
+      body.classList.add('dark-theme', 'black-theme');
+    } else {
+      root.setAttribute('data-theme', 'light');
+      root.classList.remove('dark', 'black-theme');
+      body.classList.remove('dark-theme', 'black-theme');
+    }
+  }, [isDark]);
+
   if (loading) {
     return (
       <div className="admin-loading-screen">

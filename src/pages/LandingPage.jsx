@@ -14,6 +14,15 @@ export default function LandingPage({ initialBookingOpen = false }) {
     initialBookingOpen || location.pathname === '/book'
   );
 
+  /* Ensure public site always renders in pristine Japanese washi paper palette */
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    root.setAttribute('data-theme', 'light');
+    root.classList.remove('dark', 'black-theme');
+    body.classList.remove('dark-theme', 'black-theme');
+  }, []);
+
   /* Scroll reveal observer */
   useEffect(() => {
     const observer = new IntersectionObserver(

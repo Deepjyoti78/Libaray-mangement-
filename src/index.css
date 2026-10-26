@@ -72,6 +72,22 @@ body {
   overflow-x: hidden;
 }
 
+body:has(.site-wrapper),
+html:has(.site-wrapper) {
+  background-color: var(--paper, #F2EDE3) !important;
+  color: var(--espresso, #352319) !important;
+}
+
+.site-wrapper {
+  background-color: var(--paper, #F2EDE3) !important;
+  color: var(--espresso, #352319) !important;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  isolation: isolate;
+}
+
+
 img {
   display: block;
   max-width: 100%;
@@ -1268,8 +1284,11 @@ ul, ol {
 
 /* ─── 9. EDITORIAL CONTENT GRID SECTION ─── */
 .editorial {
+  background-color: var(--paper, #F2EDE3) !important;
+  color: var(--espresso, #352319) !important;
   padding-top: clamp(3rem, 5vw, 5rem);
   padding-bottom: clamp(3rem, 5vw, 5rem);
+  position: relative;
 }
 
 .editorial-section-header {
@@ -1279,7 +1298,7 @@ ul, ol {
   gap: 2rem;
   margin-bottom: 2.25rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border, #CFC3B2) !important;
 }
 
 .editorial-header-left {
@@ -1289,10 +1308,12 @@ ul, ol {
 .editorial-header-left .label {
   display: block;
   margin-bottom: 0.5rem;
+  color: var(--terracotta, #AC512E) !important;
 }
 
 .editorial-main-title {
   font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+  color: var(--espresso, #352319) !important;
 }
 
 .editorial-header-right {
@@ -1301,7 +1322,7 @@ ul, ol {
 
 .editorial-header-meta {
   font-size: 0.75rem;
-  color: var(--espresso-muted);
+  color: var(--espresso-muted, rgba(53, 35, 25, 0.52)) !important;
   letter-spacing: 0.05em;
 }
 
