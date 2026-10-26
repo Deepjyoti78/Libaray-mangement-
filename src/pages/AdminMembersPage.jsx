@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   Search,
   Plus,
@@ -22,6 +22,8 @@ import {
   CreditCard,
   RotateCw,
   Ban,
+  SlidersHorizontal,
+  ChevronDown,
 } from 'lucide-react';
 
 const INITIAL_MEMBERS = [
@@ -157,6 +159,13 @@ const INITIAL_MEMBERS = [
 
 const TIERS = ['All', 'General', 'Student', 'Japanese Scholar', 'Lifetime / VIP'];
 
+const MEMBER_STATUS_OPTIONS = [
+  { value: 'all', label: 'All Statuses' },
+  { value: 'active', label: 'Active Members' },
+  { value: 'expiring_soon', label: 'Expiring Soon' },
+  { value: 'suspended', label: 'Suspended Accounts' },
+];
+
 export default function AdminMembersPage() {
   const [members, setMembers] = useState(INITIAL_MEMBERS);
   const [searchTerm, setSearchTerm] = useState('');
@@ -165,6 +174,23 @@ export default function AdminMembersPage() {
   const [selectedMembers, setSelectedMembers] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
+
+  // Custom theme dropdown state
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const statusDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        statusDropdownRef.current &&
+        !statusDropdownRef.current.contains(event.target)
+      ) {
+        setIsStatusDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Modals state
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -457,20 +483,45 @@ export default function AdminMembersPage() {
             )}
           </div>
 
-          <div className="filter-dropdowns-group">
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="filter-dropdown-select"
+          <div className="theme-dropdown-container" ref={statusDropdownRef}>
+            <button
+              type="button"
+              className={`theme-filter-dropdown-btn ${statusFilter !== 'all' ? 'active-filter' : ''}`}
+              onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+              aria-expanded={isStatusDropdownOpen}
+              title="Filter by member status"
             >
-              <option value="all">All Statuses</option>
-              <option value="active">Active Members</option>
-              <option value="expiring_soon">Expiring Soon</option>
-              <option value="suspended">Suspended Accounts</option>
-            </select>
+              <SlidersHorizontal size={13} className="filter-btn-icon" />
+              <span className="filter-btn-text">
+                {MEMBER_STATUS_OPTIONS.find((opt) => opt.value === statusFilter)?.label || 'All Statuses'}
+              </span>
+              {statusFilter !== 'all' && <span className="filter-active-indicator" />}
+              <ChevronDown
+                size={14}
+                className={`filter-btn-chevron ${isStatusDropdownOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            {isStatusDropdownOpen && (
+              <div className="theme-dropdown-menu">
+                <div className="dropdown-menu-header">FILTER BY STATUS</div>
+                {MEMBER_STATUS_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    className={`theme-dropdown-item ${statusFilter === opt.value ? 'selected' : ''}`}
+                    onClick={() => {
+                      setStatusFilter(opt.value);
+                      setCurrentPage(1);
+                      setIsStatusDropdownOpen(false);
+                    }}
+                  >
+                    <span className="item-label">{opt.label}</span>
+                    {statusFilter === opt.value && <Check size={13} className="item-check-icon" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

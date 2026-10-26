@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   Search,
   Plus,
   Download,
   Filter,
+  SlidersHorizontal,
+  ChevronDown,
   BookOpen,
   ArrowLeftRight,
   CheckCircle2,
@@ -241,6 +243,13 @@ const CATEGORIES = [
   'Reference',
 ];
 
+const AVAILABILITY_OPTIONS = [
+  { value: 'all', label: 'All Availability' },
+  { value: 'available', label: 'Available on Shelf' },
+  { value: 'low_stock', label: 'Low Stock (1 copy)' },
+  { value: 'lent_out', label: 'Fully Lent Out' },
+];
+
 export default function AdminCatalogPage() {
   const [books, setBooks] = useState(INITIAL_BOOKS);
   const [searchTerm, setSearchTerm] = useState('');
@@ -249,6 +258,23 @@ export default function AdminCatalogPage() {
   const [selectedBooks, setSelectedBooks] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
+
+  // Custom theme dropdown state
+  const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
+  const availabilityDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        availabilityDropdownRef.current &&
+        !availabilityDropdownRef.current.contains(event.target)
+      ) {
+        setIsAvailabilityOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -526,20 +552,45 @@ export default function AdminCatalogPage() {
             )}
           </div>
 
-          <div className="filter-dropdowns-group">
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="filter-dropdown-select"
+          <div className="theme-dropdown-container" ref={availabilityDropdownRef}>
+            <button
+              type="button"
+              className={`theme-filter-dropdown-btn ${statusFilter !== 'all' ? 'active-filter' : ''}`}
+              onClick={() => setIsAvailabilityOpen(!isAvailabilityOpen)}
+              aria-expanded={isAvailabilityOpen}
+              title="Filter by shelf availability"
             >
-              <option value="all">All Availability</option>
-              <option value="available">Available on Shelf</option>
-              <option value="low_stock">Low Stock (1 copy left)</option>
-              <option value="lent_out">Fully Lent Out</option>
-            </select>
+              <SlidersHorizontal size={13} className="filter-btn-icon" />
+              <span className="filter-btn-text">
+                {AVAILABILITY_OPTIONS.find((opt) => opt.value === statusFilter)?.label || 'All Availability'}
+              </span>
+              {statusFilter !== 'all' && <span className="filter-active-indicator" />}
+              <ChevronDown
+                size={14}
+                className={`filter-btn-chevron ${isAvailabilityOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            {isAvailabilityOpen && (
+              <div className="theme-dropdown-menu">
+                <div className="dropdown-menu-header">FILTER BY AVAILABILITY</div>
+                {AVAILABILITY_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    className={`theme-dropdown-item ${statusFilter === opt.value ? 'selected' : ''}`}
+                    onClick={() => {
+                      setStatusFilter(opt.value);
+                      setCurrentPage(1);
+                      setIsAvailabilityOpen(false);
+                    }}
+                  >
+                    <span className="item-label">{opt.label}</span>
+                    {statusFilter === opt.value && <Check size={13} className="item-check-icon" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

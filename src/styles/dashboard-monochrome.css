@@ -4550,6 +4550,234 @@
   background-color: #2D2D2D;
 }
 
+/* ==========================================================================
+   Filter Bar & Theme Filter Dropdown Button UI/UX
+   ========================================================================== */
 
+.bookings-filter-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  margin-top: 14px !important;
+  flex-wrap: nowrap !important;
+}
 
+@media (max-width: 768px) {
+  .bookings-filter-bar {
+    flex-wrap: wrap !important;
+  }
+}
 
+.theme-dropdown-container {
+  position: relative !important;
+  display: inline-block !important;
+  flex-shrink: 0 !important;
+}
+
+.theme-filter-dropdown-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid var(--mono-border) !important;
+  border-radius: 8px !important;
+  padding: 8.5px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--mono-text-primary) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+  user-select: none !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+}
+
+.theme-filter-dropdown-btn:hover {
+  background-color: #FAFAFA !important;
+  border-color: #111111 !important;
+}
+
+.theme-filter-dropdown-btn.active-filter {
+  background-color: #F7F6F2 !important;
+  border-color: #111111 !important;
+  font-weight: 600 !important;
+  color: #111111 !important;
+}
+
+.filter-btn-icon {
+  color: var(--mono-text-secondary) !important;
+  flex-shrink: 0 !important;
+}
+
+.filter-btn-text {
+  font-size: 13px !important;
+  letter-spacing: -0.01em !important;
+}
+
+.filter-btn-chevron {
+  color: var(--mono-text-muted) !important;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  flex-shrink: 0 !important;
+}
+
+.filter-btn-chevron.rotate-180 {
+  transform: rotate(180deg) !important;
+}
+
+.filter-active-indicator {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background-color: #111111 !important;
+  display: inline-block !important;
+}
+
+/* Theme Dropdown Menu Popover */
+.theme-dropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  right: 0 !important;
+  min-width: 215px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid var(--mono-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+  padding: 6px !important;
+  z-index: 100 !important;
+  animation: themeDropdownFade 0.15s ease-out !important;
+}
+
+@keyframes themeDropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-menu-header {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--mono-text-muted) !important;
+  text-transform: uppercase !important;
+  padding: 6px 10px 4px 10px !important;
+  user-select: none !important;
+}
+
+.theme-dropdown-item {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 10px !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 12.5px !important;
+  color: var(--mono-text-primary) !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: all 0.1s ease !important;
+}
+
+.theme-dropdown-item:hover {
+  background-color: #F4F4F4 !important;
+  color: #111111 !important;
+}
+
+.theme-dropdown-item.selected {
+  background-color: #FAF9F5 !important;
+  font-weight: 600 !important;
+  color: #111111 !important;
+}
+
+.item-check-icon {
+  color: #111111 !important;
+  flex-shrink: 0 !important;
+}
+
+/* ==========================================================================
+   Action Column & Icon Buttons (Fix Clustered / Unstyled Icons)
+   ========================================================================== */
+
+.th-actions {
+  text-align: right !important;
+  padding-right: 18px !important;
+  white-space: nowrap !important;
+}
+
+.td-actions {
+  text-align: right !important;
+  padding-right: 18px !important;
+  white-space: nowrap !important;
+}
+
+.row-actions-group {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 7px !important;
+}
+
+.action-icon-btn {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  border-radius: 6px !important;
+  border: 1px solid #E5E5E5 !important;
+  background-color: #FFFFFF !important;
+  color: #4B5563 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+}
+
+.action-icon-btn:hover {
+  background-color: #111111 !important;
+  border-color: #111111 !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.action-icon-btn.view-btn:hover {
+  background-color: #111111 !important;
+  border-color: #111111 !important;
+  color: #FFFFFF !important;
+}
+
+.action-icon-btn.edit-btn:hover {
+  background-color: #111111 !important;
+  border-color: #111111 !important;
+  color: #FFFFFF !important;
+}
+
+.action-icon-btn.delete-btn:hover,
+.action-icon-btn.delete:hover {
+  background-color: #FEF2F2 !important;
+  border-color: #FECACA !important;
+  color: #DC2626 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 8px rgba(220, 38, 38, 0.15) !important;
+}
+
+.action-icon-btn.check-in-btn:hover {
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+  color: #059669 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 8px rgba(5, 150, 105, 0.15) !important;
+}
