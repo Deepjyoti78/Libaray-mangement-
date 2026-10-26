@@ -3669,11 +3669,13 @@ input.rapid-scanner-input,
   transform: translateY(0);
 }
 
-/* Retire Book Confirmation Modal */
+/* Universal Admin Confirmation Modal & Retire Book Modal */
+.admin-confirm-modal,
 .retire-confirm-modal {
   max-width: 490px;
 }
 
+.admin-confirm-header,
 .retire-modal-header {
   display: flex;
   align-items: flex-start;
@@ -3682,27 +3684,55 @@ input.rapid-scanner-input,
   border-bottom: 1px solid var(--mono-border);
 }
 
+.admin-confirm-icon-wrap,
 .retire-warning-icon-wrap {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background-color: #FEF2F2;
-  border: 1px solid #FEE2E2;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #DC2626;
   flex-shrink: 0;
 }
 
+.admin-confirm-icon-wrap.danger,
+.retire-warning-icon-wrap {
+  background-color: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  color: #DC2626;
+}
+
+.admin-confirm-icon-wrap.warning {
+  background-color: #FFFBEB;
+  border: 1px solid #FEF3C7;
+  color: #D97706;
+}
+
+.admin-confirm-icon-wrap.primary {
+  background-color: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  color: #18181B;
+}
+
+.admin-confirm-header-text,
 .retire-header-text {
   flex: 1;
 }
 
+.admin-confirm-header-text .dialog-eyebrow.text-danger,
 .retire-header-text .dialog-eyebrow.text-danger {
   color: #DC2626;
 }
 
+.admin-confirm-header-text .dialog-eyebrow.text-warning {
+  color: #D97706;
+}
+
+.admin-confirm-header-text .dialog-eyebrow.text-primary {
+  color: #18181B;
+}
+
+.admin-confirm-body,
 .retire-modal-body {
   padding: 20px 24px;
   display: flex;
@@ -3711,6 +3741,7 @@ input.rapid-scanner-input,
   overflow-y: auto;
 }
 
+.admin-confirm-prompt-message,
 .retire-prompt-message {
   font-size: 13.5px;
   line-height: 1.6;
@@ -3718,11 +3749,13 @@ input.rapid-scanner-input,
   margin: 0;
 }
 
+.admin-confirm-prompt-message strong,
 .retire-prompt-message strong {
   color: var(--mono-text-primary);
   font-weight: 600;
 }
 
+.admin-confirm-details-card,
 .retire-book-summary-card {
   display: flex;
   align-items: center;
@@ -3731,6 +3764,35 @@ input.rapid-scanner-input,
   border: 1px solid var(--mono-border);
   border-radius: 8px;
   padding: 12px 16px;
+  width: 100%;
+}
+
+.admin-confirm-meta-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.admin-confirm-meta-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13px;
+  width: 100%;
+}
+
+.admin-confirm-meta-label {
+  color: var(--mono-text-muted, #737373);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.admin-confirm-meta-value {
+  color: var(--mono-text-primary, #171717);
+  font-weight: 600;
+  text-align: right;
 }
 
 .retire-book-kanji-badge {
@@ -8395,41 +8457,75 @@ body.black-theme .editorial-header-left .label,
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
+.monochrome-dashboard-layout.black-theme .admin-confirm-modal,
 .monochrome-dashboard-layout.black-theme .retire-confirm-modal,
+[data-theme="dark"] .admin-confirm-modal,
 [data-theme="dark"] .retire-confirm-modal,
+.black-theme .admin-confirm-modal,
 .black-theme .retire-confirm-modal {
   background-color: #161616;
   border-color: #2C2C2C;
 }
 
+.monochrome-dashboard-layout.black-theme .admin-confirm-header,
 .monochrome-dashboard-layout.black-theme .retire-modal-header,
+[data-theme="dark"] .admin-confirm-header,
 [data-theme="dark"] .retire-modal-header,
+.black-theme .admin-confirm-header,
 .black-theme .retire-modal-header {
   border-bottom-color: #2A2A2A;
 }
 
+.monochrome-dashboard-layout.black-theme .admin-confirm-icon-wrap.danger,
 .monochrome-dashboard-layout.black-theme .retire-warning-icon-wrap,
+[data-theme="dark"] .admin-confirm-icon-wrap.danger,
 [data-theme="dark"] .retire-warning-icon-wrap,
+.black-theme .admin-confirm-icon-wrap.danger,
 .black-theme .retire-warning-icon-wrap {
   background-color: rgba(220, 38, 38, 0.15);
   border-color: rgba(220, 38, 38, 0.3);
   color: #F87171;
 }
 
+.monochrome-dashboard-layout.black-theme .admin-confirm-icon-wrap.warning,
+[data-theme="dark"] .admin-confirm-icon-wrap.warning,
+.black-theme .admin-confirm-icon-wrap.warning {
+  background-color: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #FBBF24;
+}
+
+.monochrome-dashboard-layout.black-theme .admin-confirm-icon-wrap.primary,
+[data-theme="dark"] .admin-confirm-icon-wrap.primary,
+.black-theme .admin-confirm-icon-wrap.primary {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #F8F5EE;
+}
+
+.monochrome-dashboard-layout.black-theme .admin-confirm-prompt-message,
 .monochrome-dashboard-layout.black-theme .retire-prompt-message,
+[data-theme="dark"] .admin-confirm-prompt-message,
 [data-theme="dark"] .retire-prompt-message,
+.black-theme .admin-confirm-prompt-message,
 .black-theme .retire-prompt-message {
   color: #A8A29E;
 }
 
+.monochrome-dashboard-layout.black-theme .admin-confirm-prompt-message strong,
 .monochrome-dashboard-layout.black-theme .retire-prompt-message strong,
+[data-theme="dark"] .admin-confirm-prompt-message strong,
 [data-theme="dark"] .retire-prompt-message strong,
+.black-theme .admin-confirm-prompt-message strong,
 .black-theme .retire-prompt-message strong {
   color: #F8F5EE;
 }
 
+.monochrome-dashboard-layout.black-theme .admin-confirm-details-card,
 .monochrome-dashboard-layout.black-theme .retire-book-summary-card,
+[data-theme="dark"] .admin-confirm-details-card,
 [data-theme="dark"] .retire-book-summary-card,
+.black-theme .admin-confirm-details-card,
 .black-theme .retire-book-summary-card {
   background-color: #1A1A1A;
   border-color: #2A2A2A;
@@ -8489,6 +8585,18 @@ body.black-theme .editorial-header-left .label,
 [data-theme="dark"] .row-action-dropdown.dropdown-open-up,
 .black-theme .row-action-dropdown.dropdown-open-up {
   box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.monochrome-dashboard-layout.black-theme .admin-confirm-meta-label,
+[data-theme="dark"] .admin-confirm-meta-label,
+.black-theme .admin-confirm-meta-label {
+  color: #A3A3A3;
+}
+
+.monochrome-dashboard-layout.black-theme .admin-confirm-meta-value,
+[data-theme="dark"] .admin-confirm-meta-value,
+.black-theme .admin-confirm-meta-value {
+  color: #F5F5F5;
 }
 
 

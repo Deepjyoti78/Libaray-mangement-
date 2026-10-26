@@ -25,6 +25,7 @@ import {
   SlidersHorizontal,
   ChevronDown,
 } from 'lucide-react';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const INITIAL_MEMBERS = [
   {
@@ -196,6 +197,13 @@ export default function AdminMembersPage() {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [inspectedMember, setInspectedMember] = useState(null);
   const [editingMember, setEditingMember] = useState(null);
+  const [memberToSuspend, setMemberToSuspend] = useState(null);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3500);
+  };
 
   // New member form
   const [newMemberForm, setNewMemberForm] = useState({
@@ -292,9 +300,11 @@ export default function AdminMembersPage() {
 
   // Renew membership
   const handleRenewMember = (id) => {
+    let renewedName = '';
     setMembers(
       members.map((m) => {
         if (m.id === id) {
+          renewedName = m.name;
           const curr = new Date(m.expiryDate);
           curr.setFullYear(curr.getFullYear() + 1);
           return { ...m, expiryDate: curr.toISOString().split('T')[0], status: 'active' };
@@ -302,20 +312,38 @@ export default function AdminMembersPage() {
         return m;
       })
     );
-    alert('Membership renewed for 1 additional year.');
+    showToast(`Membership for ${renewedName || 'patron'} renewed for 1 additional year.`);
   };
 
-  // Toggle status
+  // Toggle status / Suspend account with permission modal
   const handleToggleStatus = (id) => {
+    const member = members.find((m) => m.id === id);
+    if (!member) return;
+    if (member.status === 'suspended') {
+      setMembers(
+        members.map((m) => (m.id === id ? { ...m, status: 'active' } : m))
+      );
+      if (inspectedMember && inspectedMember.id === id) {
+        setInspectedMember((prev) => (prev ? { ...prev, status: 'active' } : null));
+      }
+      showToast(`Patron account for ${member.name} has been reactivated.`);
+    } else {
+      setMemberToSuspend(member);
+    }
+  };
+
+  const executeSuspendMember = () => {
+    if (!memberToSuspend) return;
+    const memberId = memberToSuspend.id;
+    const memberName = memberToSuspend.name;
     setMembers(
-      members.map((m) => {
-        if (m.id === id) {
-          const newStatus = m.status === 'suspended' ? 'active' : 'suspended';
-          return { ...m, status: newStatus };
-        }
-        return m;
-      })
+      members.map((m) => (m.id === memberId ? { ...m, status: 'suspended' } : m))
     );
+    if (inspectedMember && inspectedMember.id === memberId) {
+      setInspectedMember((prev) => (prev ? { ...prev, status: 'suspended' } : null));
+    }
+    showToast(`Patron account for ${memberName} has been suspended.`);
+    setMemberToSuspend(null);
   };
 
   // Export CSV
@@ -958,6 +986,57 @@ export default function AdminMembersPage() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* 8. SUSPEND PATRON CONFIRMATION MODAL */}
+      <ConfirmationModal
+        isOpen={Boolean(memberToSuspend)}
+        onClose={() => setMemberToSuspend(null)}
+        onConfirm={executeSuspendMember}
+        variant="warning"
+        title="Suspend Patron Account"
+        eyebrow="PATRON PERMISSION"
+        confirmText="Suspend Account"
+        cancelText="Keep Active"
+        icon={Ban}
+        confirmIcon={Ban}
+        message={
+          memberToSuspend
+            ? `Are you sure you want to suspend membership for ${memberToSuspend.name}? The patron will be temporarily restricted from borrowing books and booking reading room slots.`
+            : ''
+        }
+        detailsCard={
+          memberToSuspend ? (
+            <div className="admin-confirm-meta-grid">
+              <div className="admin-confirm-meta-item">
+                <span className="admin-confirm-meta-label">Patron Name</span>
+                <span className="admin-confirm-meta-value">{memberToSuspend.name}</span>
+              </div>
+              <div className="admin-confirm-meta-item">
+                <span className="admin-confirm-meta-label">Member ID</span>
+                <span className="admin-confirm-meta-value font-mono">{memberToSuspend.memberNo}</span>
+              </div>
+              <div className="admin-confirm-meta-item">
+                <span className="admin-confirm-meta-label">Tier</span>
+                <span className="admin-confirm-meta-value">{memberToSuspend.tier}</span>
+              </div>
+              <div className="admin-confirm-meta-item">
+                <span className="admin-confirm-meta-label">Active Loans</span>
+                <span className="admin-confirm-meta-value font-mono">
+                  {memberToSuspend.activeLoans} book{memberToSuspend.activeLoans !== 1 ? 's' : ''} out
+                </span>
+              </div>
+            </div>
+          ) : null
+        }
+      />
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="bookings-toast-pill" role="status">
+          <CheckCircle2 size={16} />
+          <span>{toastMessage}</span>
         </div>
       )}
     </div>

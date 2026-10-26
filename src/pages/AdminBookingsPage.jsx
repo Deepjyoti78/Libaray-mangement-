@@ -22,6 +22,7 @@ import {
   ShieldCheck,
   User,
 } from 'lucide-react';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 export default function AdminBookingsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -79,6 +80,10 @@ export default function AdminBookingsPage() {
   const [copiedRef, setCopiedRef] = useState(null);
   const [actionInProgress, setActionInProgress] = useState(false);
 
+  // Pop-up Permission & Confirmation States
+  const [cancelTarget, setCancelTarget] = useState(null);
+  const [bulkActionTarget, setBulkActionTarget] = useState(null);
+
   const menuContainerRef = useRef(null);
 
   // Show temporary toast message
@@ -92,7 +97,7 @@ export default function AdminBookingsPage() {
   // Close active row menu on click outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
-      if (menuContainerRef.current && !menuContainerRef.current.contains(e.target)) {
+      if (!e.target.closest('.row-action-popover') && !e.target.closest('.btn-action-icon')) {
         setActiveMenuRef(null);
       }
     };
@@ -194,13 +199,38 @@ export default function AdminBookingsPage() {
     }
   };
 
+  // Request cancel reservation popup
+  const requestCancelBooking = (ref) => {
+    setActiveMenuRef(null);
+    const bObj = bookings.find((item) => item.booking_ref === ref) || (selectedBooking?.bookingRef === ref ? {
+      booking_ref: ref,
+      full_name: selectedBooking.fullName,
+      visit_date: selectedBooking.visitDate,
+      session_time: selectedBooking.sessionTime,
+      reading_room: selectedBooking.readingRoom,
+    } : null);
+
+    setCancelTarget({
+      ref,
+      booking: bObj,
+    });
+  };
+
+  // Perform confirmed cancellation
+  const executeCancellation = async () => {
+    if (!cancelTarget) return;
+    const { ref } = cancelTarget;
+    setCancelTarget(null);
+    await handleStatusChange(ref, 'cancelled', undefined, true);
+  };
+
   // Update reservation status
-  const handleStatusChange = async (ref, newStatus, reasonText) => {
+  const handleStatusChange = async (ref, newStatus, reasonText, isConfirmed = false) => {
     setActiveMenuRef(null);
 
-    if (newStatus === 'cancelled') {
-      const confirmCancel = window.confirm(`Are you sure you want to cancel reservation ${ref}? The seat slot will be released.`);
-      if (!confirmCancel) return;
+    if (newStatus === 'cancelled' && !isConfirmed) {
+      requestCancelBooking(ref);
+      return;
     }
 
     setActionInProgress(true);
@@ -229,47 +259,56 @@ export default function AdminBookingsPage() {
         await handleOpenDetail(ref);
       }
     } catch (err) {
-      alert(`Action error: ${err.message}`);
+      showToast(`Action error: ${err.message}`);
     } finally {
       setActionInProgress(false);
     }
   };
 
-  // Bulk Check-In
-  const handleBulkCheckIn = async () => {
+  // Bulk Check-In with confirmation modal
+  const handleBulkCheckIn = () => {
     const toCheckIn = bookings.filter((b) => selectedRefs.has(b.booking_ref) && b.status === 'confirmed');
     if (toCheckIn.length === 0) {
       showToast('No confirmed reservations among selected items.');
       return;
     }
 
-    if (!window.confirm(`Check in ${toCheckIn.length} selected visitor(s)?`)) return;
-
-    setActionInProgress(true);
-    let successCount = 0;
-    for (const b of toCheckIn) {
-      try {
-        const res = await fetch(`/api/admin/bookings/${b.booking_ref}/status`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ status: 'checked_in', reason: 'Bulk check-in by staff' }),
-        });
-        if (res.ok) successCount++;
-      } catch (err) {
-        console.error('Bulk check-in failed for', b.booking_ref, err);
-      }
-    }
-
-    setActionInProgress(false);
-    setSelectedRefs(new Set());
-    showToast(`Successfully checked in ${successCount} reservation(s).`);
-    fetchBookings();
-    fetchStats();
+    setBulkActionTarget({
+      type: 'check_in',
+      title: `Check In ${toCheckIn.length} Visitor(s)?`,
+      eyebrow: 'ATTENDANCE MANAGEMENT',
+      message: `Mark ${toCheckIn.length} selected reservation(s) as checked-in to the library reading room.`,
+      confirmText: `Confirm Check-In (${toCheckIn.length})`,
+      cancelText: 'Cancel',
+      variant: 'primary',
+      onConfirm: async () => {
+        setBulkActionTarget(null);
+        setActionInProgress(true);
+        let successCount = 0;
+        for (const b of toCheckIn) {
+          try {
+            const res = await fetch(`/api/admin/bookings/${b.booking_ref}/status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ status: 'checked_in', reason: 'Bulk check-in by staff' }),
+            });
+            if (res.ok) successCount++;
+          } catch (err) {
+            console.error('Bulk check-in failed for', b.booking_ref, err);
+          }
+        }
+        setActionInProgress(false);
+        setSelectedRefs(new Set());
+        showToast(`Successfully checked in ${successCount} reservation(s).`);
+        fetchBookings();
+        fetchStats();
+      },
+    });
   };
 
-  // Bulk Cancel
-  const handleBulkCancel = async () => {
+  // Bulk Cancel with confirmation modal
+  const handleBulkCancel = () => {
     const toCancel = bookings.filter(
       (b) => selectedRefs.has(b.booking_ref) && (b.status === 'confirmed' || b.status === 'checked_in')
     );
@@ -278,31 +317,38 @@ export default function AdminBookingsPage() {
       return;
     }
 
-    if (!window.confirm(`Cancel ${toCancel.length} selected reservation(s)? This will immediately release capacity.`)) {
-      return;
-    }
-
-    setActionInProgress(true);
-    let successCount = 0;
-    for (const b of toCancel) {
-      try {
-        const res = await fetch(`/api/admin/bookings/${b.booking_ref}/status`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ status: 'cancelled', reason: 'Bulk cancellation by staff' }),
-        });
-        if (res.ok) successCount++;
-      } catch (err) {
-        console.error('Bulk cancel failed for', b.booking_ref, err);
-      }
-    }
-
-    setActionInProgress(false);
-    setSelectedRefs(new Set());
-    showToast(`Cancelled ${successCount} reservation(s).`);
-    fetchBookings();
-    fetchStats();
+    setBulkActionTarget({
+      type: 'cancel',
+      title: `Cancel ${toCancel.length} Selected Reservation(s)?`,
+      eyebrow: 'BULK CANCELLATION',
+      message: `Are you sure you want to cancel ${toCancel.length} selected reservation(s)? This will immediately release seat capacity across the associated sessions.`,
+      confirmText: `Cancel ${toCancel.length} Reservations`,
+      cancelText: 'Keep Reservations',
+      variant: 'danger',
+      onConfirm: async () => {
+        setBulkActionTarget(null);
+        setActionInProgress(true);
+        let successCount = 0;
+        for (const b of toCancel) {
+          try {
+            const res = await fetch(`/api/admin/bookings/${b.booking_ref}/status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ status: 'cancelled', reason: 'Bulk cancellation by staff' }),
+            });
+            if (res.ok) successCount++;
+          } catch (err) {
+            console.error('Bulk cancel failed for', b.booking_ref, err);
+          }
+        }
+        setActionInProgress(false);
+        setSelectedRefs(new Set());
+        showToast(`Cancelled ${successCount} reservation(s).`);
+        fetchBookings();
+        fetchStats();
+      },
+    });
   };
 
   // Export filtered reservations to CSV
@@ -1329,6 +1375,58 @@ export default function AdminBookingsPage() {
           </div>
         </div>
       )}
+
+      {/* Cancellation Confirmation Pop-Up Modal */}
+      <ConfirmationModal
+        isOpen={Boolean(cancelTarget)}
+        onClose={() => setCancelTarget(null)}
+        onConfirm={executeCancellation}
+        title="Cancel Reservation?"
+        eyebrow="RESERVATION CANCELLATION"
+        message={
+          cancelTarget
+            ? `Are you sure you want to cancel reservation ${cancelTarget.ref}? The seat slot will be released and returned to public booking availability.`
+            : ''
+        }
+        confirmText="Cancel Reservation"
+        cancelText="Keep Reservation"
+        variant="danger"
+        confirmIcon={XCircle}
+        isLoading={actionInProgress}
+        detailsCard={
+          cancelTarget?.booking ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <strong style={{ fontSize: '13.5px', color: 'var(--mono-text-primary)' }}>
+                  {cancelTarget.booking.full_name || 'Visitor'}
+                </strong>
+                <span className="font-mono" style={{ fontSize: '12px', background: 'var(--mono-hover-bg)', padding: '2px 8px', borderRadius: '4px' }}>
+                  {cancelTarget.ref}
+                </span>
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--mono-text-secondary)', display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
+                {cancelTarget.booking.visit_date && <span>📅 {cancelTarget.booking.visit_date}</span>}
+                {cancelTarget.booking.session_time && <span>⏰ {cancelTarget.booking.session_time}</span>}
+                {cancelTarget.booking.reading_room && <span>🏛️ {cancelTarget.booking.reading_room}</span>}
+              </div>
+            </div>
+          ) : null
+        }
+      />
+
+      {/* Bulk Action Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={Boolean(bulkActionTarget)}
+        onClose={() => setBulkActionTarget(null)}
+        onConfirm={bulkActionTarget?.onConfirm}
+        title={bulkActionTarget?.title || 'Confirm Bulk Action'}
+        eyebrow={bulkActionTarget?.eyebrow || 'BULK ACTION'}
+        message={bulkActionTarget?.message}
+        confirmText={bulkActionTarget?.confirmText || 'Confirm'}
+        cancelText={bulkActionTarget?.cancelText || 'Cancel'}
+        variant={bulkActionTarget?.variant || 'danger'}
+        isLoading={actionInProgress}
+      />
 
       {/* Floating In-App Toast Notification */}
       {toastMessage && (

@@ -23,6 +23,7 @@ import {
   Sun,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const INITIAL_CAPACITIES = [
   {
@@ -158,6 +159,7 @@ export default function AdminSettingsPage() {
   // New closure date form state
   const [newClosureDate, setNewClosureDate] = useState('');
   const [newClosureReason, setNewClosureReason] = useState('');
+  const [closureToDelete, setClosureToDelete] = useState(null);
 
   // Show toast notification helper
   const showToast = (msg) => {
@@ -264,11 +266,11 @@ export default function AdminSettingsPage() {
   };
 
   // Delete closure
-  const handleDeleteClosure = (id) => {
-    if (window.confirm('Remove this closure override?')) {
-      setClosures(closures.filter((c) => c.id !== id));
-      showToast('Removed closure schedule override.');
-    }
+  const executeDeleteClosure = () => {
+    if (!closureToDelete) return;
+    setClosures(closures.filter((c) => c.id !== closureToDelete.id));
+    showToast('Removed closure schedule override.');
+    setClosureToDelete(null);
   };
 
   // Helper for initials
@@ -757,7 +759,7 @@ export default function AdminSettingsPage() {
                     <button
                       type="button"
                       className="action-icon-btn delete-btn"
-                      onClick={() => handleDeleteClosure(c.id)}
+                      onClick={() => setClosureToDelete(c)}
                       title="Remove closure override"
                     >
                       <Trash2 size={14} />
@@ -842,6 +844,35 @@ export default function AdminSettingsPage() {
           </table>
         </div>
       </div>
+
+      {/* Remove Closure Override Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={Boolean(closureToDelete)}
+        onClose={() => setClosureToDelete(null)}
+        onConfirm={executeDeleteClosure}
+        title="Remove Closure Override?"
+        eyebrow="SCHEDULE MANAGEMENT"
+        message={
+          closureToDelete
+            ? `Are you sure you want to remove the closure override for ${closureToDelete.override_date}? Standard library operating hours will be restored for this date.`
+            : ''
+        }
+        confirmText="Remove Override"
+        cancelText="Cancel"
+        variant="danger"
+        detailsCard={
+          closureToDelete ? (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--mono-text-primary)' }}>
+                📅 {closureToDelete.override_date}
+              </span>
+              <span style={{ fontSize: '12.5px', color: 'var(--mono-text-secondary)' }}>
+                {closureToDelete.reason}
+              </span>
+            </div>
+          ) : null
+        }
+      />
     </div>
   );
 }

@@ -188,6 +188,12 @@ export default function AdminLoansPage() {
   // Modals state
   const [isNewLoanOpen, setIsNewLoanOpen] = useState(false);
   const [slipLoan, setSlipLoan] = useState(null);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3500);
+  };
 
   // New loan form
   const [newLoanForm, setNewLoanForm] = useState({
@@ -264,16 +270,26 @@ export default function AdminLoansPage() {
   // 1-Click Mark Returned
   const handleMarkReturned = (id) => {
     const today = new Date().toISOString().split('T')[0];
+    let returnedTitle = '';
     setLoans(
-      loans.map((l) => (l.id === id ? { ...l, status: 'returned', returnDate: today } : l))
+      loans.map((l) => {
+        if (l.id === id) {
+          returnedTitle = l.bookTitle;
+          return { ...l, status: 'returned', returnDate: today };
+        }
+        return l;
+      })
     );
+    showToast(`Successfully returned "${returnedTitle || 'Book'}".`);
   };
 
   // Extend due date +14 days
   const handleExtendLoan = (id) => {
+    let extendedTitle = '';
     setLoans(
       loans.map((l) => {
         if (l.id === id) {
+          extendedTitle = l.bookTitle;
           const curr = new Date(l.dueDate);
           curr.setDate(curr.getDate() + 14);
           return {
@@ -285,7 +301,7 @@ export default function AdminLoansPage() {
         return l;
       })
     );
-    alert('Loan extended by 14 days.');
+    showToast(`Loan period for "${extendedTitle || 'Book'}" extended by 14 days.`);
   };
 
   // Issue new loan
@@ -836,6 +852,14 @@ export default function AdminLoansPage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="bookings-toast-pill" role="status">
+          <CheckCircle2 size={16} />
+          <span>{toastMessage}</span>
         </div>
       )}
     </div>
