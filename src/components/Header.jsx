@@ -9,12 +9,12 @@ const NAV_LINKS = [
   { label: 'Manga Corner', href: '#manga-corner' },
   { label: 'Visit Guide', href: '#visit' },
   { label: 'My Pass', href: '/my-booking' },
-  { label: 'Dashboard', href: '/admin' },
   { label: 'Contact', href: '#contact' },
 ];
 
 export default function Header({ onBookSlot }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeLang, setActiveLang] = useState('EN');
   const navigate = useNavigate();
 
   const handleNavClick = (e, href) => {
@@ -68,10 +68,22 @@ export default function Header({ onBookSlot }) {
           </nav>
 
           <div className="header-actions">
-            <div className="header-lang" aria-label="Language selection">
-              <span className="lang-option active">EN</span>
-              <span className="lang-sep">/</span>
-              <span className="lang-option">日本語</span>
+            <div className="header-lang" role="group" aria-label="Language selection">
+              <button
+                type="button"
+                className={`lang-option ${activeLang === 'EN' ? 'active' : ''}`}
+                onClick={() => setActiveLang('EN')}
+              >
+                EN
+              </button>
+              <span className="lang-sep" aria-hidden="true">/</span>
+              <button
+                type="button"
+                className={`lang-option ${activeLang === 'JA' ? 'active' : ''}`}
+                onClick={() => setActiveLang('JA')}
+              >
+                日本語
+              </button>
             </div>
 
             <button
@@ -128,10 +140,22 @@ export default function Header({ onBookSlot }) {
           </div>
 
           <div className="mobile-menu-actions">
-            <div className="header-lang">
-              <span className="lang-option active">EN</span>
-              <span className="lang-sep">/</span>
-              <span className="lang-option">日本語</span>
+            <div className="header-lang" role="group" aria-label="Language selection">
+              <button
+                type="button"
+                className={`lang-option ${activeLang === 'EN' ? 'active' : ''}`}
+                onClick={() => setActiveLang('EN')}
+              >
+                EN
+              </button>
+              <span className="lang-sep" aria-hidden="true">/</span>
+              <button
+                type="button"
+                className={`lang-option ${activeLang === 'JA' ? 'active' : ''}`}
+                onClick={() => setActiveLang('JA')}
+              >
+                日本語
+              </button>
             </div>
             <button
               type="button"
