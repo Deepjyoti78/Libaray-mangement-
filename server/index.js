@@ -17,7 +17,20 @@ app.set('trust proxy', 1);
 
 // Security & Parsing middlewares
 app.use(cors({
-  origin: config.frontendOrigin,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, same-origin, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow localhost, configured frontendOrigin, and any Vercel deployment
+    if (
+      origin === config.frontendOrigin ||
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 

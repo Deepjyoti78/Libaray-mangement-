@@ -2,14 +2,20 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getDb } from './connection.js';
+import { SCHEMA_SQL } from './schemaSql.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function migrate() {
   console.log('Running database migrations...');
-  const schemaPath = path.resolve(__dirname, 'schema.sql');
-  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+  let schemaSql;
+  try {
+    const schemaPath = path.resolve(__dirname, 'schema.sql');
+    schemaSql = fs.readFileSync(schemaPath, 'utf8');
+  } catch (_) {
+    schemaSql = SCHEMA_SQL;
+  }
 
   const db = await getDb();
   // Split on statement ends to execute clean statements

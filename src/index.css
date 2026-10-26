@@ -4853,6 +4853,55 @@ ul, ol {
   gap: 0.3rem;
 }
 
+.review-date-time-group {
+  display: contents;
+}
+
+.row-text-block {
+  display: contents;
+}
+
+.review-head-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-val-sub {
+  display: none;
+}
+
+.desktop-val-sub {
+  display: block;
+}
+
+.mobile-date-val {
+  display: none;
+}
+
+.desktop-date-val {
+  display: inline;
+}
+
+.mobile-btn-text {
+  display: none;
+}
+
+.desktop-btn-text {
+  display: inline;
+}
+
+.mobile-review-edit-hint {
+  display: none;
+}
+
+.session-pill-tag {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 400;
+  color: var(--espresso-muted, rgba(53, 35, 25, 0.58));
+}
+
 .review-row-item {
   display: flex;
   align-items: flex-start;
@@ -5706,68 +5755,70 @@ ul, ol {
 
 /* 2. SPECIFIC POP-UP MODAL MOBILE OPTIMIZATION (<= 768px) */
 @media (max-width: 768px) {
-  /* Modal Backdrop: Aligns bottom sheet flush with viewport edges */
+  /* Modal Backdrop: Center card with margins matching Image 2 */
   .booking-modal-backdrop {
-    padding: 0 !important;
-    align-items: flex-end !important;
-    background: rgba(18, 12, 8, 0.65) !important;
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
+    padding: 0.75rem 0.65rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(18, 12, 8, 0.68) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
   }
 
-  /* Dialog transforms into an elegant native-feeling bottom sheet */
+  /* Dialog transforms into an elegant native rounded card matching Image 2 */
   .booking-modal-dialog {
     width: 100% !important;
-    max-width: 100% !important;
-    height: 94dvh !important;
+    max-width: 420px !important;
+    height: auto !important;
     max-height: 94dvh !important;
-    margin: 0 !important;
-    border-radius: 20px 20px 0 0 !important;
+    margin: auto !important;
+    border-radius: 24px !important;
     overflow: hidden !important;
-    box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.45) !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45) !important;
     animation: mobileModalSheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   @keyframes mobileModalSheetUp {
     from {
       opacity: 0.6;
-      transform: translateY(100%);
+      transform: translateY(20px) scale(0.98);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
   }
 
   /* Modal View inside page */
   .new-booking-page.modal-view {
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 100% !important;
-    border-radius: 20px 20px 0 0 !important;
+    height: auto !important;
+    max-height: 94dvh !important;
+    min-height: auto !important;
+    border-radius: 24px !important;
     background: #FAF8F5 !important;
     display: flex !important;
     flex-direction: column !important;
     position: relative !important;
+    overflow: hidden !important;
   }
 
   /* Tactile drag indicator handle at the top of the mobile sheet */
   .new-booking-page.modal-view::before {
     content: '';
     display: block;
-    width: 42px;
+    width: 44px;
     height: 4px;
     background: #D8CEBE;
-    border-radius: 4px;
-    margin: 10px auto 4px;
+    border-radius: 9999px;
+    margin: 12px auto 4px;
     flex-shrink: 0;
   }
 
   .new-booking-page.modal-view .new-booking-container {
-    height: calc(100% - 18px) !important;
-    min-height: calc(100% - 18px) !important;
-    max-height: calc(100% - 18px) !important;
-    border-radius: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: calc(94dvh - 20px) !important;
+    border-radius: 24px !important;
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
@@ -5775,12 +5826,350 @@ ul, ol {
   }
 
   .new-booking-page.modal-view .booking-interactive-panel {
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 100% !important;
+    height: auto !important;
+    max-height: calc(94dvh - 20px) !important;
+    min-height: auto !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
-    padding: 0.75rem 1.15rem 3.5rem 1.15rem !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    padding: 0.5rem 1.05rem 1.25rem 1.05rem !important;
+  }
+
+  .new-booking-page.modal-view .booking-interactive-panel::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     STEP 3: REVIEW VIEW (Image 2 Pixel-Perfect Mobile Specification)
+     ========================================================================= */
+  .step-review-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    padding-top: 0.25rem !important;
+  }
+
+  .step-review-layout .step-intro-header {
+    margin-bottom: 0.95rem !important;
+    padding-right: 2.75rem !important; /* space for circular close button */
+  }
+
+  .step-review-layout .category-tag-row {
+    margin-bottom: 0.25rem !important;
+  }
+
+  .step-review-layout .category-tag {
+    font-family: var(--font-sans) !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    color: #B8532F !important;
+    text-transform: uppercase !important;
+  }
+
+  .step-review-layout .category-rule {
+    display: none !important;
+  }
+
+  .step-review-layout .step-main-title {
+    font-family: var(--font-serif) !important;
+    font-size: 2.05rem !important;
+    font-weight: 400 !important;
+    color: #20140E !important;
+    line-height: 1.12 !important;
+    margin: 0.15rem 0 0.3rem 0 !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  .step-review-layout .step-main-subtitle {
+    font-family: var(--font-sans) !important;
+    font-size: 0.88rem !important;
+    font-weight: 400 !important;
+    color: #73655A !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+  }
+
+  .step-review-layout .review-cards-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.85rem !important;
+    margin-bottom: 0.95rem !important;
+  }
+
+  .step-review-layout .review-section-card {
+    background: #FFFFFF !important;
+    border: 1px solid #EDE4D8 !important;
+    border-radius: 18px !important;
+    padding: 1rem 1.1rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  }
+
+  .step-review-layout .review-card-head {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .step-review-layout .head-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+  }
+
+  .step-review-layout .review-head-badge {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+    background: #F6EEE7 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #352319 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .step-review-layout .review-head-badge .review-head-icon {
+    width: 15px !important;
+    height: 15px !important;
+    color: #352319 !important;
+  }
+
+  .step-review-layout .review-head-title {
+    font-family: var(--font-sans) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: #20140E !important;
+    letter-spacing: -0.01em !important;
+    margin: 0 !important;
+  }
+
+  .step-review-layout .edit-pill-btn {
+    font-family: var(--font-sans) !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    color: #B8532F !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0.15rem 0.25rem !important;
+    transition: color 0.15s ease !important;
+  }
+
+  .step-review-layout .edit-pill-btn:hover {
+    color: #8C2222 !important;
+  }
+
+  .step-review-layout .review-card-rows {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.8rem !important;
+  }
+
+  /* Each Row: Icon on left in warm blush circle badge, text on right */
+  .step-review-layout .review-row-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.85rem !important;
+  }
+
+  .step-review-layout .row-icon-circle {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    border-radius: 50% !important;
+    background: #F7EEE7 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #B8532F !important;
+    flex-shrink: 0 !important;
+  }
+
+  .step-review-layout .row-icon-circle .row-icon {
+    width: 18px !important;
+    height: 18px !important;
+    color: #B8532F !important;
+  }
+
+  .step-review-layout .row-text-block {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .step-review-layout .row-label-col {
+    font-family: var(--font-sans) !important;
+    font-size: 0.72rem !important;
+    color: #88796D !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    margin-bottom: 0.15rem !important;
+    line-height: 1.2 !important;
+    width: auto !important;
+  }
+
+  .step-review-layout .row-val-col {
+    font-family: var(--font-sans) !important;
+    color: #20140E !important;
+    line-height: 1.25 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .step-review-layout .row-val-col strong {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+  }
+
+  .step-review-layout .desktop-val-sub {
+    display: none !important;
+  }
+
+  .step-review-layout .mobile-val-sub {
+    display: block !important;
+    font-size: 0.75rem !important;
+    color: #88796D !important;
+    font-weight: 400 !important;
+    line-height: 1.3 !important;
+    margin-top: 0.15rem !important;
+  }
+
+  .step-review-layout .desktop-date-val {
+    display: none !important;
+  }
+
+  .step-review-layout .mobile-date-val {
+    display: inline !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+  }
+
+  /* Date & Time Side-by-Side 2-Column Grid on Mobile */
+  .step-review-layout .review-date-time-group {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+    border-top: none !important;
+    padding-top: 0 !important;
+    margin-top: 0.15rem !important;
+  }
+
+  .step-review-layout .review-row-date {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.6rem !important;
+  }
+
+  .step-review-layout .review-row-time {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.6rem !important;
+    border-left: 1px solid #EDE4D8 !important;
+    padding-left: 0.75rem !important;
+  }
+
+  .step-review-layout .review-row-date .row-icon-circle,
+  .step-review-layout .review-row-time .row-icon-circle {
+    margin-top: 0.1rem !important;
+  }
+
+  .step-review-layout .review-row-time .row-val-col strong {
+    font-size: 0.82rem !important;
+    white-space: nowrap !important;
+  }
+
+  .step-review-layout .session-pill-tag {
+    display: inline-block !important;
+    background: #F0EAE1 !important;
+    color: #5A4D43 !important;
+    font-size: 0.68rem !important;
+    font-weight: 500 !important;
+    padding: 0.15rem 0.5rem !important;
+    border-radius: 9999px !important;
+    margin-top: 0.25rem !important;
+    width: fit-content !important;
+  }
+
+  .step-review-layout .user-email-text {
+    word-break: break-all !important;
+  }
+
+  .step-review-layout .membership-val {
+    font-size: 0.85rem !important;
+    color: #352319 !important;
+    font-weight: 400 !important;
+  }
+
+  /* Review Actions Bottom on Mobile: single prominent terracotta button matching Image 2 */
+  .step-review-layout .review-actions-bottom {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    margin-top: 0.5rem !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .step-review-layout .review-actions-bottom .nav-secondary-back-btn {
+    display: none !important;
+  }
+
+  .step-review-layout .review-actions-bottom .confirm-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    background: #BA532B !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    box-shadow: 0 4px 12px rgba(186, 83, 43, 0.22) !important;
+    cursor: pointer !important;
+    padding: 0.75rem 1rem !important;
+    transition: background-color 0.15s ease, transform 0.1s ease !important;
+  }
+
+  .step-review-layout .review-actions-bottom .confirm-btn:hover:not(:disabled) {
+    background: #A04523 !important;
+  }
+
+  .step-review-layout .review-actions-bottom .confirm-btn:active:not(:disabled) {
+    transform: scale(0.99) !important;
+  }
+
+  .step-review-layout .desktop-btn-text {
+    display: none !important;
+  }
+
+  .step-review-layout .mobile-btn-text {
+    display: inline !important;
+  }
+
+  .mobile-review-edit-hint {
+    display: block !important;
+    text-align: center !important;
+    color: #7A6F66 !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.75rem !important;
+    font-weight: 400 !important;
+    margin-top: 0.45rem !important;
+    margin-bottom: 0.2rem !important;
   }
 
   /* Modal Close Button: Fixed, prominent, easily reachable */
@@ -5947,21 +6336,6 @@ ul, ol {
     padding: 1.15rem 0.85rem 1.75rem 0.85rem !important;
   }
 
-  /* Review page rows */
-  .review-row-item {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.15rem !important;
-  }
 
-  .row-label-col {
-    width: auto !important;
-    font-size: 0.68rem !important;
-    font-weight: 600 !important;
-  }
-
-  .row-val-col {
-    font-size: 0.82rem !important;
-  }
 }
 

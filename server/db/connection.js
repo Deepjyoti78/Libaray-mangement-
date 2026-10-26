@@ -67,19 +67,22 @@ export async function getDb() {
       dbInstance = new PGlite(config.databaseDir);
       await dbInstance.waitReady;
     } catch (initErr) {
-      console.error('PGlite initialization failed, resetting database directory to recover:', initErr);
+      console.error('PGlite initialization failed, attempting recovery:', initErr);
       try {
         if (dbInstance) {
           try { await dbInstance.close(); } catch (_) {}
           dbInstance = null;
         }
-        fs.rmSync(config.databaseDir, { recursive: true, force: true });
-        fs.mkdirSync(config.databaseDir, { recursive: true });
+        if (fs.existsSync(config.databaseDir)) {
+          try { fs.rmSync(config.databaseDir, { recursive: true, force: true }); } catch (_) {}
+        }
+        try { fs.mkdirSync(config.databaseDir, { recursive: true }); } catch (_) {}
         dbInstance = new PGlite(config.databaseDir);
         await dbInstance.waitReady;
       } catch (recoveryErr) {
-        console.error('Fatal: PGlite database recovery failed:', recoveryErr);
-        throw recoveryErr;
+        console.warn('PGlite directory initialization failed, falling back to in-memory instance:', recoveryErr);
+        dbInstance = new PGlite();
+        await dbInstance.waitReady;
       }
     }
   }

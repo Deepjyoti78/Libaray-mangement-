@@ -12,7 +12,9 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
   databaseUrl: process.env.DATABASE_URL || '',
-  databaseDir: path.resolve(__dirname, '../', process.env.DATABASE_DIR || './data/postgres'),
+  databaseDir: process.env.VERCEL
+    ? path.join('/tmp', 'postgres')
+    : path.resolve(__dirname, '../', process.env.DATABASE_DIR || './data/postgres'),
   jwtSecret: process.env.JWT_SECRET || 'fallback-secret-for-demo-purposes-only-32ch',
   cookieSecret: process.env.COOKIE_SECRET || 'fallback-cookie-secret-for-demo-32ch',
   tokenExpiry: process.env.TOKEN_EXPIRY || '8h',

@@ -1004,7 +1004,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <span className="category-rule" />
                 </div>
                 <h1 className="step-main-title">Almost there!</h1>
-                <p className="step-main-subtitle">Please review your booking details before confirming.</p>
+                <p className="step-main-subtitle">Review your booking before confirming.</p>
               </header>
 
               {submitError && (
@@ -1019,7 +1019,9 @@ export default function BookingWizard({ isModal = false, onClose }) {
                 <div className="review-section-card">
                   <div className="review-card-head">
                     <div className="head-left">
-                      <FileText className="review-head-icon" />
+                      <div className="review-head-badge">
+                        <FileText className="review-head-icon" />
+                      </div>
                       <h2 className="review-head-title">Booking summary</h2>
                     </div>
                     <button
@@ -1034,33 +1036,55 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   </div>
 
                   <div className="review-card-rows">
-                    <div className="review-row-item">
-                      <div className="row-icon-col"><BookOpen className="row-icon" /></div>
-                      <div className="row-label-col">Facility</div>
-                      <div className="row-val-col">
-                        <strong>{selectedFacilityObj.name}</strong>
-                        <span className="val-sub">{selectedFacilityObj.description}</span>
+                    {/* Facility */}
+                    <div className="review-row-item review-row-facility">
+                      <div className="row-icon-col row-icon-circle">
+                        <BookOpen className="row-icon" />
+                      </div>
+                      <div className="row-text-block">
+                        <div className="row-label-col">Facility</div>
+                        <div className="row-val-col">
+                          <strong>{selectedFacilityObj.name}</strong>
+                          <span className="val-sub desktop-val-sub">{selectedFacilityObj.description}</span>
+                          <span className="val-sub mobile-val-sub">
+                            {facilityId === 'reading-room'
+                              ? 'Quiet reading, study and research.'
+                              : 'Explore a wide range of Japanese manga.'}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="review-row-item">
-                      <div className="row-icon-col"><Calendar className="row-icon" /></div>
-                      <div className="row-label-col">Date</div>
-                      <div className="row-val-col">
-                        <strong>{formatFullDate(selectedDate)}</strong>
+                    {/* Date and Time Group (side-by-side on mobile, flow on desktop) */}
+                    <div className="review-date-time-group">
+                      <div className="review-row-item review-row-date">
+                        <div className="row-icon-col row-icon-circle">
+                          <Calendar className="row-icon" />
+                        </div>
+                        <div className="row-text-block">
+                          <div className="row-label-col">Date</div>
+                          <div className="row-val-col">
+                            <strong className="desktop-date-val">{formatFullDate(selectedDate)}</strong>
+                            <strong className="mobile-date-val">{formatShortDate(selectedDate)}</strong>
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="review-row-item">
-                      <div className="row-icon-col"><Clock className="row-icon" /></div>
-                      <div className="row-label-col">Time slot</div>
-                      <div className="row-val-col">
-                        <strong>
-                          {sessionId === 'morning' ? '11:00 AM – 2:30 PM' : '3:00 PM – 6:30 PM'}
-                        </strong>
-                        <span className="val-sub">
-                          {sessionId === 'morning' ? 'Morning Session' : 'Afternoon Session'}
-                        </span>
+                      <div className="review-row-item review-row-time">
+                        <div className="row-icon-col row-icon-circle">
+                          <Clock className="row-icon" />
+                        </div>
+                        <div className="row-text-block">
+                          <div className="row-label-col">Time</div>
+                          <div className="row-val-col">
+                            <strong>
+                              {sessionId === 'morning' ? '11:00 AM – 2:30 PM' : '3:00 PM – 6:30 PM'}
+                            </strong>
+                            <span className="session-pill-tag">
+                              {sessionId === 'morning' ? 'Morning Session' : 'Afternoon Session'}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1070,7 +1094,9 @@ export default function BookingWizard({ isModal = false, onClose }) {
                 <div className="review-section-card">
                   <div className="review-card-head">
                     <div className="head-left">
-                      <User className="review-head-icon" />
+                      <div className="review-head-badge">
+                        <User className="review-head-icon" />
+                      </div>
                       <h2 className="review-head-title">Visitor details</h2>
                     </div>
                     <button
@@ -1086,26 +1112,38 @@ export default function BookingWizard({ isModal = false, onClose }) {
 
                   <div className="review-card-rows">
                     <div className="review-row-item">
-                      <div className="row-icon-col"><User className="row-icon" /></div>
-                      <div className="row-label-col">Full name</div>
-                      <div className="row-val-col">
-                        <strong>{visitorName}</strong>
+                      <div className="row-icon-col row-icon-circle">
+                        <User className="row-icon" />
+                      </div>
+                      <div className="row-text-block">
+                        <div className="row-label-col">Full name</div>
+                        <div className="row-val-col">
+                          <strong>{visitorName}</strong>
+                        </div>
                       </div>
                     </div>
 
                     <div className="review-row-item">
-                      <div className="row-icon-col"><Mail className="row-icon" /></div>
-                      <div className="row-label-col">Email address</div>
-                      <div className="row-val-col">
-                        <strong>{visitorEmail}</strong>
+                      <div className="row-icon-col row-icon-circle">
+                        <Mail className="row-icon" />
+                      </div>
+                      <div className="row-text-block">
+                        <div className="row-label-col">Email address</div>
+                        <div className="row-val-col">
+                          <strong className="user-email-text">{visitorEmail}</strong>
+                        </div>
                       </div>
                     </div>
 
                     <div className="review-row-item">
-                      <div className="row-icon-col"><Hash className="row-icon" /></div>
-                      <div className="row-label-col">Membership number</div>
-                      <div className="row-val-col">
-                        <span>{membershipNo ? membershipNo : 'Not provided'}</span>
+                      <div className="row-icon-col row-icon-circle">
+                        <CreditCard className="row-icon" />
+                      </div>
+                      <div className="row-text-block">
+                        <div className="row-label-col">Membership number</div>
+                        <div className="row-val-col">
+                          <span className="membership-val">{membershipNo ? membershipNo : 'Not provided'}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1139,12 +1177,17 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     </>
                   ) : (
                     <>
-                      <span>Confirm reservation</span>
+                      <span className="desktop-btn-text">Confirm reservation</span>
+                      <span className="mobile-btn-text">Confirm booking</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
                 </button>
               </div>
+
+              <p className="mobile-review-edit-hint">
+                You can still edit these details.
+              </p>
             </div>
           )}
         </section>
