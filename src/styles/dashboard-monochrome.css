@@ -6679,3 +6679,552 @@ body.dark-theme,
   color: #71717A;
 }
 
+/* ==========================================================================
+   ENHANCED HIGH-CONTRAST BLACK THEME POLISH (CHARTS, SEARCHES, METRICS, & CATEGORIES)
+   ========================================================================== */
+
+/* 1. Books By Category Subcard */
+.monochrome-dashboard-layout.black-theme .category-name,
+[data-theme="dark"] .category-name,
+.black-theme .category-name {
+  color: #E4E4E7 !important;
+  font-weight: 500 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .category-count,
+[data-theme="dark"] .category-count,
+.black-theme .category-count {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .category-track,
+[data-theme="dark"] .category-track,
+.black-theme .category-track {
+  background-color: #1F1F28 !important;
+  border: 1px solid #282834 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .category-fill,
+[data-theme="dark"] .category-fill,
+.black-theme .category-fill {
+  background-color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .sub-card-heading,
+[data-theme="dark"] .sub-card-heading,
+.black-theme .sub-card-heading {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .summary-label,
+[data-theme="dark"] .summary-label,
+.black-theme .summary-label {
+  color: #A1A1AA !important;
+  font-size: 13px !important;
+}
+
+.monochrome-dashboard-layout.black-theme .summary-number,
+[data-theme="dark"] .summary-number,
+.black-theme .summary-number {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .analytics-sub-card,
+[data-theme="dark"] .analytics-sub-card,
+.black-theme .analytics-sub-card {
+  background-color: #111115 !important;
+  border: 1px solid #202026 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .sub-card-options-btn,
+.monochrome-dashboard-layout.black-theme .chart-options-menu-btn,
+.monochrome-dashboard-layout.black-theme .table-options-btn,
+[data-theme="dark"] .sub-card-options-btn,
+[data-theme="dark"] .chart-options-menu-btn,
+[data-theme="dark"] .table-options-btn,
+.black-theme .sub-card-options-btn,
+.black-theme .chart-options-menu-btn,
+.black-theme .table-options-btn {
+  background-color: #141419 !important;
+  border: 1px solid #24242E !important;
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .sub-card-options-btn:hover,
+.monochrome-dashboard-layout.black-theme .chart-options-menu-btn:hover,
+.monochrome-dashboard-layout.black-theme .table-options-btn:hover,
+[data-theme="dark"] .sub-card-options-btn:hover,
+[data-theme="dark"] .chart-options-menu-btn:hover,
+[data-theme="dark"] .table-options-btn:hover,
+.black-theme .sub-card-options-btn:hover,
+.black-theme .chart-options-menu-btn:hover,
+.black-theme .table-options-btn:hover {
+  background-color: #1E1E28 !important;
+  border-color: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .info-icon-badge,
+[data-theme="dark"] .info-icon-badge,
+.black-theme .info-icon-badge {
+  color: #A1A1AA !important;
+  background-color: #16161D !important;
+  border: 1px solid #262634 !important;
+}
+
+/* 2. Search Inputs Everywhere & Add Transaction Button */
+.monochrome-dashboard-layout.black-theme .table-search-input-wrap,
+[data-theme="dark"] .table-search-input-wrap,
+.black-theme .table-search-input-wrap {
+  background-color: #141419 !important;
+  border: 1px solid #24242E !important;
+}
+
+.monochrome-dashboard-layout.black-theme .table-search-input-wrap:focus-within,
+[data-theme="dark"] .table-search-input-wrap:focus-within,
+.black-theme .table-search-input-wrap:focus-within {
+  background-color: #181822 !important;
+  border-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .table-search-input,
+[data-theme="dark"] .table-search-input,
+.black-theme .table-search-input {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
+}
+
+.monochrome-dashboard-layout.black-theme .table-search-input::placeholder,
+[data-theme="dark"] .table-search-input::placeholder,
+.black-theme .table-search-input::placeholder {
+  color: #71717A !important;
+}
+
+.monochrome-dashboard-layout.black-theme .table-search-icon,
+[data-theme="dark"] .table-search-icon,
+.black-theme .table-search-icon {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .btn-add-transaction,
+[data-theme="dark"] .btn-add-transaction,
+.black-theme .btn-add-transaction {
+  background-color: #FFFFFF !important;
+  border: 1px solid #FFFFFF !important;
+  color: #09090C !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .btn-add-transaction:hover,
+[data-theme="dark"] .btn-add-transaction:hover,
+.black-theme .btn-add-transaction:hover {
+  background-color: #E4E4E7 !important;
+  border-color: #E4E4E7 !important;
+  color: #09090C !important;
+}
+
+.monochrome-dashboard-layout.black-theme .btn-add-transaction .plus-icon,
+[data-theme="dark"] .btn-add-transaction .plus-icon,
+.black-theme .btn-add-transaction .plus-icon {
+  color: #09090C !important;
+}
+
+/* Catalog & General search wrappers */
+.monochrome-dashboard-layout.black-theme .catalog-search-wrap,
+.monochrome-dashboard-layout.black-theme .members-search-wrap,
+.monochrome-dashboard-layout.black-theme .loans-search-wrap,
+.monochrome-dashboard-layout.black-theme .reservations-search-wrap,
+.monochrome-dashboard-layout.black-theme .fines-search-wrap,
+.monochrome-dashboard-layout.black-theme .librarians-search-wrap,
+.monochrome-dashboard-layout.black-theme .branches-search-wrap,
+[data-theme="dark"] .catalog-search-wrap,
+[data-theme="dark"] .members-search-wrap,
+[data-theme="dark"] .loans-search-wrap,
+[data-theme="dark"] .reservations-search-wrap,
+[data-theme="dark"] .fines-search-wrap,
+[data-theme="dark"] .librarians-search-wrap,
+[data-theme="dark"] .branches-search-wrap,
+.black-theme .catalog-search-wrap,
+.black-theme .members-search-wrap,
+.black-theme .loans-search-wrap,
+.black-theme .reservations-search-wrap,
+.black-theme .fines-search-wrap,
+.black-theme .librarians-search-wrap,
+.black-theme .branches-search-wrap {
+  background-color: #141419 !important;
+  border: 1px solid #24242E !important;
+}
+
+.monochrome-dashboard-layout.black-theme input[type="text"],
+.monochrome-dashboard-layout.black-theme input[type="search"],
+.monochrome-dashboard-layout.black-theme input[type="email"],
+.monochrome-dashboard-layout.black-theme input[type="password"],
+.monochrome-dashboard-layout.black-theme input[type="number"],
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="number"],
+.black-theme input[type="text"],
+.black-theme input[type="search"],
+.black-theme input[type="email"],
+.black-theme input[type="password"],
+.black-theme input[type="number"] {
+  background-color: #141419;
+  border: 1px solid #262634;
+  color: #FFFFFF;
+}
+
+.monochrome-dashboard-layout.black-theme input::placeholder,
+[data-theme="dark"] input::placeholder,
+.black-theme input::placeholder {
+  color: #71717A !important;
+}
+
+/* 3. Circulation Activity Card Header, Legends, and Period Toggles */
+.monochrome-dashboard-layout.black-theme .square-block-chart-card,
+[data-theme="dark"] .square-block-chart-card,
+.black-theme .square-block-chart-card {
+  background-color: #111115 !important;
+  border: 1px solid #202026 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .chart-heading,
+[data-theme="dark"] .chart-heading,
+.black-theme .chart-heading {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .chart-legend-items .legend-text,
+[data-theme="dark"] .chart-legend-items .legend-text,
+.black-theme .chart-legend-items .legend-text {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .swatch-issued,
+[data-theme="dark"] .swatch-issued,
+.black-theme .swatch-issued {
+  background-color: #FFFFFF !important;
+  border: 1px solid #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .swatch-returned,
+[data-theme="dark"] .swatch-returned,
+.black-theme .swatch-returned {
+  background-color: #4B4B58 !important;
+  border: 1px solid #4B4B58 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .period-pill-group,
+[data-theme="dark"] .period-pill-group,
+.black-theme .period-pill-group {
+  background-color: #141419 !important;
+  border: 1px solid #24242E !important;
+}
+
+.monochrome-dashboard-layout.black-theme .period-btn,
+[data-theme="dark"] .period-btn,
+.black-theme .period-btn {
+  color: #A1A1AA !important;
+  background-color: transparent !important;
+}
+
+.monochrome-dashboard-layout.black-theme .period-btn:hover,
+[data-theme="dark"] .period-btn:hover,
+.black-theme .period-btn:hover {
+  color: #FFFFFF !important;
+  background-color: #1E1E26 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .period-btn.active,
+[data-theme="dark"] .period-btn.active,
+.black-theme .period-btn.active {
+  background-color: #FFFFFF !important;
+  color: #09090C !important;
+  font-weight: 600 !important;
+}
+
+/* 4. Overdue Trend SVG Elements */
+.monochrome-dashboard-layout.black-theme .overdue-y-label,
+[data-theme="dark"] .overdue-y-label,
+.black-theme .overdue-y-label {
+  fill: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .overdue-x-label,
+[data-theme="dark"] .overdue-x-label,
+.black-theme .overdue-x-label {
+  fill: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .overdue-pixel-cell,
+[data-theme="dark"] .overdue-pixel-cell,
+.black-theme .overdue-pixel-cell {
+  fill: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .overdue-pixel-cell:hover,
+[data-theme="dark"] .overdue-pixel-cell:hover,
+.black-theme .overdue-pixel-cell:hover {
+  fill: #FFFFFF !important;
+}
+
+/* 5. Contrast Enhancements for Text Across Dashboard */
+.monochrome-dashboard-layout.black-theme .kpi-label,
+[data-theme="dark"] .kpi-label,
+.black-theme .kpi-label {
+  color: #A1A1AA !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 500 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .kpi-value,
+[data-theme="dark"] .kpi-value,
+.black-theme .kpi-value {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .kpi-metric-card .kpi-trend,
+[data-theme="dark"] .kpi-metric-card .kpi-trend,
+.black-theme .kpi-metric-card .kpi-trend {
+  color: #34D399 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .crumb-parent,
+[data-theme="dark"] .crumb-parent,
+.black-theme .crumb-parent {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .crumb-separator,
+[data-theme="dark"] .crumb-separator,
+.black-theme .crumb-separator {
+  color: #52525B !important;
+}
+
+.monochrome-dashboard-layout.black-theme .crumb-current,
+[data-theme="dark"] .crumb-current,
+.black-theme .crumb-current {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .sidebar-nav-link,
+[data-theme="dark"] .sidebar-nav-link,
+.black-theme .sidebar-nav-link {
+  color: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .sidebar-nav-link:hover,
+[data-theme="dark"] .sidebar-nav-link:hover,
+.black-theme .sidebar-nav-link:hover {
+  color: #FFFFFF !important;
+  background-color: #171720 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .sidebar-nav-link.active,
+[data-theme="dark"] .sidebar-nav-link.active,
+.black-theme .sidebar-nav-link.active {
+  color: #09090C !important;
+  background-color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .sidebar-nav-link.active .nav-link-icon,
+[data-theme="dark"] .sidebar-nav-link.active .nav-link-icon,
+.black-theme .sidebar-nav-link.active .nav-link-icon {
+  color: #09090C !important;
+}
+
+.monochrome-dashboard-layout.black-theme .nav-section-title,
+[data-theme="dark"] .nav-section-title,
+.black-theme .nav-section-title {
+  color: #71717A !important;
+  letter-spacing: 0.08em !important;
+  font-weight: 600 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .user-display-name,
+[data-theme="dark"] .user-display-name,
+.black-theme .user-display-name {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .user-role-label,
+[data-theme="dark"] .user-role-label,
+.black-theme .user-role-label {
+  color: #A1A1AA !important;
+}
+
+/* Status Badges */
+.monochrome-dashboard-layout.black-theme .badge-available,
+.monochrome-dashboard-layout.black-theme .status-returned,
+.monochrome-dashboard-layout.black-theme .status-active,
+[data-theme="dark"] .badge-available,
+[data-theme="dark"] .status-returned,
+[data-theme="dark"] .status-active,
+.black-theme .badge-available,
+.black-theme .status-returned,
+.black-theme .status-active {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #4ADE80 !important;
+  border: 1px solid rgba(74, 222, 128, 0.3) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .badge-borrowed,
+.monochrome-dashboard-layout.black-theme .status-issued,
+.monochrome-dashboard-layout.black-theme .status-borrowed,
+[data-theme="dark"] .badge-borrowed,
+[data-theme="dark"] .status-issued,
+[data-theme="dark"] .status-borrowed,
+.black-theme .badge-borrowed,
+.black-theme .status-issued,
+.black-theme .status-borrowed {
+  background-color: #1E1E28 !important;
+  color: #E4E4E7 !important;
+  border: 1px solid #2E2E3C !important;
+}
+
+.monochrome-dashboard-layout.black-theme .badge-overdue,
+.monochrome-dashboard-layout.black-theme .status-overdue,
+.monochrome-dashboard-layout.black-theme .status-unpaid,
+[data-theme="dark"] .badge-overdue,
+[data-theme="dark"] .status-overdue,
+[data-theme="dark"] .status-unpaid,
+.black-theme .badge-overdue,
+.black-theme .status-overdue,
+.black-theme .status-unpaid {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #F87171 !important;
+  border: 1px solid rgba(248, 113, 113, 0.3) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .badge-reserved,
+.monochrome-dashboard-layout.black-theme .status-reserved,
+[data-theme="dark"] .badge-reserved,
+[data-theme="dark"] .status-reserved,
+.black-theme .badge-reserved,
+.black-theme .status-reserved {
+  background-color: rgba(234, 179, 8, 0.15) !important;
+  color: #FACC15 !important;
+  border: 1px solid rgba(250, 204, 21, 0.3) !important;
+}
+
+/* 6. Tooltip Overrides for Charts in Dark Mode */
+.monochrome-dashboard-layout.black-theme .tooltip-header,
+[data-theme="dark"] .tooltip-header,
+.black-theme .tooltip-header {
+  fill: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .tooltip-label,
+[data-theme="dark"] .tooltip-label,
+.black-theme .tooltip-label {
+  fill: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .tooltip-value,
+[data-theme="dark"] .tooltip-value,
+.black-theme .tooltip-value {
+  fill: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .overdue-tt-date,
+[data-theme="dark"] .overdue-tt-date,
+.black-theme .overdue-tt-date {
+  fill: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .overdue-tt-count,
+[data-theme="dark"] .overdue-tt-count,
+.black-theme .overdue-tt-count {
+  fill: #FFFFFF !important;
+}
+
+/* 7. Recent Loan Activity Table Cell Colors in Dark Mode */
+.monochrome-dashboard-layout.black-theme .book-title-text,
+[data-theme="dark"] .book-title-text,
+.black-theme .book-title-text {
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .loan-code-text,
+[data-theme="dark"] .loan-code-text,
+.black-theme .loan-code-text {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .member-name-text,
+[data-theme="dark"] .member-name-text,
+.black-theme .member-name-text {
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .type-text,
+[data-theme="dark"] .type-text,
+.black-theme .type-text {
+  color: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .date-text,
+[data-theme="dark"] .date-text,
+.black-theme .date-text {
+  color: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .td-empty,
+[data-theme="dark"] .td-empty,
+.black-theme .td-empty {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .table-checkbox,
+[data-theme="dark"] .table-checkbox,
+.black-theme .table-checkbox {
+  accent-color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .row-action-btn,
+[data-theme="dark"] .row-action-btn,
+.black-theme .row-action-btn {
+  color: #A1A1AA !important;
+  background-color: transparent !important;
+}
+
+.monochrome-dashboard-layout.black-theme .row-action-btn:hover,
+[data-theme="dark"] .row-action-btn:hover,
+.black-theme .row-action-btn:hover {
+  color: #FFFFFF !important;
+  background-color: #1E1E28 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .row-action-dropdown,
+[data-theme="dark"] .row-action-dropdown,
+.black-theme .row-action-dropdown {
+  background-color: #141419 !important;
+  border: 1px solid #282836 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .row-action-dropdown button,
+[data-theme="dark"] .row-action-dropdown button,
+.black-theme .row-action-dropdown button {
+  color: #D4D4D8 !important;
+}
+
+.monochrome-dashboard-layout.black-theme .row-action-dropdown button:hover,
+[data-theme="dark"] .row-action-dropdown button:hover,
+.black-theme .row-action-dropdown button:hover {
+  background-color: #1E1E28 !important;
+  color: #FFFFFF !important;
+}
+
+
+

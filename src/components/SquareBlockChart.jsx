@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * SquareBlockChart
  * A pixel-block / square-block histogram replicating the reference design.
  * Each bar is constructed by stacking discrete square cells vertically,
- * with black cells for Books Issued and light-gray cells for Books Returned.
+ * with high-contrast cells for Books Issued and Books Returned.
  */
 export default function SquareBlockChart({
   data = [],
@@ -12,6 +13,7 @@ export default function SquareBlockChart({
   onPeriodChange,
   totalLoans = 10320,
 }) {
+  const { isDark } = useTheme();
   const [hoveredIdx, setHoveredIdx] = useState(5); // Default hovered on Jun (index 5) as in reference!
 
   // Y-axis tick marks
@@ -116,7 +118,16 @@ export default function SquareBlockChart({
           <defs>
             {/* Pattern for background dot/square grid */}
             <pattern id="pixelGridPattern" width="10.2" height="10.2" patternUnits="userSpaceOnUse">
-              <rect x="0" y="0" width="8" height="8" rx="0.5" fill="#FAFAFA" stroke="#EEEEEE" strokeWidth="0.75" />
+              <rect
+                x="0"
+                y="0"
+                width="8"
+                height="8"
+                rx="0.5"
+                fill={isDark ? '#0e0e13' : '#FAFAFA'}
+                stroke={isDark ? '#1a1a24' : '#EEEEEE'}
+                strokeWidth="0.75"
+              />
             </pattern>
           </defs>
 
@@ -126,7 +137,10 @@ export default function SquareBlockChart({
             y={paddingTop}
             width={chartWidth}
             height={chartHeight}
-            fill="url(#pixelGridPattern)"
+            fill={isDark ? '#0A0A0E' : 'url(#pixelGridPattern)'}
+            stroke={isDark ? '#181822' : 'none'}
+            strokeWidth="1"
+            rx="4"
             className="chart-grid-bg"
           />
 
@@ -140,6 +154,7 @@ export default function SquareBlockChart({
                   y={yPos + 3.5}
                   textAnchor="end"
                   className="y-axis-label"
+                  fill={isDark ? '#A1A1AA' : '#8E8E8E'}
                 >
                   {tick.label}
                 </text>
@@ -148,7 +163,7 @@ export default function SquareBlockChart({
                   y1={yPos}
                   x2={paddingLeft + chartWidth}
                   y2={yPos}
-                  stroke="#EFEFEF"
+                  stroke={isDark ? '#1F1F28' : '#EFEFEF'}
                   strokeWidth="1"
                 />
               </g>
@@ -197,7 +212,7 @@ export default function SquareBlockChart({
                     y1={paddingTop - 6}
                     x2={colCenterX}
                     y2={paddingTop + chartHeight}
-                    stroke="#9E9E9E"
+                    stroke={isDark ? '#FFFFFF' : '#9E9E9E'}
                     strokeWidth="1.2"
                     strokeDasharray="3 3"
                   />
@@ -209,7 +224,7 @@ export default function SquareBlockChart({
 
                   return (
                     <g key={`col-part-${blockCol}`}>
-                      {/* Books Issued (Solid Black Cells) */}
+                      {/* Books Issued (Pure White Cells in dark mode, Black in light mode) */}
                       {Array.from({ length: issuedCells }).map((_, rIdx) => {
                         const cellY =
                           paddingTop + chartHeight - (rIdx + 1) * stepY + cellGap;
@@ -221,13 +236,13 @@ export default function SquareBlockChart({
                             width={cellSize}
                             height={cellSize}
                             rx={0.6}
-                            fill="#111111"
+                            fill={isDark ? '#FFFFFF' : '#111111'}
                             className="pixel-cell cell-issued"
                           />
                         );
                       })}
 
-                      {/* Books Returned (Light Gray Cells Stacked Above) */}
+                      {/* Books Returned (Refined Slate in dark mode, Light Gray in light mode) */}
                       {Array.from({ length: returnedCells }).map((_, rIdx) => {
                         const cellY =
                           paddingTop +
@@ -242,7 +257,7 @@ export default function SquareBlockChart({
                             width={cellSize}
                             height={cellSize}
                             rx={0.6}
-                            fill="#D4D4D4"
+                            fill={isDark ? '#4B4B58' : '#D4D4D4'}
                             className="pixel-cell cell-returned"
                           />
                         );
@@ -257,6 +272,7 @@ export default function SquareBlockChart({
                   y={paddingTop + chartHeight + 20}
                   textAnchor="middle"
                   className={`x-axis-label ${isHovered ? 'x-label-active' : ''}`}
+                  fill={isHovered ? (isDark ? '#FFFFFF' : '#111111') : (isDark ? '#A1A1AA' : '#737373')}
                 >
                   {item.label?.toUpperCase() || item.key}
                 </text>
@@ -291,10 +307,10 @@ export default function SquareBlockChart({
                   width={tooltipWidth}
                   height={tooltipHeight}
                   rx="6"
-                  fill="#FFFFFF"
-                  stroke="#E0E0E0"
+                  fill={isDark ? '#181822' : '#FFFFFF'}
+                  stroke={isDark ? '#2E2E3E' : '#E0E0E0'}
                   strokeWidth="1"
-                  filter="drop-shadow(0px 4px 8px rgba(0,0,0,0.06))"
+                  filter={isDark ? "drop-shadow(0px 4px 12px rgba(0,0,0,0.8))" : "drop-shadow(0px 4px 8px rgba(0,0,0,0.06))"}
                 />
 
                 {/* Tooltip Header: Month & Year */}
@@ -302,6 +318,7 @@ export default function SquareBlockChart({
                   x={tooltipX + 12}
                   y={tooltipY + 18}
                   className="tooltip-header"
+                  fill={isDark ? '#FFFFFF' : '#111111'}
                 >
                   {activeItem.label} {activeItem.year || 2025}
                 </text>
@@ -313,12 +330,13 @@ export default function SquareBlockChart({
                   width="7"
                   height="7"
                   rx="0.5"
-                  fill="#111111"
+                  fill={isDark ? '#FFFFFF' : '#111111'}
                 />
                 <text
                   x={tooltipX + 24}
                   y={tooltipY + 35}
                   className="tooltip-label"
+                  fill={isDark ? '#A1A1AA' : '#666666'}
                 >
                   Books Issued
                 </text>
@@ -327,6 +345,7 @@ export default function SquareBlockChart({
                   y={tooltipY + 35}
                   textAnchor="end"
                   className="tooltip-value"
+                  fill={isDark ? '#FFFFFF' : '#111111'}
                 >
                   {formatK(activeItem.issued)}
                 </text>
@@ -338,12 +357,13 @@ export default function SquareBlockChart({
                   width="7"
                   height="7"
                   rx="0.5"
-                  fill="#D4D4D4"
+                  fill={isDark ? '#4B4B58' : '#D4D4D4'}
                 />
                 <text
                   x={tooltipX + 24}
                   y={tooltipY + 53}
                   className="tooltip-label"
+                  fill={isDark ? '#A1A1AA' : '#666666'}
                 >
                   Books Returned
                 </text>
@@ -352,6 +372,7 @@ export default function SquareBlockChart({
                   y={tooltipY + 53}
                   textAnchor="end"
                   className="tooltip-value"
+                  fill={isDark ? '#FFFFFF' : '#111111'}
                 >
                   {formatK(activeItem.returned)}
                 </text>

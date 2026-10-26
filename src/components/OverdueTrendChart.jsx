@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function OverdueTrendChart({ data = [] }) {
+  const { isDark } = useTheme();
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   // SVG Dimensions
@@ -59,6 +61,7 @@ export default function OverdueTrendChart({ data = [] }) {
                   y={y + 3}
                   textAnchor="end"
                   className="overdue-y-label"
+                  fill={isDark ? '#A1A1AA' : '#8E8E8E'}
                 >
                   {tick.label}
                 </text>
@@ -67,7 +70,7 @@ export default function OverdueTrendChart({ data = [] }) {
                   y1={y}
                   x2={paddingLeft + chartWidth}
                   y2={y}
-                  stroke="#EFEFEF"
+                  stroke={isDark ? '#20202A' : '#EFEFEF'}
                   strokeWidth="0.8"
                 />
               </g>
@@ -114,7 +117,7 @@ export default function OverdueTrendChart({ data = [] }) {
                       width={cellSize}
                       height={cellSize}
                       rx={0.5}
-                      fill={isHovered ? '#000000' : '#111111'}
+                      fill={isDark ? (isHovered ? '#FFFFFF' : '#D4D4D8') : (isHovered ? '#000000' : '#111111')}
                       className="overdue-pixel-cell"
                     />
                   );
@@ -129,6 +132,7 @@ export default function OverdueTrendChart({ data = [] }) {
             y={paddingTop + chartHeight + 16}
             textAnchor="start"
             className="overdue-x-label"
+            fill={isDark ? '#A1A1AA' : '#8E8E8E'}
           >
             1 NOV
           </text>
@@ -137,6 +141,7 @@ export default function OverdueTrendChart({ data = [] }) {
             y={paddingTop + chartHeight + 16}
             textAnchor="end"
             className="overdue-x-label"
+            fill={isDark ? '#A1A1AA' : '#8E8E8E'}
           >
             30 NOV 2025
           </text>
@@ -158,15 +163,15 @@ export default function OverdueTrendChart({ data = [] }) {
                   width={ttW}
                   height={ttH}
                   rx="4"
-                  fill="#FFFFFF"
-                  stroke="#E0E0E0"
+                  fill={isDark ? '#181822' : '#FFFFFF'}
+                  stroke={isDark ? '#2E2E3E' : '#E0E0E0'}
                   strokeWidth="0.8"
-                  filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.08))"
+                  filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.3))"
                 />
-                <text x={ttX + ttW / 2} y={ttY + 14} textAnchor="middle" className="overdue-tt-date">
+                <text x={ttX + ttW / 2} y={ttY + 14} textAnchor="middle" className="overdue-tt-date" fill={isDark ? '#A1A1AA' : '#666666'}>
                   {itm.date}
                 </text>
-                <text x={ttX + ttW / 2} y={ttY + 27} textAnchor="middle" className="overdue-tt-count">
+                <text x={ttX + ttW / 2} y={ttY + 27} textAnchor="middle" className="overdue-tt-count" fill={isDark ? '#FFFFFF' : '#111111'}>
                   {itm.count.toLocaleString()} overdue
                 </text>
               </g>
