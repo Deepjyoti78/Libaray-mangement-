@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Menu, X, Ticket, LayoutDashboard } from 'lucide-react';
+import { Calendar, Menu, X, Ticket, LayoutDashboard, ArrowRight } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Home', href: '#home' },
@@ -90,10 +90,11 @@ export default function Header({ onBookSlot }) {
               type="button"
               className="header-book-btn"
               onClick={onBookSlot}
-              aria-label="Book a Slot for library visit"
+              aria-label="Reserve a Visit"
             >
               <Calendar className="btn-icon" />
-              <span>Book a Slot</span>
+              <span>Reserve a Visit</span>
+              <ArrowRight className="btn-icon-arrow" />
             </button>
 
             <button
@@ -153,9 +154,11 @@ export default function Header({ onBookSlot }) {
                 onBookSlot?.();
                 setMobileOpen(false);
               }}
+              aria-label="Reserve a Visit"
             >
               <Calendar className="btn-icon" />
-              <span>Book a Slot</span>
+              <span>Reserve a Visit</span>
+              <ArrowRight className="btn-icon-arrow" />
             </button>
             <button
               type="button"

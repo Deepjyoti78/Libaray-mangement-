@@ -495,41 +495,58 @@ ul, ol {
   stroke-width: 2;
 }
 
-/* Primary Book a Slot Button */
+/* Primary Header Reserve a Visit Button - exactly matches .btn-primary */
 .header-book-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0 1.15rem;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0 1.25rem;
   height: 38px;
   font-family: var(--font-sans);
   font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: #FFFFFF;
-  background-color: #20140E;
-  border: 1px solid #20140E;
-  border-radius: 8px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--white, #FFFFFF);
+  background-color: var(--espresso, #2B1E17);
+  border: 1px solid var(--espresso, #2B1E17);
+  border-radius: 0;
   white-space: nowrap !important;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 2px 6px rgba(32, 20, 14, 0.2);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: none;
+  transition: background-color var(--transition-fast, 0.2s ease), border-color var(--transition-fast, 0.2s ease), transform var(--transition-fast, 0.2s ease);
   box-sizing: border-box;
   flex-shrink: 0;
 }
 
 .header-book-btn:hover {
-  background-color: #B8532F;
-  border-color: #B8532F;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(184, 83, 47, 0.28);
+  background-color: #23160e;
+  border-color: #23160e;
+  transform: none;
+  box-shadow: none;
+}
+
+.header-book-btn:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 2px;
 }
 
 .header-book-btn .btn-icon {
   width: 14px;
   height: 14px;
-  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.header-book-btn .btn-icon-arrow {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast, 0.2s ease);
+}
+
+.header-book-btn:hover .btn-icon-arrow {
+  transform: translateX(3px);
 }
 
 .mobile-dashboard-btn {
