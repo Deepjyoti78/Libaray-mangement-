@@ -6458,7 +6458,8 @@ ul, ol {
     min-height: 52px !important;
     max-height: none !important;
     padding: 0.45rem 0.65rem !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
+    background: #FFFFFF !important;
   }
 
   .facility-pill-desc {
@@ -6478,7 +6479,8 @@ ul, ol {
     min-height: 48px !important;
     max-height: none !important;
     padding: 0.45rem 0.65rem !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
+    background: #FFFFFF !important;
     width: 100% !important;
   }
 
@@ -6567,9 +6569,11 @@ ul, ol {
   }
 
   .form-nav-row {
-    flex-direction: column-reverse !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    flex-direction: row !important;
     gap: 0.65rem !important;
-    margin-top: 1.25rem !important;
+    margin-top: 0.95rem !important;
     width: 100% !important;
   }
 
@@ -6577,11 +6581,22 @@ ul, ol {
   .form-nav-row .primary-espresso-btn {
     width: 100% !important;
     justify-content: center !important;
-    padding: 0.85rem 1rem !important;
-    min-height: 48px !important;
-    font-size: 0.9rem !important;
+    padding: 0.65rem 0.5rem !important;
+    min-height: 44px !important;
+    font-size: 0.84rem !important;
     font-weight: 600 !important;
     border-radius: 8px !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .form-nav-row .nav-secondary-back-btn {
+    background: #FFFFFF !important;
+    border: 1px solid #D5CBC0 !important;
+    color: var(--espresso, #352319) !important;
   }
 
   /* STEP 3: Review View adjustments */
@@ -6718,7 +6733,7 @@ ul, ol {
     height: auto !important;
     max-height: 88dvh !important;
     margin: auto !important;
-    border-radius: 18px !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45) !important;
     animation: mobileModalSheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -6740,7 +6755,7 @@ ul, ol {
     height: auto !important;
     max-height: 88dvh !important;
     min-height: auto !important;
-    border-radius: 18px !important;
+    border-radius: 12px !important;
     background: #FAF8F5 !important;
     display: flex !important;
     flex-direction: column !important;
@@ -6764,7 +6779,7 @@ ul, ol {
     height: auto !important;
     min-height: auto !important;
     max-height: calc(88dvh - 14px) !important;
-    border-radius: 18px !important;
+    border-radius: 12px !important;
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
@@ -6846,9 +6861,9 @@ ul, ol {
 
   .step-review-layout .review-section-card {
     background: #FFFFFF !important;
-    border: 1px solid #EDE4D8 !important;
-    border-radius: 18px !important;
-    padding: 1rem 1.1rem !important;
+    border: 1px solid #ECE4D8 !important;
+    border-radius: 10px !important;
+    padding: 0.85rem 0.95rem !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
   }
 
@@ -6858,19 +6873,19 @@ ul, ol {
     justify-content: space-between !important;
     border-bottom: none !important;
     padding-bottom: 0 !important;
-    margin-bottom: 0.85rem !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .step-review-layout .head-left {
     display: flex !important;
     align-items: center !important;
-    gap: 0.55rem !important;
+    gap: 0.5rem !important;
   }
 
   .step-review-layout .review-head-badge {
-    width: 30px !important;
-    height: 30px !important;
-    border-radius: 8px !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 6px !important;
     background: #F6EEE7 !important;
     display: flex !important;
     align-items: center !important;
@@ -6880,23 +6895,23 @@ ul, ol {
   }
 
   .step-review-layout .review-head-badge .review-head-icon {
-    width: 15px !important;
-    height: 15px !important;
+    width: 14px !important;
+    height: 14px !important;
     color: #352319 !important;
   }
 
   .step-review-layout .review-head-title {
     font-family: var(--font-sans) !important;
-    font-size: 0.95rem !important;
-    font-weight: 600 !important;
-    color: #20140E !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: #241812 !important;
     letter-spacing: -0.01em !important;
     margin: 0 !important;
   }
 
   .step-review-layout .edit-pill-btn {
     font-family: var(--font-sans) !important;
-    font-size: 0.85rem !important;
+    font-size: 0.82rem !important;
     font-weight: 500 !important;
     color: #B8532F !important;
     text-decoration: underline !important;
@@ -6915,7 +6930,7 @@ ul, ol {
   .step-review-layout .review-card-rows {
     display: flex !important;
     flex-direction: column !important;
-    gap: 0.8rem !important;
+    gap: 0.75rem !important;
   }
 
   /* Each Row: Icon on left in warm blush circle badge, text on right */
@@ -6923,15 +6938,15 @@ ul, ol {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 0.85rem !important;
+    gap: 0.75rem !important;
   }
 
   .step-review-layout .row-icon-circle {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
     border-radius: 50% !important;
-    background: #F7EEE7 !important;
+    background: #F8F1EB !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -6940,8 +6955,8 @@ ul, ol {
   }
 
   .step-review-layout .row-icon-circle .row-icon {
-    width: 18px !important;
-    height: 18px !important;
+    width: 15px !important;
+    height: 15px !important;
     color: #B8532F !important;
   }
 
@@ -6954,27 +6969,27 @@ ul, ol {
 
   .step-review-layout .row-label-col {
     font-family: var(--font-sans) !important;
-    font-size: 0.72rem !important;
-    color: #88796D !important;
+    font-size: 0.68rem !important;
+    color: #8C7E72 !important;
     font-weight: 400 !important;
     text-transform: none !important;
-    margin-bottom: 0.15rem !important;
+    margin-bottom: 0.12rem !important;
     line-height: 1.2 !important;
     width: auto !important;
   }
 
   .step-review-layout .row-val-col {
     font-family: var(--font-sans) !important;
-    color: #20140E !important;
+    color: #241812 !important;
     line-height: 1.25 !important;
     display: flex !important;
     flex-direction: column !important;
   }
 
   .step-review-layout .row-val-col strong {
-    font-size: 0.9rem !important;
-    font-weight: 700 !important;
-    color: #20140E !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+    color: #241812 !important;
   }
 
   .step-review-layout .desktop-val-sub {
@@ -6983,11 +6998,11 @@ ul, ol {
 
   .step-review-layout .mobile-val-sub {
     display: block !important;
-    font-size: 0.75rem !important;
-    color: #88796D !important;
+    font-size: 0.72rem !important;
+    color: #8C7E72 !important;
     font-weight: 400 !important;
     line-height: 1.3 !important;
-    margin-top: 0.15rem !important;
+    margin-top: 0.12rem !important;
   }
 
   .step-review-layout .desktop-date-val {
@@ -6996,9 +7011,9 @@ ul, ol {
 
   .step-review-layout .mobile-date-val {
     display: inline !important;
-    font-size: 0.88rem !important;
-    font-weight: 700 !important;
-    color: #20140E !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+    color: #241812 !important;
   }
 
   /* Date & Time Side-by-Side 2-Column Grid on Mobile */
@@ -7008,21 +7023,21 @@ ul, ol {
     gap: 0.5rem !important;
     border-top: none !important;
     padding-top: 0 !important;
-    margin-top: 0.15rem !important;
+    margin-top: 0.1rem !important;
   }
 
   .step-review-layout .review-row-date {
     display: flex !important;
     align-items: flex-start !important;
-    gap: 0.6rem !important;
+    gap: 0.55rem !important;
   }
 
   .step-review-layout .review-row-time {
     display: flex !important;
     align-items: flex-start !important;
-    gap: 0.6rem !important;
-    border-left: 1px solid #EDE4D8 !important;
-    padding-left: 0.75rem !important;
+    gap: 0.55rem !important;
+    border-left: 1px solid #ECE4D8 !important;
+    padding-left: 0.65rem !important;
   }
 
   .step-review-layout .review-row-date .row-icon-circle,
@@ -7032,32 +7047,35 @@ ul, ol {
 
   .step-review-layout .review-row-time .row-val-col strong {
     font-size: 0.82rem !important;
+    font-weight: 500 !important;
     white-space: nowrap !important;
   }
 
   .step-review-layout .session-pill-tag {
     display: inline-block !important;
-    background: #F0EAE1 !important;
+    background: #F4EFEB !important;
     color: #5A4D43 !important;
-    font-size: 0.68rem !important;
+    font-size: 0.65rem !important;
     font-weight: 500 !important;
-    padding: 0.15rem 0.5rem !important;
-    border-radius: 9999px !important;
-    margin-top: 0.25rem !important;
+    padding: 0.12rem 0.45rem !important;
+    border-radius: 4px !important;
+    margin-top: 0.2rem !important;
     width: fit-content !important;
   }
 
   .step-review-layout .user-email-text {
     word-break: break-all !important;
+    font-weight: 500 !important;
+    color: #241812 !important;
   }
 
   .step-review-layout .membership-val {
-    font-size: 0.85rem !important;
-    color: #352319 !important;
-    font-weight: 400 !important;
+    font-size: 0.84rem !important;
+    color: #241812 !important;
+    font-weight: 500 !important;
   }
 
-  /* Review Actions Bottom on Mobile: single prominent terracotta button matching Image 2 */
+  /* Review Actions Bottom on Mobile: single prominent espresso button */
   .step-review-layout .review-actions-bottom {
     display: flex !important;
     flex-direction: column !important;
@@ -7073,13 +7091,13 @@ ul, ol {
 
   .step-review-layout .review-actions-bottom .confirm-btn {
     width: 100% !important;
-    min-height: 48px !important;
+    min-height: 46px !important;
     background: var(--espresso, #352319) !important;
     color: #FFFFFF !important;
     border: none !important;
-    border-radius: 12px !important;
+    border-radius: 8px !important;
     font-family: var(--font-sans) !important;
-    font-size: 0.95rem !important;
+    font-size: 0.92rem !important;
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -7153,7 +7171,8 @@ ul, ol {
     min-height: 52px !important;
     height: auto !important;
     padding: 0.45rem 0.65rem !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
+    background: #FFFFFF !important;
   }
 
   .step-selection-layout-clean .facility-sub-section {
@@ -7167,7 +7186,8 @@ ul, ol {
   /* Calendar sizing & touch targets on mobile */
   .inline-calendar-box {
     padding: 0.45rem 0.55rem !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
+    background: #FFFFFF !important;
   }
 
   .cal-header {
@@ -7342,11 +7362,11 @@ ul, ol {
     box-sizing: border-box !important;
   }
 
-  /* Mobile Sheet Card: compact floating rounded pass card with soft ambient drop-shadow */
+  /* Mobile Sheet Card: floating pass card with sharper edges and generous breathing room */
   .confirmation-mobile-card {
     background: #FAF8F5 !important;
-    border-radius: 18px !important;
-    padding: 12px 14px 14px 14px !important;
+    border-radius: 12px !important;
+    padding: 1.35rem 1.25rem 1.35rem 1.25rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
     position: relative !important;
@@ -7355,16 +7375,16 @@ ul, ol {
   }
 
   .modal-card {
-    border-radius: 14px !important;
+    border-radius: 12px !important;
   }
 
   /* Top Drag Handle */
   .confirmation-mobile-drag-handle {
-    width: 34px !important;
+    width: 36px !important;
     height: 3.5px !important;
     background: #D0C6B8 !important;
     border-radius: 9999px !important;
-    margin: 0 auto 8px !important;
+    margin: 0 auto 10px !important;
   }
 
   /* Top Header Text (Hidden on mobile) */
@@ -7375,10 +7395,10 @@ ul, ol {
   /* Circular Close Button */
   .confirmation-mobile-close-circle {
     position: absolute !important;
-    top: 10px !important;
-    right: 10px !important;
-    width: 30px !important;
-    height: 30px !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 50% !important;
     background: #EDE5D8 !important;
     border: none !important;
@@ -7398,18 +7418,18 @@ ul, ol {
 
   /* Title Block */
   .confirmation-mobile-title-block {
-    margin-bottom: 0.65rem !important;
+    margin-bottom: 0.95rem !important;
     padding-right: 32px !important;
   }
 
   .confirmation-mobile-tag {
-    color: #B8532F !important;
-    font-size: 0.6875rem !important;
+    color: #BA532B !important;
+    font-size: 0.72rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
     display: inline-block !important;
-    margin-bottom: 0.2rem !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .confirmation-mobile-tag.cancelled {
@@ -7422,38 +7442,38 @@ ul, ol {
 
   .confirmation-mobile-title {
     font-family: var(--font-serif) !important;
-    font-size: 1.55rem !important;
+    font-size: 1.65rem !important;
     font-weight: 500 !important;
     line-height: 1.15 !important;
     color: #20140E !important;
-    margin: 0 0 0.25rem 0 !important;
+    margin: 0 0 0.35rem 0 !important;
   }
 
   .confirmation-mobile-subtitle {
-    font-size: 0.78rem !important;
+    font-size: 0.84rem !important;
     color: #73655A !important;
     margin: 0 !important;
-    line-height: 1.3 !important;
+    line-height: 1.35 !important;
   }
 
   /* SECTION 1: QR & Booking Code Card */
   .confirmation-mobile-qr-card {
     background: #FFFFFF !important;
     border: 1px solid #ECE4D8 !important;
-    border-radius: 14px !important;
-    padding: 10px 12px !important;
-    margin-bottom: 0.65rem !important;
+    border-radius: 10px !important;
+    padding: 12px 14px !important;
+    margin-bottom: 0.85rem !important;
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 14px !important;
     box-shadow: 0 1px 3px rgba(36, 24, 18, 0.03) !important;
   }
 
   .confirmation-mobile-qr-frame {
-    width: 76px !important;
-    height: 76px !important;
+    width: 80px !important;
+    height: 80px !important;
     border: 1px solid #ECE4D8 !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
     padding: 4px !important;
     background: #FFFFFF !important;
     display: flex !important;
@@ -7478,20 +7498,20 @@ ul, ol {
   }
 
   .confirmation-mobile-code-label {
-    font-size: 0.6rem !important;
+    font-size: 0.68rem !important;
     font-weight: 600 !important;
     color: #8C7E72 !important;
     letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0.35rem !important;
     display: block !important;
   }
 
   .confirmation-mobile-code-pill {
     background: #F8EFEA !important;
     border: none !important;
-    border-radius: 8px !important;
-    padding: 6px 9px !important;
+    border-radius: 6px !important;
+    padding: 7px 10px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -7507,10 +7527,10 @@ ul, ol {
   }
 
   .confirmation-mobile-code-val {
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
     font-weight: 700 !important;
     color: #20140E !important;
-    letter-spacing: 0.04em !important;
+    letter-spacing: 0.03em !important;
     white-space: nowrap !important;
   }
 
@@ -7523,9 +7543,9 @@ ul, ol {
   }
 
   .confirmation-mobile-scan-note {
-    font-size: 0.68rem !important;
+    font-size: 0.74rem !important;
     color: #8C7E72 !important;
-    line-height: 1.25 !important;
+    line-height: 1.35 !important;
     margin-top: 0.35rem !important;
     display: block !important;
   }
@@ -7534,22 +7554,22 @@ ul, ol {
   .confirmation-mobile-details-card {
     background: #FFFFFF !important;
     border: 1px solid #ECE4D8 !important;
-    border-radius: 14px !important;
-    padding: 10px 12px !important;
-    margin-bottom: 0.75rem !important;
+    border-radius: 10px !important;
+    padding: 12px 14px !important;
+    margin-bottom: 0.95rem !important;
     box-shadow: 0 1px 3px rgba(36, 24, 18, 0.03) !important;
   }
 
   .confirmation-mobile-details-row {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
+    gap: 10px !important;
   }
 
   .confirmation-mobile-row-divider {
     height: 1px !important;
     background: #ECE4D8 !important;
-    margin: 8px 0 !important;
+    margin: 10px 0 !important;
   }
 
   .confirmation-mobile-detail-cell {
@@ -7561,15 +7581,15 @@ ul, ol {
 
   .confirmation-mobile-detail-cell.with-divider {
     border-left: 1px solid #ECE4D8 !important;
-    padding-left: 8px !important;
+    padding-left: 10px !important;
   }
 
   .confirmation-mobile-detail-badge {
-    width: 30px !important;
-    height: 30px !important;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 50% !important;
     background: #FAF0E8 !important;
-    color: #C85A32 !important;
+    color: #BA532B !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -7584,30 +7604,35 @@ ul, ol {
   }
 
   .confirmation-mobile-detail-label {
-    font-size: 0.58rem !important;
-    font-weight: 600 !important;
+    font-size: 0.68rem !important;
+    font-weight: 500 !important;
     color: #8C7E72 !important;
-    letter-spacing: 0.08em !important;
+    letter-spacing: 0.05em !important;
     text-transform: uppercase !important;
     line-height: 1 !important;
-    margin-bottom: 0.18rem !important;
+    margin-bottom: 0.2rem !important;
     display: block !important;
   }
 
   .confirmation-mobile-detail-val {
-    font-size: 0.78rem !important;
-    font-weight: 700 !important;
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
     color: #20140E !important;
-    line-height: 1.2 !important;
+    line-height: 1.25 !important;
     display: block !important;
   }
 
   .confirmation-mobile-detail-sub {
-    font-size: 0.65rem !important;
+    font-size: 0.72rem !important;
     color: #8C7E72 !important;
-    line-height: 1.2 !important;
+    line-height: 1.25 !important;
     margin-top: 0.15rem !important;
     display: block !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .confirmation-mobile-detail-sub.break-all {
     word-break: break-all !important;
   }
 
@@ -7632,14 +7657,14 @@ ul, ol {
   .confirmation-mobile-btn-outline {
     background: #FFFFFF !important;
     border: 1px solid #EDE4D8 !important;
-    border-radius: 10px !important;
-    height: 42px !important;
+    border-radius: 8px !important;
+    height: 44px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 6px !important;
-    font-weight: 600 !important;
-    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    font-size: 0.82rem !important;
     color: #20140E !important;
     cursor: pointer !important;
     padding: 0 4px !important;
@@ -7653,7 +7678,7 @@ ul, ol {
   /* Row 2: Cancel reservation and Go to My Reservations in the same line */
   .confirmation-mobile-actions-row-2 {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1fr 1.2fr !important;
     gap: 8px !important;
     width: 100% !important;
   }
@@ -7665,15 +7690,15 @@ ul, ol {
   .confirmation-mobile-btn-cancel {
     background: #FEF4F2 !important;
     border: 1px solid #F9D0C8 !important;
-    border-radius: 10px !important;
-    height: 42px !important;
+    border-radius: 8px !important;
+    height: 44px !important;
     width: 100% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 5px !important;
     font-weight: 600 !important;
-    font-size: clamp(0.68rem, 2.5vw, 0.76rem) !important;
+    font-size: 0.82rem !important;
     color: #C44026 !important;
     cursor: pointer !important;
     padding: 0 4px !important;
@@ -7687,17 +7712,17 @@ ul, ol {
   }
 
   .confirmation-mobile-btn-primary {
-    background: #251B14 !important;
+    background: var(--espresso, #352319) !important;
     color: #FFFFFF !important;
-    border-radius: 10px !important;
-    height: 42px !important;
+    border-radius: 8px !important;
+    height: 44px !important;
     width: 100% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 5px !important;
     font-weight: 600 !important;
-    font-size: clamp(0.68rem, 2.5vw, 0.76rem) !important;
+    font-size: 0.84rem !important;
     text-decoration: none !important;
     cursor: pointer !important;
     padding: 0 4px !important;
@@ -7707,7 +7732,7 @@ ul, ol {
   }
 
   .confirmation-mobile-btn-primary:active {
-    background: #3B2A20 !important;
+    background: #23160e !important;
   }
 
   .mobile-reservations-label-short {
