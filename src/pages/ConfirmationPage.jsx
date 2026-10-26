@@ -465,11 +465,6 @@ END:VCALENDAR`;
           {/* Top Drag Handle */}
           <div className="confirmation-mobile-drag-handle" aria-hidden="true" />
 
-          {/* Top Header Text */}
-          <div className="confirmation-mobile-header-text">
-            RESERVATION PASS · THE LIBRARY NEW DELHI
-          </div>
-
           {/* Circular Close Button */}
           <button
             type="button"
@@ -599,20 +594,7 @@ END:VCALENDAR`;
             </div>
           </div>
 
-          {/* SECTION 3: Visitor Guidelines Box */}
-          <div className="confirmation-mobile-guide-card">
-            <div className="confirmation-mobile-guide-icon-circle">
-              <Info className="w-4 h-4 stroke-[2]" />
-            </div>
-            <div className="confirmation-mobile-guide-text">
-              <span className="confirmation-mobile-guide-title">Visitor guidelines</span>
-              <p className="confirmation-mobile-guide-p">
-                Please arrive 5–10 minutes early with this digital QR pass or booking reference. Bring photo identification or membership card if requested.
-              </p>
-            </div>
-          </div>
-
-          {/* SECTION 4: Actions (3 rows) */}
+          {/* SECTION 4: Actions (Row 1: Calendar & Print; Row 2: Cancel reservation & Go to My Reservations in the SAME LINE) */}
           <div className="confirmation-mobile-actions-zone">
             {/* Row 1: Add to calendar & Print pass */}
             <div className="confirmation-mobile-actions-row-1">
@@ -639,29 +621,32 @@ END:VCALENDAR`;
               </button>
             </div>
 
-            {/* Row 2: Cancel reservation */}
-            {!isCancelled && !isCheckedIn && (
-              <button
-                type="button"
-                id="mobile-cancel-reservation-btn"
-                className="confirmation-mobile-btn-cancel"
-                onClick={() => setShowCancelModal(true)}
-              >
-                <Trash2 className="w-4 h-4 stroke-[2]" />
-                <span>Cancel reservation</span>
-              </button>
-            )}
+            {/* Row 2: Cancel reservation and Go to My Reservations in the same line */}
+            <div className={`confirmation-mobile-actions-row-2 ${isCancelled || isCheckedIn ? 'single-action' : ''}`}>
+              {!isCancelled && !isCheckedIn && (
+                <button
+                  type="button"
+                  id="mobile-cancel-reservation-btn"
+                  className="confirmation-mobile-btn-cancel"
+                  onClick={() => setShowCancelModal(true)}
+                  title="Cancel reservation"
+                >
+                  <Trash2 className="w-4 h-4 stroke-[2]" />
+                  <span>Cancel reservation</span>
+                </button>
+              )}
 
-            {/* Row 3: Go to My Reservations */}
-            <Link
-              to="/my-booking"
-              id="mobile-my-bookings-btn"
-              className="confirmation-mobile-btn-primary"
-              title="Go to My Reservations"
-            >
-              <span>Go to My Reservations</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+              <Link
+                to="/my-booking"
+                id="mobile-my-bookings-btn"
+                className="confirmation-mobile-btn-primary"
+                title="Go to My Reservations"
+              >
+                <span className="mobile-reservations-label-full">Go to My Reservations</span>
+                <span className="mobile-reservations-label-short">My Reservations</span>
+                <ArrowRight className="w-4 h-4 flex-shrink-0" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
