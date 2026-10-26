@@ -15,6 +15,18 @@ export default function RecentLoanActivityTable({
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [activeMenuId, setActiveMenuId] = useState(null);
 
+  // Close active dropdown when clicking outside
+  React.useEffect(() => {
+    if (!activeMenuId) return;
+    const handleOutsideClick = (e) => {
+      if (!e.target.closest('.action-menu-anchor')) {
+        setActiveMenuId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [activeMenuId]);
+
   // Toggle select all
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -147,9 +159,10 @@ export default function RecentLoanActivityTable({
                 </td>
               </tr>
             ) : (
-              loans.map((row) => {
+              loans.map((row, index) => {
                 const isSelected = selectedIds.has(row.id);
                 const isMenuOpen = activeMenuId === row.id;
+                const isNearBottom = index >= loans.length - 3;
 
                 return (
                   <tr key={`loan-row-${row.id}`} className={isSelected ? 'row-selected' : ''}>
@@ -195,7 +208,7 @@ export default function RecentLoanActivityTable({
                         </button>
 
                         {isMenuOpen && (
-                          <div className="row-action-dropdown">
+                          <div className={`row-action-dropdown ${isNearBottom ? 'dropdown-open-up' : ''}`}>
                             <button
                               onClick={() => {
                                 onStatusUpdate?.(row.id, 'returned');

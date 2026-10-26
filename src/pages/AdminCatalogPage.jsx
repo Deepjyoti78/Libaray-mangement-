@@ -10,6 +10,7 @@ import {
   ArrowLeftRight,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   Eye,
   Edit2,
   Trash2,
@@ -280,6 +281,7 @@ export default function AdminCatalogPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [inspectedBook, setInspectedBook] = useState(null);
   const [editingBook, setEditingBook] = useState(null);
+  const [bookToRetire, setBookToRetire] = useState(null);
 
   // New book form state
   const [newBookForm, setNewBookForm] = useState({
@@ -368,15 +370,19 @@ export default function AdminCatalogPage() {
     setBooks(
       books.map((b) => (b.id === editingBook.id ? { ...b, ...editingBook } : b))
     );
+    if (inspectedBook?.id === editingBook.id) {
+      setInspectedBook({ ...inspectedBook, ...editingBook });
+    }
     setEditingBook(null);
   };
 
-  // Handle quick delete
-  const handleDeleteBook = (id) => {
-    if (window.confirm('Are you sure you want to retire this book from the catalog?')) {
-      setBooks(books.filter((b) => b.id !== id));
-      if (inspectedBook?.id === id) setInspectedBook(null);
-    }
+  // Handle confirm retire / delete
+  const handleConfirmRetire = () => {
+    if (!bookToRetire) return;
+    setBooks((prev) => prev.filter((b) => b.id !== bookToRetire.id));
+    if (inspectedBook?.id === bookToRetire.id) setInspectedBook(null);
+    if (editingBook?.id === bookToRetire.id) setEditingBook(null);
+    setBookToRetire(null);
   };
 
   // CSV Export
@@ -717,7 +723,7 @@ export default function AdminCatalogPage() {
                         <button
                           type="button"
                           className="action-icon-btn delete"
-                          onClick={() => handleDeleteBook(book.id)}
+                          onClick={() => setBookToRetire(book)}
                           title="Retire Volume"
                         >
                           <Trash2 size={15} />
@@ -732,33 +738,63 @@ export default function AdminCatalogPage() {
         </table>
 
         {/* Pagination Footer */}
-        <div className="bookings-pagination-footer">
+        <div className="bookings-pagination-footer table-pagination-bar">
           <div className="pagination-info">
-            Showing {(currentPage - 1) * pageSize + 1} to{' '}
-            {Math.min(currentPage * pageSize, filteredBooks.length)} of {filteredBooks.length} titles
+            Showing <strong className="pagination-highlight">{(currentPage - 1) * pageSize + 1}</strong> to{' '}
+            <strong className="pagination-highlight">{Math.min(currentPage * pageSize, filteredBooks.length)}</strong> of{' '}
+            <strong className="pagination-highlight">{filteredBooks.length}</strong> titles
           </div>
 
-          <div className="pagination-nav-group">
+          <div className="pagination-nav-group pagination-controls">
             <button
               type="button"
-              className="page-nav-btn"
+              className="page-nav-btn pagination-btn"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              aria-label="Previous page"
             >
-              <ChevronLeft size={15} />
+              <ChevronLeft size={14} />
               <span>Previous</span>
             </button>
-            <span className="page-indicator">
-              Page {currentPage} of {totalPages}
-            </span>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNo) => {
+              if (
+                pageNo === 1 ||
+                pageNo === totalPages ||
+                (pageNo >= currentPage - 1 && pageNo <= currentPage + 1)
+              ) {
+                return (
+                  <button
+                    key={pageNo}
+                    type="button"
+                    className={`pagination-number ${currentPage === pageNo ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(pageNo)}
+                    aria-label={`Page ${pageNo}`}
+                    aria-current={currentPage === pageNo ? 'page' : undefined}
+                  >
+                    {pageNo}
+                  </button>
+                );
+              }
+              if (pageNo === currentPage - 2 || pageNo === currentPage + 2) {
+                return (
+                  <span key={pageNo} className="pagination-ellipsis">
+                    …
+                  </span>
+                );
+              }
+              return null;
+            })}
+
             <button
               type="button"
-              className="page-nav-btn"
+              className="page-nav-btn pagination-btn"
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              aria-label="Next page"
             >
               <span>Next</span>
-              <ChevronRight size={15} />
+              <ChevronRight size={14} />
             </button>
           </div>
         </div>
@@ -1020,6 +1056,27 @@ export default function AdminCatalogPage() {
                 </div>
               </div>
 
+              <div className="form-grid-2col">
+                <div className="form-field-item">
+                  <label>Author</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingBook.author || ''}
+                    onChange={(e) => setEditingBook({ ...editingBook, author: e.target.value })}
+                  />
+                </div>
+                <div className="form-field-item">
+                  <label>ISBN-13</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingBook.isbn || ''}
+                    onChange={(e) => setEditingBook({ ...editingBook, isbn: e.target.value })}
+                  />
+                </div>
+              </div>
+
               <div className="form-grid-3col">
                 <div className="form-field-item">
                   <label>Category</label>
@@ -1046,9 +1103,45 @@ export default function AdminCatalogPage() {
                     type="number"
                     min={1}
                     value={editingBook.copiesTotal}
-                    onChange={(e) => setEditingBook({ ...editingBook, copiesTotal: parseInt(e.target.value, 10) || 1 })}
+                    onChange={(e) => {
+                      const totalVal = parseInt(e.target.value, 10) || 1;
+                      const diff = totalVal - (editingBook.copiesTotal || 1);
+                      setEditingBook({
+                        ...editingBook,
+                        copiesTotal: totalVal,
+                        copiesAvailable: Math.max(0, (editingBook.copiesAvailable || 0) + diff),
+                      });
+                    }}
                   />
                 </div>
+              </div>
+
+              <div className="form-grid-2col">
+                <div className="form-field-item">
+                  <label>Language</label>
+                  <input
+                    type="text"
+                    value={editingBook.language || ''}
+                    onChange={(e) => setEditingBook({ ...editingBook, language: e.target.value })}
+                  />
+                </div>
+                <div className="form-field-item">
+                  <label>Publisher &amp; Year</label>
+                  <input
+                    type="text"
+                    value={editingBook.publisher ? `${editingBook.publisher} (${editingBook.year || ''})` : ''}
+                    onChange={(e) => setEditingBook({ ...editingBook, publisher: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="form-field-item">
+                <label>Synopsis</label>
+                <textarea
+                  rows={3}
+                  value={editingBook.description || ''}
+                  onChange={(e) => setEditingBook({ ...editingBook, description: e.target.value })}
+                />
               </div>
 
               <div className="modal-dialog-footer">
@@ -1065,6 +1158,79 @@ export default function AdminCatalogPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 8. RETIRE / DELETE BOOK CONFIRMATION MODAL */}
+      {bookToRetire && (
+        <div className="modal-backdrop-overlay" onClick={() => setBookToRetire(null)}>
+          <div
+            className="modal-card-dialog retire-confirm-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="retire-modal-title"
+          >
+            <div className="retire-modal-header">
+              <div className="retire-warning-icon-wrap">
+                <AlertTriangle size={22} />
+              </div>
+              <div className="retire-header-text">
+                <span className="dialog-eyebrow text-danger">CATALOG DECOMMISSION</span>
+                <h2 id="retire-modal-title" className="dialog-title">Retire Volume from Catalog?</h2>
+              </div>
+              <button
+                type="button"
+                className="dialog-close-btn"
+                onClick={() => setBookToRetire(null)}
+                aria-label="Close dialog"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="retire-modal-body">
+              <p className="retire-prompt-message">
+                Are you sure you want to retire <strong>"{bookToRetire.title}"</strong> from the active library catalog? This action will remove the record and make the volume unavailable for lending or reservations.
+              </p>
+
+              <div className="retire-book-summary-card">
+                <div className="retire-book-kanji-badge">
+                  <span>{bookToRetire.japaneseTitle ? bookToRetire.japaneseTitle.slice(0, 1) : '書'}</span>
+                </div>
+                <div className="retire-book-meta">
+                  <h4 className="retire-book-title">{bookToRetire.title}</h4>
+                  <p className="retire-book-subtitle">
+                    {bookToRetire.japaneseTitle && <span className="jp-text">{bookToRetire.japaneseTitle} • </span>}
+                    <span>By {bookToRetire.author}</span>
+                  </p>
+                  <div className="retire-book-tags">
+                    <span className="retire-meta-tag font-mono">{bookToRetire.shelf}</span>
+                    <span className="retire-meta-tag font-mono">ISBN: {bookToRetire.isbn}</span>
+                    <span className="retire-meta-tag">{bookToRetire.copiesTotal} total copies</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-dialog-footer">
+              <button
+                type="button"
+                className="dialog-secondary-btn"
+                onClick={() => setBookToRetire(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="action-danger-btn"
+                onClick={handleConfirmRetire}
+              >
+                <Trash2 size={14} />
+                <span>Retire Volume</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
