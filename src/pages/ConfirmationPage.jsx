@@ -22,6 +22,22 @@ function formatFullDate(dateStr) {
   });
 }
 
+function formatMobileDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dateObj = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayName = days[dateObj.getUTCDay()];
+  const monthName = months[dateObj.getUTCMonth()];
+  return (
+    <>
+      <span style={{ display: 'block' }}>{dayName},</span>
+      <span style={{ display: 'block' }}>{monthName} {d}, {y}</span>
+    </>
+  );
+}
+
 /**
  * 12-hour AM/PM session time slot formatting: "11:00 AM – 2:30 PM"
  */
@@ -500,8 +516,6 @@ END:VCALENDAR`;
               )}
             </div>
 
-            <div className="confirmation-mobile-qr-divider" />
-
             <div className="confirmation-mobile-code-col">
               <span className="confirmation-mobile-code-label">BOOKING CODE</span>
               <button
@@ -515,7 +529,7 @@ END:VCALENDAR`;
                   {copied ? (
                     <Check className="w-4 h-4 text-emerald-700 stroke-[2.5]" />
                   ) : (
-                    <Copy className="w-4 h-4 text-[#B8532F] stroke-[2]" />
+                    <Copy className="w-4 h-4 text-[#20140E] stroke-[2]" />
                   )}
                 </span>
               </button>
@@ -550,7 +564,7 @@ END:VCALENDAR`;
                 </div>
                 <div className="confirmation-mobile-detail-text">
                   <span className="confirmation-mobile-detail-label">DATE</span>
-                  <span className="confirmation-mobile-detail-val">{formatFullDate(booking.visitDate)}</span>
+                  <span className="confirmation-mobile-detail-val">{formatMobileDate(booking.visitDate)}</span>
                 </div>
               </div>
             </div>
@@ -590,7 +604,6 @@ END:VCALENDAR`;
             <div className="confirmation-mobile-guide-icon-circle">
               <Info className="w-4 h-4 stroke-[2]" />
             </div>
-            <div className="confirmation-mobile-guide-divider" />
             <div className="confirmation-mobile-guide-text">
               <span className="confirmation-mobile-guide-title">Visitor guidelines</span>
               <p className="confirmation-mobile-guide-p">
@@ -610,7 +623,7 @@ END:VCALENDAR`;
                 onClick={handleAddToCalendar}
                 title="Download .ics calendar invitation"
               >
-                <CalendarPlus className="w-4 h-4" />
+                <Calendar className="w-4 h-4" />
                 <span>Add to calendar</span>
               </button>
 

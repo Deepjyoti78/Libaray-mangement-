@@ -6503,11 +6503,11 @@ ul, ol {
     margin: 0 auto !important;
   }
 
-  /* Page root container on mobile: clean warm background (green backdrop removed) */
+  /* Page root container on mobile: elegant dark charcoal slate backdrop matching design mockup */
   .new-booking-page.confirmation-page-root {
-    background: #FAF8F5 !important;
+    background: #232527 !important;
     min-height: 100dvh !important;
-    padding: 0.5rem 0.5rem 2rem !important;
+    padding: 1.25rem 0.85rem 2.5rem !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -6515,39 +6515,37 @@ ul, ol {
     box-sizing: border-box !important;
   }
 
-  /* Mobile Sheet Card */
+  /* Mobile Sheet Card: floating rounded pass card with soft ambient drop-shadow */
   .confirmation-mobile-card {
     background: #FAF8F5 !important;
-    border-radius: 20px !important;
-    padding: 10px 14px 20px 14px !important;
+    border-radius: 26px !important;
+    padding: 16px 16px 22px 16px !important;
     width: 100% !important;
     box-sizing: border-box !important;
     position: relative !important;
-    box-shadow: none !important;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45) !important;
   }
 
   /* Top Drag Handle */
   .confirmation-mobile-drag-handle {
-    width: 44px !important;
-    height: 4.5px !important;
-    background: #D8CEBE !important;
+    width: 38px !important;
+    height: 4px !important;
+    background: #D0C6B8 !important;
     border-radius: 9999px !important;
     margin: 0 auto 10px !important;
   }
 
   /* Top Header Text */
   .confirmation-mobile-header-text {
-    font-size: 0.62rem !important;
+    font-size: 0.58rem !important;
     font-weight: 600 !important;
     color: #8C7E72 !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.04em !important;
     text-transform: uppercase !important;
     text-align: center !important;
     margin-bottom: 1.15rem !important;
-    padding: 0 32px !important;
+    padding: 0 40px !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
   }
 
   /* Circular Close Button */
@@ -6555,8 +6553,8 @@ ul, ol {
     position: absolute !important;
     top: 14px !important;
     right: 14px !important;
-    width: 36px !important;
-    height: 36px !important;
+    width: 34px !important;
+    height: 34px !important;
     border-radius: 50% !important;
     background: #EDE5D8 !important;
     border: none !important;
@@ -6616,22 +6614,22 @@ ul, ol {
   /* SECTION 1: QR & Booking Code Card */
   .confirmation-mobile-qr-card {
     background: #FFFFFF !important;
-    border: 1px solid #EDE4D8 !important;
+    border: 1px solid #ECE4D8 !important;
     border-radius: 16px !important;
-    padding: 12px 14px !important;
-    margin-bottom: 0.75rem !important;
+    padding: 14px 16px !important;
+    margin-bottom: 0.85rem !important;
     display: flex !important;
     align-items: center !important;
-    gap: 14px !important;
+    gap: 16px !important;
     box-shadow: 0 1px 3px rgba(36, 24, 18, 0.03) !important;
   }
 
   .confirmation-mobile-qr-frame {
-    width: 92px !important;
-    height: 92px !important;
-    border: 1px solid #EDE4D8 !important;
+    width: 86px !important;
+    height: 86px !important;
+    border: 1px solid #ECE4D8 !important;
     border-radius: 12px !important;
-    padding: 4px !important;
+    padding: 5px !important;
     background: #FFFFFF !important;
     display: flex !important;
     align-items: center !important;
@@ -6647,13 +6645,6 @@ ul, ol {
     display: block !important;
   }
 
-  .confirmation-mobile-qr-divider {
-    width: 1px !important;
-    height: 76px !important;
-    background: #EDE4D8 !important;
-    flex-shrink: 0 !important;
-  }
-
   .confirmation-mobile-code-col {
     flex: 1 !important;
     min-width: 0 !important;
@@ -6662,12 +6653,12 @@ ul, ol {
   }
 
   .confirmation-mobile-code-label {
-    font-size: 0.6875rem !important;
+    font-size: 0.65rem !important;
     font-weight: 600 !important;
     color: #8C7E72 !important;
     letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
-    margin-bottom: 0.35rem !important;
+    margin-bottom: 0.4rem !important;
     display: block !important;
   }
 
@@ -6675,7 +6666,7 @@ ul, ol {
     background: #F8EFEA !important;
     border: none !important;
     border-radius: 8px !important;
-    padding: 6px 10px !important;
+    padding: 7px 10px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -6691,7 +6682,7 @@ ul, ol {
   }
 
   .confirmation-mobile-code-val {
-    font-size: 0.92rem !important;
+    font-size: 0.95rem !important;
     font-weight: 700 !important;
     color: #20140E !important;
     letter-spacing: 0.04em !important;
@@ -6703,12 +6694,13 @@ ul, ol {
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
+    color: #20140E !important;
   }
 
   .confirmation-mobile-scan-note {
     font-size: 0.72rem !important;
     color: #8C7E72 !important;
-    line-height: 1.25 !important;
+    line-height: 1.3 !important;
     margin-top: 0.45rem !important;
     display: block !important;
   }
@@ -6716,10 +6708,10 @@ ul, ol {
   /* SECTION 2: Visit Details 2x2 Grid Card */
   .confirmation-mobile-details-card {
     background: #FFFFFF !important;
-    border: 1px solid #EDE4D8 !important;
+    border: 1px solid #ECE4D8 !important;
     border-radius: 16px !important;
-    padding: 12px 14px !important;
-    margin-bottom: 0.75rem !important;
+    padding: 14px 16px !important;
+    margin-bottom: 0.85rem !important;
     box-shadow: 0 1px 3px rgba(36, 24, 18, 0.03) !important;
   }
 
@@ -6731,8 +6723,8 @@ ul, ol {
 
   .confirmation-mobile-row-divider {
     height: 1px !important;
-    background: #EDE4D8 !important;
-    margin: 10px 0 !important;
+    background: #ECE4D8 !important;
+    margin: 12px 0 !important;
   }
 
   .confirmation-mobile-detail-cell {
@@ -6743,7 +6735,7 @@ ul, ol {
   }
 
   .confirmation-mobile-detail-cell.with-divider {
-    border-left: 1px solid #EDE4D8 !important;
+    border-left: 1px solid #ECE4D8 !important;
     padding-left: 12px !important;
   }
 
@@ -6752,7 +6744,7 @@ ul, ol {
     height: 36px !important;
     border-radius: 50% !important;
     background: #FAF0E8 !important;
-    color: #B8532F !important;
+    color: #C85A32 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -6786,42 +6778,37 @@ ul, ol {
   }
 
   .confirmation-mobile-detail-sub {
-    font-size: 0.7rem !important;
-    color: #73655A !important;
+    font-size: 0.68rem !important;
+    color: #8C7E72 !important;
     line-height: 1.25 !important;
     margin-top: 0.2rem !important;
     display: block !important;
+    word-break: break-all !important;
   }
 
   /* SECTION 3: Visitor Guidelines Box */
   .confirmation-mobile-guide-card {
     background: #FEF6F0 !important;
     border: 1px solid #F9DFCD !important;
-    border-radius: 16px !important;
-    padding: 10px 12px !important;
+    border-radius: 14px !important;
+    padding: 12px 14px !important;
     margin-bottom: 0.85rem !important;
     display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
   }
 
   .confirmation-mobile-guide-icon-circle {
-    width: 28px !important;
-    height: 28px !important;
+    width: 26px !important;
+    height: 26px !important;
     border-radius: 50% !important;
-    border: 1.5px solid #B8532F !important;
-    color: #B8532F !important;
+    border: 1.5px solid #C85A32 !important;
+    color: #C85A32 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
-  }
-
-  .confirmation-mobile-guide-divider {
-    width: 1px !important;
-    height: 38px !important;
-    background: #F2D5BD !important;
-    flex-shrink: 0 !important;
+    margin-top: 1px !important;
   }
 
   .confirmation-mobile-guide-text {
@@ -6832,16 +6819,16 @@ ul, ol {
   }
 
   .confirmation-mobile-guide-title {
-    font-size: 0.8rem !important;
+    font-size: 0.8125rem !important;
     font-weight: 700 !important;
     color: #20140E !important;
-    margin-bottom: 0.15rem !important;
+    margin-bottom: 0.2rem !important;
     display: block !important;
   }
 
   .confirmation-mobile-guide-p {
     font-size: 0.72rem !important;
-    color: #73655A !important;
+    color: #6B5E55 !important;
     line-height: 1.35 !important;
     margin: 0 !important;
   }
