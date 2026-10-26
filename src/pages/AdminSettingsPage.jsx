@@ -19,7 +19,10 @@ import {
   Info,
   CalendarDays,
   Sparkles,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const INITIAL_CAPACITIES = [
   {
@@ -143,6 +146,7 @@ const INITIAL_AUDIT_LOGS = [
 const ALL_WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function AdminSettingsPage() {
+  const { theme, isDark, setTheme } = useTheme();
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
   const [capacities, setCapacities] = useState(INITIAL_CAPACITIES);
   const [closures, setClosures] = useState(INITIAL_CLOSURES);
@@ -329,6 +333,96 @@ export default function AdminSettingsPage() {
       {/* 2. Main Form Content Grid */}
       <form id="settingsMasterForm" onSubmit={handleSaveSettings}>
         <div className="settings-cards-grid">
+          {/* Section 0: Appearance & Theme Mode */}
+          <div className="settings-card-box full-width-card">
+            <div className="settings-box-header">
+              <div className="box-title-row">
+                <span className="box-badge-label">APPEARANCE</span>
+                <Sparkles size={16} className="box-header-icon" />
+              </div>
+              <h2 className="box-main-title">Console Theme Mode</h2>
+              <p className="box-description">
+                Switch between Clean Washi (Light) and Stealth Obsidian (Black Mode). Your choice applies across all admin panels and is saved automatically.
+              </p>
+            </div>
+
+            <div className="theme-selector-grid">
+              {/* Light Theme Card */}
+              <div
+                className={`theme-mode-card ${!isDark ? 'active-theme-choice' : ''}`}
+                onClick={() => {
+                  setTheme('light');
+                  showToast('Switched to Clean Washi Light Mode.');
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="theme-card-preview light-preview">
+                  <div className="preview-topbar" />
+                  <div className="preview-body">
+                    <div className="preview-sidebar" />
+                    <div className="preview-content">
+                      <div className="preview-line short" />
+                      <div className="preview-box-row">
+                        <div className="preview-box" />
+                        <div className="preview-box" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="theme-card-footer">
+                  <div className="theme-card-meta">
+                    <div className="theme-title-wrap">
+                      <Sun size={15} className="theme-choice-icon" />
+                      <strong className="theme-choice-title">Clean Washi (Light)</strong>
+                    </div>
+                    <span className="theme-choice-sub">Crisp white paper surface &amp; charcoal type</span>
+                  </div>
+                  <div className={`theme-radio-circle ${!isDark ? 'checked' : ''}`}>
+                    {!isDark && <Check size={12} strokeWidth={3} />}
+                  </div>
+                </div>
+              </div>
+
+              {/* Black Theme Card */}
+              <div
+                className={`theme-mode-card ${isDark ? 'active-theme-choice' : ''}`}
+                onClick={() => {
+                  setTheme('dark');
+                  showToast('Switched to Stealth Obsidian Black Mode.');
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="theme-card-preview dark-preview">
+                  <div className="preview-topbar" />
+                  <div className="preview-body">
+                    <div className="preview-sidebar" />
+                    <div className="preview-content">
+                      <div className="preview-line short" />
+                      <div className="preview-box-row">
+                        <div className="preview-box" />
+                        <div className="preview-box" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="theme-card-footer">
+                  <div className="theme-card-meta">
+                    <div className="theme-title-wrap">
+                      <Moon size={15} className="theme-choice-icon" />
+                      <strong className="theme-choice-title">Stealth Obsidian (Black Mode)</strong>
+                    </div>
+                    <span className="theme-choice-sub">Deep matte black surface &amp; silver type</span>
+                  </div>
+                  <div className={`theme-radio-circle ${isDark ? 'checked' : ''}`}>
+                    {isDark && <Check size={12} strokeWidth={3} />}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Section 1: Facility Capacities */}
           <div className="settings-card-box">
             <div className="settings-box-header">

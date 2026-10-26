@@ -18,11 +18,15 @@ import {
   Bell,
   LogOut,
   ExternalLink,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 import GlobalSearchModal from './GlobalSearchModal';
 
 export default function AdminLayout() {
   const { user, loading, logout } = useAuth();
+  const { theme, isDark, toggleTheme } = useTheme();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -96,7 +100,10 @@ export default function AdminLayout() {
   const breadcrumb = getBreadcrumb();
 
   return (
-    <div className={`monochrome-dashboard-layout ${collapsed ? 'sidebar-collapsed' : ''}`}>
+    <div
+      className={`monochrome-dashboard-layout ${collapsed ? 'sidebar-collapsed' : ''} ${isDark ? 'black-theme' : ''}`}
+      data-theme={theme}
+    >
       {/* 4. Left Sidebar */}
       <aside className="dashboard-sidebar">
         {/* Branding */}
@@ -287,6 +294,24 @@ export default function AdminLayout() {
               <span className="search-placeholder-text">Search books, members...</span>
               <kbd className="cmd-k-badge">⌘ K</kbd>
             </div>
+
+            {/* Black Mode / Light Mode Functional Theme Button */}
+            <button
+              type="button"
+              className={`utility-theme-pill-btn ${isDark ? 'active-dark' : 'active-light'}`}
+              onClick={toggleTheme}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Black Mode'}
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Black Mode'}
+            >
+              <span className="theme-toggle-switch">
+                {isDark ? (
+                  <Moon size={13} strokeWidth={2.4} className="theme-icon moon-icon" />
+                ) : (
+                  <Sun size={13} strokeWidth={2.4} className="theme-icon sun-icon" />
+                )}
+              </span>
+              <span className="theme-toggle-text">{isDark ? 'Black Mode' : 'Light Mode'}</span>
+            </button>
 
             {/* Notification Bell */}
             <div className="utility-notification-wrap">
