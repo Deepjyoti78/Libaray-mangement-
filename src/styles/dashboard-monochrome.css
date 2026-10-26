@@ -7426,16 +7426,22 @@ body.black-theme .editorial-header-left .label,
 .monochrome-dashboard-layout.black-theme input[type="email"],
 .monochrome-dashboard-layout.black-theme input[type="password"],
 .monochrome-dashboard-layout.black-theme input[type="number"],
+.monochrome-dashboard-layout.black-theme select,
+.monochrome-dashboard-layout.black-theme textarea,
 [data-theme="dark"] .monochrome-dashboard-layout input[type="text"],
 [data-theme="dark"] .monochrome-dashboard-layout input[type="search"],
 [data-theme="dark"] .monochrome-dashboard-layout input[type="email"],
 [data-theme="dark"] .monochrome-dashboard-layout input[type="password"],
 [data-theme="dark"] .monochrome-dashboard-layout input[type="number"],
+[data-theme="dark"] .monochrome-dashboard-layout select,
+[data-theme="dark"] .monochrome-dashboard-layout textarea,
 .black-theme .monochrome-dashboard-layout input[type="text"],
 .black-theme .monochrome-dashboard-layout input[type="search"],
 .black-theme .monochrome-dashboard-layout input[type="email"],
 .black-theme .monochrome-dashboard-layout input[type="password"],
-.black-theme .monochrome-dashboard-layout input[type="number"] {
+.black-theme .monochrome-dashboard-layout input[type="number"],
+.black-theme .monochrome-dashboard-layout select,
+.black-theme .monochrome-dashboard-layout textarea {
   background-color: #141419;
   border: 1px solid #262634;
   color: #FFFFFF;
@@ -8692,6 +8698,154 @@ body.black-theme .editorial-header-left .label,
 .black-theme .admin-confirm-meta-value {
   color: #F5F5F5;
 }
+
+/* ==========================================================================
+   MODAL FORM & CATALOG FIELDS DARK MODE FIXES (CATEGORY, SYNOPSIS, SELECTS)
+   ========================================================================== */
+.monochrome-dashboard-layout.black-theme .catalog-modal-form,
+.monochrome-dashboard-layout.black-theme .modal-card-dialog,
+.monochrome-dashboard-layout.black-theme .catalog-form-modal,
+[data-theme="dark"] .catalog-modal-form,
+[data-theme="dark"] .modal-card-dialog,
+[data-theme="dark"] .catalog-form-modal,
+.black-theme .catalog-modal-form,
+.black-theme .modal-card-dialog,
+.black-theme .catalog-form-modal {
+  background-color: #141416 !important;
+  border-color: #262632 !important;
+  color: #F8F5EE !important;
+}
+
+.monochrome-dashboard-layout.black-theme .dialog-title,
+[data-theme="dark"] .dialog-title,
+.black-theme .dialog-title {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .dialog-eyebrow,
+[data-theme="dark"] .dialog-eyebrow,
+.black-theme .dialog-eyebrow {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .dialog-close-btn,
+[data-theme="dark"] .dialog-close-btn,
+.black-theme .dialog-close-btn {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .dialog-close-btn:hover,
+[data-theme="dark"] .dialog-close-btn:hover,
+.black-theme .dialog-close-btn:hover {
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .form-field-item label,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form label,
+[data-theme="dark"] .form-field-item label,
+[data-theme="dark"] .catalog-modal-form label,
+.black-theme .form-field-item label,
+.black-theme .catalog-modal-form label {
+  color: #D4D4D8 !important;
+}
+
+/* Category select, Synopsis textarea, and all modal form inputs */
+.monochrome-dashboard-layout.black-theme .form-field-item select,
+.monochrome-dashboard-layout.black-theme .form-field-item textarea,
+.monochrome-dashboard-layout.black-theme .form-field-item input,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form select,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form textarea,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form input,
+[data-theme="dark"] .form-field-item select,
+[data-theme="dark"] .form-field-item textarea,
+[data-theme="dark"] .form-field-item input,
+[data-theme="dark"] .catalog-modal-form select,
+[data-theme="dark"] .catalog-modal-form textarea,
+[data-theme="dark"] .catalog-modal-form input,
+.black-theme .form-field-item select,
+.black-theme .form-field-item textarea,
+.black-theme .form-field-item input,
+.black-theme .catalog-modal-form select,
+.black-theme .catalog-modal-form textarea,
+.black-theme .catalog-modal-form input {
+  background-color: #1A1A22 !important;
+  border: 1px solid #2C2C3A !important;
+  color: #FFFFFF !important;
+  outline: none !important;
+}
+
+.monochrome-dashboard-layout.black-theme .form-field-item select:focus,
+.monochrome-dashboard-layout.black-theme .form-field-item textarea:focus,
+.monochrome-dashboard-layout.black-theme .form-field-item input:focus,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form select:focus,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form textarea:focus,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form input:focus,
+[data-theme="dark"] .form-field-item select:focus,
+[data-theme="dark"] .form-field-item textarea:focus,
+[data-theme="dark"] .form-field-item input:focus,
+[data-theme="dark"] .catalog-modal-form select:focus,
+[data-theme="dark"] .catalog-modal-form textarea:focus,
+[data-theme="dark"] .catalog-modal-form input:focus,
+.black-theme .form-field-item select:focus,
+.black-theme .form-field-item textarea:focus,
+.black-theme .form-field-item input:focus,
+.black-theme .catalog-modal-form select:focus,
+.black-theme .catalog-modal-form textarea:focus,
+.black-theme .catalog-modal-form input:focus {
+  background-color: #20202C !important;
+  border-color: #FFFFFF !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12) !important;
+}
+
+.monochrome-dashboard-layout.black-theme .form-field-item select option,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form select option,
+.monochrome-dashboard-layout.black-theme select option,
+[data-theme="dark"] .form-field-item select option,
+[data-theme="dark"] .catalog-modal-form select option,
+[data-theme="dark"] select option,
+.black-theme .form-field-item select option,
+.black-theme .catalog-modal-form select option,
+.black-theme select option {
+  background-color: #1A1A22 !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .form-field-item textarea::placeholder,
+.monochrome-dashboard-layout.black-theme .catalog-modal-form textarea::placeholder,
+[data-theme="dark"] .form-field-item textarea::placeholder,
+[data-theme="dark"] .catalog-modal-form textarea::placeholder,
+.black-theme .form-field-item textarea::placeholder,
+.black-theme .catalog-modal-form textarea::placeholder {
+  color: #71717A !important;
+}
+
+.monochrome-dashboard-layout.black-theme .modal-dialog-footer,
+[data-theme="dark"] .modal-dialog-footer,
+.black-theme .modal-dialog-footer {
+  background-color: #101012 !important;
+  border-top: 1px solid #22222C !important;
+}
+
+.monochrome-dashboard-layout.black-theme .inspector-synopsis-box,
+[data-theme="dark"] .inspector-synopsis-box,
+.black-theme .inspector-synopsis-box {
+  background-color: #1A1A22 !important;
+  border: 1px solid #2C2C3A !important;
+}
+
+.monochrome-dashboard-layout.black-theme .inspector-synopsis-box .synopsis-title,
+[data-theme="dark"] .inspector-synopsis-box .synopsis-title,
+.black-theme .inspector-synopsis-box .synopsis-title {
+  color: #A1A1AA !important;
+}
+
+.monochrome-dashboard-layout.black-theme .inspector-synopsis-box p,
+[data-theme="dark"] .inspector-synopsis-box p,
+.black-theme .inspector-synopsis-box p {
+  color: #F4F4F6 !important;
+}
+
 
 
 
