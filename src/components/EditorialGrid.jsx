@@ -1,7 +1,7 @@
-import { ArrowRight, CalendarDays, Clock, MapPin, Info, Calendar } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function EditorialGrid({ onBookSlot }) {
+export default function EditorialGrid() {
   const handleScroll = (e, targetId) => {
     e.preventDefault();
     const el = document.querySelector(targetId);
@@ -23,9 +23,9 @@ export default function EditorialGrid({ onBookSlot }) {
           </div>
           <div className="editorial-header-right">
             <a
-              href="#visit"
+              href="#spaces"
               className="spaces-view-all-btn"
-              onClick={(e) => handleScroll(e, '#visit')}
+              onClick={(e) => handleScroll(e, '#spaces')}
             >
               <span>View all</span>
               <ArrowRight size={14} />
@@ -156,7 +156,7 @@ export default function EditorialGrid({ onBookSlot }) {
           <Link
             to="/spaces/visitor-info"
             className="space-showcase-card space-card-clickable"
-            id="visitor-info-card"
+            id="visit"
             title="Explore Visitor Information & Circulation Desk"
           >
             <div className="space-card-media">
@@ -190,88 +190,6 @@ export default function EditorialGrid({ onBookSlot }) {
               </span>
             </div>
           </Link>
-        </div>
-
-        {/* Supporting Editorial Features (Plan Your Visit) */}
-        <div className="editorial-grid">
-
-          {/* Item 04: Plan Your Visit (Circulation Desk + Verified Schedule) */}
-          <article className="editorial-col visit-panel reveal" id="visit">
-            <div className="col-top-meta">
-              <span className="section-number">04</span>
-              <span className="col-tag">Schedule</span>
-            </div>
-
-            <div className="visit-media-strip">
-              <img
-                src="/images/library-circulation-desk.webp"
-                alt="Actual library circulation desk counter with warm lighting and reception sign"
-                width={700}
-                height={350}
-                loading="lazy"
-                className="visit-desk-img"
-              />
-              <span className="media-caption">Circulation Desk &amp; Member Check-in</span>
-            </div>
-
-            <div className="visit-heading-wrap">
-              <span className="label">PLAN YOUR VISIT</span>
-              <h3 className="heading-sm visit-title">Visitor Information</h3>
-            </div>
-
-            <div className="visit-details-list">
-              <div className="visit-detail-item">
-                <span className="visit-icon" aria-hidden="true"><CalendarDays /></span>
-                <div className="visit-detail-body">
-                  <span className="detail-label">OPEN DAYS</span>
-                  <span className="detail-value">Tuesday – Saturday</span>
-                  <span className="detail-sub">Closed Sun, Mon &amp; Public Holidays</span>
-                </div>
-              </div>
-
-              <div className="visit-detail-item">
-                <span className="visit-icon" aria-hidden="true"><Clock /></span>
-                <div className="visit-detail-body">
-                  <span className="detail-label">SESSIONS &amp; HOURS</span>
-                  <div className="session-blocks">
-                    <span className="session-line">Morning: 11:00 AM – 2:30 PM</span>
-                    <span className="session-line">Afternoon: 3:00 PM – 6:30 PM</span>
-                  </div>
-                  <span className="detail-sub">Sanitization break 2:30 PM – 3:00 PM</span>
-                </div>
-              </div>
-
-              <div className="visit-detail-item">
-                <span className="visit-icon" aria-hidden="true"><MapPin /></span>
-                <div className="visit-detail-body">
-                  <span className="detail-label">LOCATION</span>
-                  <span className="detail-value">5A, Ring Road, Lajpat Nagar-IV</span>
-                  <span className="detail-sub">Near Moolchand Metro · New Delhi 110024</span>
-                </div>
-              </div>
-
-              <div className="visit-detail-item note-item">
-                <span className="visit-icon" aria-hidden="true"><Info /></span>
-                <div className="visit-detail-body">
-                  <span className="detail-sub">
-                    Entry is free for reading on-site. Slot reservation is
-                    recommended during busy weekend sessions.
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="btn-primary visit-cta-btn"
-              onClick={onBookSlot}
-              aria-label="Reserve a Visit"
-            >
-              <Calendar className="btn-icon" />
-              <span>Reserve a Visit</span>
-              <ArrowRight className="btn-icon-arrow" />
-            </button>
-          </article>
         </div>
       </div>
     </section>
