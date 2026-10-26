@@ -2395,10 +2395,12 @@
   box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.06);
 }
 
+input.bookings-search-input,
 .bookings-search-input {
-  border: none;
-  background: transparent;
-  outline: none;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
   font-size: 13px;
   color: var(--mono-text-primary);
   width: 100%;
@@ -6198,9 +6200,32 @@ body.black-theme .editorial-header-left .label,
   border-color: #FFFFFF !important;
 }
 
+.monochrome-dashboard-layout.black-theme input.filter-search-input,
+.monochrome-dashboard-layout.black-theme .filter-search-box input,
 .monochrome-dashboard-layout.black-theme .filter-search-input,
-[data-theme="dark"] .filter-search-input {
+[data-theme="dark"] input.filter-search-input,
+[data-theme="dark"] .filter-search-box input,
+[data-theme="dark"] .filter-search-input,
+.black-theme input.filter-search-input,
+.black-theme .filter-search-box input,
+.black-theme .filter-search-input {
   color: #FFFFFF !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.monochrome-dashboard-layout.black-theme input.filter-search-input:focus,
+.monochrome-dashboard-layout.black-theme .filter-search-box input:focus,
+[data-theme="dark"] input.filter-search-input:focus,
+[data-theme="dark"] .filter-search-box input:focus,
+.black-theme input.filter-search-input:focus,
+.black-theme .filter-search-box input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .monochrome-dashboard-layout.black-theme .theme-filter-dropdown-btn,
@@ -6905,6 +6930,74 @@ body.black-theme .editorial-header-left .label,
   border: 1px solid #24242E !important;
 }
 
+/* Embedded search inputs inside search wrappers must be borderless and transparent */
+.monochrome-dashboard-layout.black-theme .catalog-search-wrap input,
+.monochrome-dashboard-layout.black-theme .members-search-wrap input,
+.monochrome-dashboard-layout.black-theme .loans-search-wrap input,
+.monochrome-dashboard-layout.black-theme .reservations-search-wrap input,
+.monochrome-dashboard-layout.black-theme .fines-search-wrap input,
+.monochrome-dashboard-layout.black-theme .librarians-search-wrap input,
+.monochrome-dashboard-layout.black-theme .branches-search-wrap input,
+.monochrome-dashboard-layout.black-theme .bookings-search-wrap input,
+.monochrome-dashboard-layout.black-theme .filter-search-box input,
+[data-theme="dark"] .catalog-search-wrap input,
+[data-theme="dark"] .members-search-wrap input,
+[data-theme="dark"] .loans-search-wrap input,
+[data-theme="dark"] .reservations-search-wrap input,
+[data-theme="dark"] .fines-search-wrap input,
+[data-theme="dark"] .librarians-search-wrap input,
+[data-theme="dark"] .branches-search-wrap input,
+[data-theme="dark"] .bookings-search-wrap input,
+[data-theme="dark"] .filter-search-box input,
+.black-theme .catalog-search-wrap input,
+.black-theme .members-search-wrap input,
+.black-theme .loans-search-wrap input,
+.black-theme .reservations-search-wrap input,
+.black-theme .fines-search-wrap input,
+.black-theme .librarians-search-wrap input,
+.black-theme .branches-search-wrap input,
+.black-theme .bookings-search-wrap input,
+.black-theme .filter-search-box input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #FFFFFF !important;
+}
+
+.monochrome-dashboard-layout.black-theme .catalog-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .members-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .loans-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .reservations-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .fines-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .librarians-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .branches-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .bookings-search-wrap input:focus,
+.monochrome-dashboard-layout.black-theme .filter-search-box input:focus,
+[data-theme="dark"] .catalog-search-wrap input:focus,
+[data-theme="dark"] .members-search-wrap input:focus,
+[data-theme="dark"] .loans-search-wrap input:focus,
+[data-theme="dark"] .reservations-search-wrap input:focus,
+[data-theme="dark"] .fines-search-wrap input:focus,
+[data-theme="dark"] .librarians-search-wrap input:focus,
+[data-theme="dark"] .branches-search-wrap input:focus,
+[data-theme="dark"] .bookings-search-wrap input:focus,
+[data-theme="dark"] .filter-search-box input:focus,
+.black-theme .catalog-search-wrap input:focus,
+.black-theme .members-search-wrap input:focus,
+.black-theme .loans-search-wrap input:focus,
+.black-theme .reservations-search-wrap input:focus,
+.black-theme .fines-search-wrap input:focus,
+.black-theme .librarians-search-wrap input:focus,
+.black-theme .branches-search-wrap input:focus,
+.black-theme .bookings-search-wrap input:focus,
+.black-theme .filter-search-box input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .monochrome-dashboard-layout.black-theme input[type="text"],
 .monochrome-dashboard-layout.black-theme input[type="search"],
 .monochrome-dashboard-layout.black-theme input[type="email"],
@@ -7423,11 +7516,32 @@ body.black-theme .editorial-header-left .label,
   box-shadow: 0 0 0 1px #FFFFFF !important;
 }
 
+.monochrome-dashboard-layout.black-theme input.bookings-search-input,
+.monochrome-dashboard-layout.black-theme .bookings-search-wrap input,
 .monochrome-dashboard-layout.black-theme .bookings-search-input,
+[data-theme="dark"] input.bookings-search-input,
+[data-theme="dark"] .bookings-search-wrap input,
 [data-theme="dark"] .bookings-search-input,
+.black-theme input.bookings-search-input,
+.black-theme .bookings-search-wrap input,
 .black-theme .bookings-search-input {
   color: #FFFFFF !important;
+  background: transparent !important;
   background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.monochrome-dashboard-layout.black-theme input.bookings-search-input:focus,
+.monochrome-dashboard-layout.black-theme .bookings-search-wrap input:focus,
+[data-theme="dark"] input.bookings-search-input:focus,
+[data-theme="dark"] .bookings-search-wrap input:focus,
+.black-theme input.bookings-search-input:focus,
+.black-theme .bookings-search-wrap input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .monochrome-dashboard-layout.black-theme .bookings-search-input::placeholder,
