@@ -7003,24 +7003,24 @@ body.black-theme .editorial-header-left .label,
 .monochrome-dashboard-layout.black-theme input[type="email"],
 .monochrome-dashboard-layout.black-theme input[type="password"],
 .monochrome-dashboard-layout.black-theme input[type="number"],
-[data-theme="dark"] input[type="text"],
-[data-theme="dark"] input[type="search"],
-[data-theme="dark"] input[type="email"],
-[data-theme="dark"] input[type="password"],
-[data-theme="dark"] input[type="number"],
-.black-theme input[type="text"],
-.black-theme input[type="search"],
-.black-theme input[type="email"],
-.black-theme input[type="password"],
-.black-theme input[type="number"] {
+[data-theme="dark"] .monochrome-dashboard-layout input[type="text"],
+[data-theme="dark"] .monochrome-dashboard-layout input[type="search"],
+[data-theme="dark"] .monochrome-dashboard-layout input[type="email"],
+[data-theme="dark"] .monochrome-dashboard-layout input[type="password"],
+[data-theme="dark"] .monochrome-dashboard-layout input[type="number"],
+.black-theme .monochrome-dashboard-layout input[type="text"],
+.black-theme .monochrome-dashboard-layout input[type="search"],
+.black-theme .monochrome-dashboard-layout input[type="email"],
+.black-theme .monochrome-dashboard-layout input[type="password"],
+.black-theme .monochrome-dashboard-layout input[type="number"] {
   background-color: #141419;
   border: 1px solid #262634;
   color: #FFFFFF;
 }
 
 .monochrome-dashboard-layout.black-theme input::placeholder,
-[data-theme="dark"] input::placeholder,
-.black-theme input::placeholder {
+[data-theme="dark"] .monochrome-dashboard-layout input::placeholder,
+.black-theme .monochrome-dashboard-layout input::placeholder {
   color: #71717A !important;
 }
 
