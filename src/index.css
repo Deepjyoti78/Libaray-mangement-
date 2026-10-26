@@ -755,14 +755,22 @@ ul, ol {
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
-  /* Deep warm dark gradient: strongest behind navbar and text, letting natural wood & garden show through */
-  background: linear-gradient(
-    180deg,
-    rgba(18, 12, 8, 0.78) 0%,
-    rgba(22, 14, 9, 0.55) 28%,
-    rgba(26, 17, 11, 0.65) 65%,
-    rgba(18, 12, 8, 0.90) 100%
-  );
+  /* Deep warm dark gradient: strong contrast on text side, atmospheric warmth showing through on collage side */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(15, 10, 7, 0.88) 0%,
+      rgba(18, 12, 8, 0.78) 42%,
+      rgba(22, 14, 9, 0.45) 75%,
+      rgba(16, 10, 7, 0.55) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(15, 10, 7, 0.75) 0%,
+      rgba(20, 13, 9, 0.35) 30%,
+      rgba(20, 13, 9, 0.45) 70%,
+      rgba(15, 10, 7, 0.88) 100%
+    );
   z-index: 2;
 }
 
@@ -770,17 +778,28 @@ ul, ol {
   position: relative;
   z-index: 10;
   width: 100%;
+  max-width: 1440px;
+}
+
+.hero-grid-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(2rem, 3.5vw, 4.5rem);
+  width: 100%;
 }
 
 .hero-content-wrap {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 680px;
+  flex: 0 1 520px;
+  max-width: 540px;
+  z-index: 5;
 }
 
 .hero-eyebrow-row {
-  margin-bottom: 1.35rem;
+  margin-bottom: 1.15rem;
 }
 
 .hero-eyebrow-pill {
@@ -803,18 +822,27 @@ ul, ol {
 
 .hero-heading-editorial {
   font-family: var(--font-serif);
-  font-size: clamp(2.6rem, 5.8vw, 4.5rem);
+  font-size: clamp(2.6rem, 5.2vw, 4.25rem);
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: #FFFFFF;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.85rem;
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* Terracotta accent line under headline */
+.hero-heading-accent-line {
+  width: 46px;
+  height: 3.5px;
+  background-color: #C85A32;
+  border-radius: 2px;
+  margin-bottom: 1.35rem;
 }
 
 .hero-subheading-editorial {
   font-family: var(--font-sans);
-  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
+  font-size: clamp(0.95rem, 1.2vw, 1.125rem);
   line-height: 1.6;
   color: rgba(248, 245, 238, 0.92);
   max-width: 38ch;
@@ -825,8 +853,152 @@ ul, ol {
 .hero-actions-group {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.15rem;
   flex-wrap: wrap;
+}
+
+/* ─── Hero Collage (Desktop Showcase) ─── */
+.hero-collage-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(14px, 1.4vw, 20px);
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 5;
+}
+
+.hero-collage-left-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: clamp(280px, 22vw, 340px);
+}
+
+.hero-collage-right-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: clamp(195px, 15vw, 230px);
+}
+
+/* Decorative Calligraphy Script */
+.hero-collage-script {
+  font-family: 'Alex Brush', 'Caveat', cursive;
+  color: rgba(246, 240, 230, 0.88);
+  font-size: clamp(1.45rem, 1.7vw, 1.95rem);
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 0.5rem;
+  padding-bottom: 0.25rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  user-select: none;
+}
+
+.hero-collage-script .line-1 {
+  margin-left: 0;
+}
+
+.hero-collage-script .line-2 {
+  margin-left: 1.15rem;
+}
+
+.hero-collage-script .line-3 {
+  margin-left: 0.15rem;
+}
+
+.hero-collage-script .line-4 {
+  margin-left: 2rem;
+}
+
+/* Collage Cards */
+.hero-collage-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  border: 3.5px solid #FFFFFF;
+  border-radius: 13px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 3px 10px rgba(0, 0, 0, 0.22);
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.hero-collage-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.55), 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+.hero-card-img-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #1a120c;
+}
+
+.card-study .hero-card-img-wrap,
+.card-community .hero-card-img-wrap {
+  height: clamp(140px, 11vw, 175px);
+}
+
+.card-manga .hero-card-img-wrap {
+  height: clamp(230px, 18.5vw, 290px);
+}
+
+.hero-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-collage-card:hover .hero-card-img {
+  transform: scale(1.035);
+}
+
+.hero-card-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px 9px 14px;
+  background-color: #FAF7F2;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.hero-card-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(0.92rem, 1.05vw, 1.05rem);
+  color: #271A12;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.hero-card-dash {
+  color: #B5673E;
+  font-style: normal;
+  font-weight: 400;
+  opacity: 0.75;
+  margin: 0 4px;
+}
+
+.hero-card-arrow {
+  width: 14px;
+  height: 14px;
+  color: #271A12;
+  flex-shrink: 0;
+  stroke-width: 2;
+  transition: transform 0.25s ease;
+}
+
+.hero-collage-card:hover .hero-card-arrow {
+  transform: translateX(4px);
 }
 
 /* Primary CTA: Ivory Button with Dark Espresso Text */
@@ -2035,6 +2207,17 @@ ul, ol {
   .header-actions .header-book-btn { display: none !important; }
   .header-actions .header-dashboard-btn { display: none !important; }
   .mobile-menu-btn { display: block !important; }
+
+  /* Desktop-only collage is hidden on tablets & mobile */
+  .hero-collage-wrap {
+    display: none !important;
+  }
+  .hero-grid-layout {
+    display: block !important;
+  }
+  .hero-content-wrap {
+    max-width: 100% !important;
+  }
 }
 
 /* Intermediate Laptops (1025px - 1260px) */
