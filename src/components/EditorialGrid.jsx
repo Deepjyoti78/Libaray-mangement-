@@ -33,10 +33,15 @@ export default function EditorialGrid({ onBookSlot }) {
           </div>
         </div>
 
-        {/* Responsive Spaces Showcase Cards (2 side-by-side + 1 wide) */}
+        {/* Responsive Spaces Showcase Cards (2x2 Grid: Reading Room & Community Area, Manga Corner & Visitor Information side by side) */}
         <div className="spaces-showcase-grid reveal" id="spaces">
           {/* Space Card 1: Reading Room */}
-          <article className="space-showcase-card" id="reading-room">
+          <Link
+            to="/spaces/reading-room"
+            className="space-showcase-card space-card-clickable"
+            id="reading-room"
+            title="Explore Reading Room Details & Photos"
+          >
             <div className="space-card-media">
               <img
                 src="/images/library-study-room.webp"
@@ -62,20 +67,20 @@ export default function EditorialGrid({ onBookSlot }) {
               <p className="space-card-desc">
                 Quiet reading, study and research.
               </p>
-              <button
-                type="button"
-                className="text-link space-card-action desktop-only-action"
-                onClick={onBookSlot}
-                aria-label="Reserve a slot in Reading Room"
-              >
-                <span>Reserve Reading Room</span>
+              <span className="text-link space-card-action desktop-only-action">
+                <span>View Full Details &amp; Photos</span>
                 <ArrowRight className="btn-icon-arrow" />
-              </button>
+              </span>
             </div>
-          </article>
+          </Link>
 
           {/* Space Card 2: Community Area */}
-          <article className="space-showcase-card" id="community-area">
+          <Link
+            to="/spaces/community-area"
+            className="space-showcase-card space-card-clickable"
+            id="community-area"
+            title="Explore Community Area Details & Photos"
+          >
             <div className="space-card-media">
               <img
                 src="/images/library-reading-area.webp"
@@ -101,27 +106,28 @@ export default function EditorialGrid({ onBookSlot }) {
               <p className="space-card-desc">
                 Relax, read and connect with fellow members.
               </p>
-              <a
-                href="#visit"
-                className="text-link space-card-action desktop-only-action"
-                onClick={(e) => handleScroll(e, '#visit')}
-              >
-                <span>View Visiting Details</span>
+              <span className="text-link space-card-action desktop-only-action">
+                <span>View Full Details &amp; Photos</span>
                 <ArrowRight className="btn-icon-arrow" />
-              </a>
+              </span>
             </div>
-          </article>
+          </Link>
 
-          {/* Space Card 3: Manga Corner (Wide banner card matching mobile mockup) */}
-          <article className="space-showcase-card space-card-wide" id="manga-corner">
+          {/* Space Card 3: Manga Corner */}
+          <Link
+            to="/spaces/manga-corner"
+            className="space-showcase-card space-card-clickable"
+            id="manga-corner"
+            title="Explore Manga Corner Details & Photos"
+          >
             <div className="space-card-media">
               <img
                 src="/images/manga-corner-collection.jpg"
                 alt="Manga collection shelves"
                 width={700}
-                height={380}
+                height={460}
                 loading="lazy"
-                className="space-card-img manga-wide-img"
+                className="space-card-img"
               />
               <span className="space-card-tag">Curated Volumes</span>
             </div>
@@ -139,16 +145,51 @@ export default function EditorialGrid({ onBookSlot }) {
               <p className="space-card-desc">
                 Explore a wide range of manga and more.
               </p>
-              <a
-                href="#visit"
-                className="text-link space-card-action desktop-only-action"
-                onClick={(e) => handleScroll(e, '#visit')}
-              >
-                <span>View Details</span>
+              <span className="text-link space-card-action desktop-only-action">
+                <span>View Full Details &amp; Photos</span>
                 <ArrowRight className="btn-icon-arrow" />
-              </a>
+              </span>
             </div>
-          </article>
+          </Link>
+
+          {/* Space Card 4: Visitor Information (Side-by-side with Manga Corner) */}
+          <Link
+            to="/spaces/visitor-info"
+            className="space-showcase-card space-card-clickable"
+            id="visitor-info-card"
+            title="Explore Visitor Information & Circulation Desk"
+          >
+            <div className="space-card-media">
+              <img
+                src="/images/library-circulation-desk.webp"
+                alt="Library circulation desk counter"
+                width={700}
+                height={460}
+                loading="lazy"
+                className="space-card-img"
+              />
+              <span className="space-card-tag">Reception &amp; Loans</span>
+            </div>
+            <div className="space-card-content">
+              <div className="space-card-meta">
+                <span className="section-number">04</span>
+                <span className="col-tag">Visitor Guide</span>
+              </div>
+              <div className="space-card-title-row">
+                <h3 className="heading-md space-card-title">Visitor Information</h3>
+                <div className="space-circle-arrow-btn" aria-hidden="true">
+                  <ArrowRight size={13} />
+                </div>
+              </div>
+              <p className="space-card-desc">
+                Circulation desk, membership, and hours.
+              </p>
+              <span className="text-link space-card-action desktop-only-action">
+                <span>View Full Details &amp; Photos</span>
+                <ArrowRight className="btn-icon-arrow" />
+              </span>
+            </div>
+          </Link>
         </div>
 
         {/* Supporting Editorial Features (Plan Your Visit) */}

@@ -19,6 +19,7 @@ import AdminFinesPage from './pages/AdminFinesPage';
 import AdminReportsPage from './pages/AdminReportsPage';
 import AdminLibrariansPage from './pages/AdminLibrariansPage';
 import AdminBranchesPage from './pages/AdminBranchesPage';
+import SpaceDetailPage from './pages/SpaceDetailPage';
 import AdminLayout from './components/AdminLayout';
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
             {/* Public Visitor Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/book" element={<LandingPage initialBookingOpen={true} />} />
+            <Route path="/spaces/:spaceId" element={<SpaceDetailPage />} />
             <Route path="/booking/confirmation/:id" element={<ConfirmationPage />} />
             <Route path="/my-booking" element={<MyBookingPage />} />
             <Route path="/dashboard" element={<Navigate to="/admin" replace />} />
