@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
-import InfoStrip from '../components/InfoStrip';
 import EditorialGrid from '../components/EditorialGrid';
 import CollectionsStrip from '../components/CollectionsStrip';
 import Footer from '../components/Footer';
@@ -66,7 +65,6 @@ export default function LandingPage({ initialBookingOpen = false }) {
       <Header onBookSlot={handleOpenBooking} />
       <main id="main-content">
         <HeroSection onBookSlot={handleOpenBooking} />
-        <InfoStrip />
         <EditorialGrid onBookSlot={handleOpenBooking} />
         <CollectionsStrip onBookSlot={handleOpenBooking} />
       </main>

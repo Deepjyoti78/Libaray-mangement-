@@ -472,7 +472,7 @@ export default function SpaceDetailPage() {
                 onClick={() => setIsBookingOpen(true)}
               >
                 <Calendar size={18} />
-                <span>Reserve a Visit to {space.title.split('&')[0].trim()}</span>
+                <span>Reserve a Visit to {space.title}</span>
                 <ArrowRight size={16} />
               </button>
               <div className="space-quick-hours-pill">

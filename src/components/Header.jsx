@@ -84,19 +84,28 @@ export default function Header({ onBookSlot }) {
     setMobileOpen(false);
   };
 
+  const isHome = location.pathname === '/';
+  const isTransparent = isHome && !isScrolled;
+
   const isItemActive = (item) => {
     if (item.href === '#home') {
-      return location.pathname === '/' && (!location.hash || location.hash === '#home' || location.hash === '');
+      return isHome && (!location.hash || location.hash === '#home' || location.hash === '');
+    }
+    if (item.href === '#reading-room') {
+      return (isHome && location.hash === '#reading-room') || location.pathname.startsWith('/spaces/reading-room');
+    }
+    if (item.href === '#manga-corner') {
+      return (isHome && location.hash === '#manga-corner') || location.pathname.startsWith('/spaces/manga-corner');
     }
     if (item.href.startsWith('#')) {
-      return location.pathname === '/' && location.hash === item.href;
+      return isHome && location.hash === item.href;
     }
     return location.pathname === item.href;
   };
 
   return (
     <>
-      <header className={`header ${isScrolled ? 'header-scrolled' : 'header-transparent'}`} role="banner">
+      <header className={`header ${isTransparent ? 'header-transparent' : 'header-scrolled'}`} role="banner">
         <div className="container header-inner">
           <a
             href="#home"
@@ -122,7 +131,7 @@ export default function Header({ onBookSlot }) {
               {NAV_LINKS.map((link) => (
                 <li key={link.label}>
                   <a
-                    className="header-nav-link"
+                    className={`header-nav-link ${isItemActive(link) ? 'active' : ''}`}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
                   >

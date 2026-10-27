@@ -33,7 +33,7 @@ export default function EditorialGrid() {
           </div>
         </div>
 
-        {/* Responsive Spaces Showcase Cards (2x2 Grid: Reading Room & Community Area, Manga Corner & Visitor Information side by side) */}
+        {/* Responsive Spaces Showcase Cards (4 cards in one row on desktop) */}
         <div className="spaces-showcase-grid reveal" id="spaces">
           {/* Space Card 1: Reading Room */}
           <Link
