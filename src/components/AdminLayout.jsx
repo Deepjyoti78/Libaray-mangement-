@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import GlobalSearchModal from './GlobalSearchModal';
+import AdminLoadingScreen from './AdminLoadingScreen';
 
 export default function AdminLayout() {
   const { user, loading, logout } = useAuth();
@@ -60,13 +61,10 @@ export default function AdminLayout() {
     }
   }, [isDark]);
 
-  if (loading) {
-    return (
-      <div className="admin-loading-screen">
-        <div className="monochrome-spinner" />
-        <p>Loading library management session...</p>
-      </div>
-    );
+  const forceLoading = location.search.includes('loading=true');
+
+  if (loading || forceLoading) {
+    return <AdminLoadingScreen title="Loading Management Session" subtitle="Verifying credentials and restoring library workspace..." />;
   }
 
   if (!user) {
