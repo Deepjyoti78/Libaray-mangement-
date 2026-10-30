@@ -52,6 +52,54 @@ function formatFullDate(dateStr) {
   });
 }
 
+const DEFAULT_CONFIG = {
+  facilities: [
+    {
+      id: 'reading-room',
+      name: 'Reading Room',
+      description: 'A calm space for reading, study and research.',
+    },
+    {
+      id: 'manga-corner',
+      name: 'Manga Corner',
+      description: 'Explore a wide range of Japanese manga.',
+    },
+  ],
+  sessions: [
+    { id: 'morning', name: 'Morning Session', startTime: '11:00 AM', endTime: '2:30 PM' },
+    { id: 'afternoon', name: 'Afternoon Session', startTime: '3:00 PM', endTime: '6:30 PM' },
+  ],
+  settings: {
+    dailyBookingLimit: 1,
+    advanceBookingDays: 14,
+    cancellationCutoffHours: 2,
+    openingDays: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    requireMembership: false,
+  },
+  closureDates: [],
+  timezone: 'Asia/Kolkata',
+};
+
+function getInitialOpenDate(openingDays = ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], closureDates = []) {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const now = new Date();
+  for (let i = 0; i <= 14; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() + i);
+    const dayName = days[d.getDay()];
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${yyyy}-${mm}-${dd}`;
+    const isClosure = closureDates.some(c => (typeof c === 'string' ? c : c.date) === dateStr);
+
+    if (openingDays.includes(dayName) && !isClosure) {
+      return dateStr;
+    }
+  }
+  return '';
+}
+
 export default function BookingWizard({ isModal = false, onClose }) {
   const navigate = useNavigate();
 
@@ -68,22 +116,35 @@ export default function BookingWizard({ isModal = false, onClose }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isModal, onClose]);
 
-  // Configuration from server
-  const [config, setConfig] = useState(null);
-  const [configLoading, setConfigLoading] = useState(true);
+  // Configuration with immediate defaults - no blocking screen
+  const [config, setConfig] = useState(DEFAULT_CONFIG);
 
-  // Form selections
+  // Form selections with instant defaults
   const [facilityId, setFacilityId] = useState('reading-room');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [sessionId, setSessionId] = useState('');
+  const [selectedDate, setSelectedDate] = useState(() => getInitialOpenDate());
+  const [sessionId, setSessionId] = useState('morning');
   const [visitorName, setVisitorName] = useState('');
   const [visitorEmail, setVisitorEmail] = useState('');
   const [membershipNo, setMembershipNo] = useState('');
   const [agreeRules, setAgreeRules] = useState(false);
 
   // Calendar month/year navigation state
-  const [calendarMonth, setCalendarMonth] = useState(() => new Date().getMonth());
-  const [calendarYear, setCalendarYear] = useState(() => new Date().getFullYear());
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const initial = getInitialOpenDate();
+    if (initial) {
+      const parts = initial.split('-');
+      return parseInt(parts[1], 10) - 1;
+    }
+    return new Date().getMonth();
+  });
+  const [calendarYear, setCalendarYear] = useState(() => {
+    const initial = getInitialOpenDate();
+    if (initial) {
+      const parts = initial.split('-');
+      return parseInt(parts[0], 10);
+    }
+    return new Date().getFullYear();
+  });
 
   // Real-time slot availability
   const [availability, setAvailability] = useState(null);
@@ -94,22 +155,20 @@ export default function BookingWizard({ isModal = false, onClose }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  // 1. Fetch public configuration on mount
+  // 1. Fetch public configuration on mount (non-blocking background sync)
   useEffect(() => {
     async function loadConfig() {
       try {
         const res = await fetch('/api/config');
         if (res.ok) {
           const data = await res.json();
-          setConfig(data);
+          setConfig((prev) => ({ ...prev, ...data }));
 
           // Find first open available date to pre-select
           findFirstOpenDate(data.settings?.openingDays || ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], data.closureDates || []);
         }
       } catch (err) {
         console.error('Failed to load configuration:', err);
-      } finally {
-        setConfigLoading(false);
       }
     }
     loadConfig();
@@ -399,31 +458,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
     }
   };
 
-  if (configLoading) {
-    const loadingCard = (
-      <div className={`new-booking-page ${isModal ? 'modal-view' : ''}`}>
-        <div className="new-booking-container" style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-          <div className="loading-state" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
-            <div className="loading-spinner" />
-            <p style={{ color: '#7A6F66', fontFamily: 'var(--font-serif)', fontSize: '1.15rem', marginTop: '1rem' }}>
-              Preparing library booking system...
-            </p>
-          </div>
-        </div>
-      </div>
-    );
 
-    if (isModal) {
-      return (
-        <div className="booking-modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
-          <div className="booking-modal-dialog" onClick={(e) => e.stopPropagation()}>
-            {loadingCard}
-          </div>
-        </div>
-      );
-    }
-    return loadingCard;
-  }
 
   const selectedFacilityObj = config?.facilities?.find((f) => f.id === facilityId) || {
     id: 'reading-room',
