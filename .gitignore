@@ -5,6 +5,7 @@
 # MCP & Test Artifacts
 .playwright-mcp
 *.png
+!public/images/*.png
 
 # Logs
 logs

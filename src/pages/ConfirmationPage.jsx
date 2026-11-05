@@ -229,6 +229,18 @@ END:VCALENDAR`;
 
   return (
     <div className="new-booking-page confirmation-page-root">
+      {/* Background Atmosphere Stage */}
+      <div className="confirmation-bg-stage" aria-hidden="true">
+        <img
+          src="/images/a_cinematic_highly_detailed_nighttime_scene_with.png"
+          alt=""
+          className="confirmation-bg-img"
+        />
+        <div className="confirmation-bg-overlay" />
+        <div className="confirmation-bg-glow-orb confirmation-orb-1" />
+        <div className="confirmation-bg-glow-orb confirmation-orb-2" />
+      </div>
+
       {/* =========================================================================
           DESKTOP VIEW (Visible only on desktop > 768px, exactly as original)
           ========================================================================= */}

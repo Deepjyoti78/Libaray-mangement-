@@ -20,7 +20,13 @@ import {
   HelpCircle,
   Users,
   Compass,
-  Bookmark
+  Bookmark,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  X,
+  Coffee,
+  ShieldCheck
 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -412,18 +418,68 @@ export const SPACES_DATA = {
   },
 };
 
+const getStatIcon = (label) => {
+  const l = (label || '').toLowerCase();
+  if (l.includes('seat') || l.includes('capacity')) return Users;
+  if (l.includes('acoustic') || l.includes('sound') || l.includes('silent')) return VolumeX;
+  if (l.includes('light')) return Sun;
+  if (l.includes('power') || l.includes('usb')) return Zap;
+  if (l.includes('periodical') || l.includes('title')) return BookOpen;
+  return Sparkles;
+};
+
+const getGuidelineIcon = (rule) => {
+  const r = (rule || '').toLowerCase();
+  if (r.includes('quiet') || r.includes('tone') || r.includes('silence')) return VolumeX;
+  if (r.includes('beverage') || r.includes('drink') || r.includes('snack') || r.includes('bottle')) return Coffee;
+  if (r.includes('book') || r.includes('reading') || r.includes('handling') || r.includes('trolley')) return BookOpen;
+  if (r.includes('desk') || r.includes('seat') || r.includes('reservation') || r.includes('carrel')) return Calendar;
+  return ShieldCheck;
+};
+
 export default function SpaceDetailPage() {
   const { spaceId } = useParams();
   const navigate = useNavigate();
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const space = SPACES_DATA[spaceId] || SPACES_DATA['reading-room'];
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const root = document.documentElement;
+    const prevBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    root.scrollTop = 0;
+    document.body.scrollTop = 0;
     setSelectedPhotoIndex(0);
+
+    const timer = setTimeout(() => {
+      root.style.scrollBehavior = prevBehavior;
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      root.style.scrollBehavior = prevBehavior;
+    };
   }, [spaceId]);
+
+  // Keyboard navigation for gallery & lightbox
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsLightboxOpen(false);
+      if (e.key === 'ArrowRight' && isLightboxOpen) {
+        setSelectedPhotoIndex((prev) => (prev === space.gallery.length - 1 ? 0 : prev + 1));
+      }
+      if (e.key === 'ArrowLeft' && isLightboxOpen) {
+        setSelectedPhotoIndex((prev) => (prev === 0 ? space.gallery.length - 1 : prev - 1));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, space?.gallery?.length]);
 
   const otherSpaces = Object.values(SPACES_DATA).filter((s) => s.id !== space.id);
 
@@ -432,28 +488,27 @@ export default function SpaceDetailPage() {
       {/* Universal Top Navigation */}
       <Header onBookSlot={() => setIsBookingOpen(true)} />
 
-      {/* Breadcrumb Navigation Bar */}
-      <nav className="space-breadcrumb-bar" aria-label="Breadcrumb">
-        <div className="container space-breadcrumb-inner">
-          <Link to="/" className="breadcrumb-link">Home</Link>
-          <span className="breadcrumb-sep">/</span>
-          <Link to="/#about" className="breadcrumb-link">Our Spaces</Link>
-          <span className="breadcrumb-sep">/</span>
-          <span className="breadcrumb-current">{space.title}</span>
-        </div>
-      </nav>
-
-      {/* Hero Header Section */}
+      {/* Hero Header Section - Seamlessly positioned below navbar without breadcrumb clutter */}
       <header className="space-hero-header">
         <div className="container">
+          {/* Streamlined Top Meta & Navigation Bar */}
           <div className="space-hero-top-row">
-            <Link to="/#about" className="space-back-btn">
-              <ArrowLeft size={16} />
-              <span>Back to Spaces</span>
-            </Link>
-            <div className="space-category-badge">
-              <span className="badge-num">{space.number}</span>
-              <span className="badge-text">{space.category}</span>
+            <div className="space-hero-nav-group">
+              <Link to="/#about" className="space-back-btn" title="Back to All Spaces">
+                <ArrowLeft size={15} />
+                <span>All Spaces</span>
+              </Link>
+              <span className="space-meta-divider" aria-hidden="true">/</span>
+              <div className="space-category-badge">
+                <span className="badge-num">{space.number}</span>
+                <span className="badge-text">{space.category}</span>
+              </div>
+            </div>
+
+            <div className="space-live-status-pill">
+              <span className="live-status-pulse" aria-hidden="true" />
+              <Clock size={13} />
+              <span>Open Tue – Sat · 11:00 AM – 6:30 PM</span>
             </div>
           </div>
 
@@ -463,21 +518,52 @@ export default function SpaceDetailPage() {
               <h1 className="space-hero-title">{space.title}</h1>
               <div className="space-title-accent" aria-hidden="true" />
               <p className="space-hero-tagline">{space.tagline}</p>
+
+              {/* Quick Highlighting Tags */}
+              <div className="space-hero-tags-row">
+                <span className="space-hero-tag">
+                  <VolumeX size={13} /> Strict Silence Zone
+                </span>
+                <span className="space-hero-tag">
+                  <Zap size={13} /> Universal AC + Dual USB-C
+                </span>
+                <span className="space-hero-tag">
+                  <Wifi size={13} /> Gigabit Fiber Wi-Fi
+                </span>
+                <span className="space-hero-tag highlight">
+                  <Sparkles size={13} /> Complimentary Entry
+                </span>
+              </div>
             </div>
 
             <div className="space-hero-actions-col">
-              <button
-                type="button"
-                className="space-primary-action-btn"
-                onClick={() => setIsBookingOpen(true)}
-              >
-                <Calendar size={18} />
-                <span>Reserve a Visit to {space.title}</span>
-                <ArrowRight size={16} />
-              </button>
-              <div className="space-quick-hours-pill">
-                <Clock size={14} />
-                <span>Open Tue – Sat · 11:00 AM – 6:30 PM</span>
+              <div className="space-hero-booking-card">
+                <div className="booking-card-header">
+                  <div className="booking-card-titles">
+                    <span className="booking-card-label">SEAT RESERVATION</span>
+                    <h3 className="booking-card-title">Priority Study Desk</h3>
+                  </div>
+                  <span className="booking-card-free-tag">Free Entry</span>
+                </div>
+                <button
+                  type="button"
+                  className="space-primary-action-btn"
+                  onClick={() => setIsBookingOpen(true)}
+                >
+                  <Calendar size={18} />
+                  <span>Reserve a Seat in {space.title}</span>
+                  <ArrowRight size={16} />
+                </button>
+                <div className="booking-card-notes">
+                  <div className="booking-note-item">
+                    <CheckCircle2 size={13} />
+                    <span>Instant digital QR pass</span>
+                  </div>
+                  <div className="booking-note-item">
+                    <CheckCircle2 size={13} />
+                    <span>Dedicated carrel guaranteed</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -488,12 +574,52 @@ export default function SpaceDetailPage() {
       <section className="space-gallery-section" aria-label="Space Gallery">
         <div className="container">
           <div className="space-main-stage-card">
-            <div className="space-main-stage-img-wrap">
+            <div className="space-main-stage-img-wrap" onClick={() => setIsLightboxOpen(true)}>
               <img
                 src={space.gallery[selectedPhotoIndex]?.src || space.heroImage}
                 alt={space.gallery[selectedPhotoIndex]?.caption || space.title}
                 className="space-main-stage-img"
               />
+
+              {/* Prev / Next Image Quick Buttons */}
+              <button
+                type="button"
+                className="gallery-stage-arrow prev"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPhotoIndex((prev) => (prev === 0 ? space.gallery.length - 1 : prev - 1));
+                }}
+                aria-label="Previous photo"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                className="gallery-stage-arrow next"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPhotoIndex((prev) => (prev === space.gallery.length - 1 ? 0 : prev + 1));
+                }}
+                aria-label="Next photo"
+              >
+                <ChevronRight size={20} />
+              </button>
+
+              {/* Fullscreen Expand Action */}
+              <button
+                type="button"
+                className="gallery-stage-expand-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLightboxOpen(true);
+                }}
+                aria-label="Open image in fullscreen"
+              >
+                <Maximize2 size={14} />
+                <span>Fullscreen</span>
+              </button>
+
+              {/* Caption Overlay */}
               <div className="space-main-stage-caption">
                 <span className="stage-caption-counter">
                   {selectedPhotoIndex + 1} / {space.gallery.length}
@@ -515,6 +641,7 @@ export default function SpaceDetailPage() {
                   aria-label={`View photo ${idx + 1}`}
                 >
                   <img src={item.src} alt="" className="thumb-img" />
+                  <div className="thumb-tag">0{idx + 1}</div>
                 </button>
               ))}
             </div>
@@ -522,27 +649,38 @@ export default function SpaceDetailPage() {
         </div>
       </section>
 
-      {/* Key Numbers / Stats Row */}
+      {/* Key Numbers / Specifications Strip */}
       <section className="space-stats-section">
         <div className="container">
           <div className="space-stats-grid">
-            {space.stats.map((stat, idx) => (
-              <div key={idx} className="space-stat-card">
-                <span className="stat-label">{stat.label}</span>
-                <span className="stat-value">{stat.value}</span>
-                <span className="stat-sub">{stat.sub}</span>
-              </div>
-            ))}
+            {space.stats.map((stat, idx) => {
+              const StatIcon = getStatIcon(stat.label);
+              return (
+                <div key={idx} className="space-stat-card">
+                  <div className="stat-card-header">
+                    <span className="stat-label">{stat.label}</span>
+                    <div className="stat-icon-bubble">
+                      <StatIcon size={16} />
+                    </div>
+                  </div>
+                  <span className="stat-value">{stat.value}</span>
+                  <span className="stat-sub">{stat.sub}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Features & Amenities */}
+      {/* Facilities & Amenities */}
       <section className="space-features-section">
         <div className="container">
           <div className="section-title-wrap">
             <span className="label">FACILITIES &amp; AMENITIES</span>
             <h2 className="heading-lg section-title">Designed for Comfort &amp; Focus</h2>
+            <p className="section-subtitle">
+              Carefully engineered spaces to foster scholarly research, serene reading, and uninterrupted study.
+            </p>
           </div>
 
           <div className="space-features-grid">
@@ -550,8 +688,11 @@ export default function SpaceDetailPage() {
               const IconComp = feat.icon;
               return (
                 <div key={idx} className="space-feature-card">
-                  <div className="feature-icon-bubble">
-                    <IconComp size={22} />
+                  <div className="feature-card-header">
+                    <div className="feature-icon-bubble">
+                      <IconComp size={22} />
+                    </div>
+                    <span className="feature-badge">Included</span>
                   </div>
                   <h3 className="feature-card-title">{feat.title}</h3>
                   <p className="feature-card-desc">{feat.description}</p>
@@ -569,9 +710,19 @@ export default function SpaceDetailPage() {
             {/* Left Column: Available Collections / Highlights */}
             <div className="split-col-card collections-card">
               <div className="split-card-header">
-                <BookOpen size={20} className="split-card-icon" />
-                <h3 className="split-card-title">Curated Collections in this Area</h3>
+                <div className="split-header-icon-wrap">
+                  <BookOpen size={20} className="split-card-icon" />
+                </div>
+                <div>
+                  <span className="split-card-kanji">所蔵資料・参考図書</span>
+                  <h3 className="split-card-title">Curated Collections in this Area</h3>
+                </div>
               </div>
+
+              <p className="split-card-intro">
+                Direct access to an extensive collection of rare, reference, and academic resources available on open carrel shelves:
+              </p>
+
               <ul className="collections-checklist">
                 {space.collections.map((item, idx) => (
                   <li key={idx} className="checklist-item">
@@ -580,13 +731,25 @@ export default function SpaceDetailPage() {
                   </li>
                 ))}
               </ul>
+
+              <div className="split-consultation-box">
+                <Info size={16} />
+                <span>
+                  <strong>Reference Desk:</strong> Consult our bilingual librarians for archival retrieval, bibliography verification, and inter-library requests.
+                </span>
+              </div>
             </div>
 
             {/* Right Column: Sessions, Timings & Guidelines */}
             <div className="split-col-card guidelines-card">
               <div className="split-card-header">
-                <Clock size={20} className="split-card-icon" />
-                <h3 className="split-card-title">Daily Sessions &amp; Etiquette</h3>
+                <div className="split-header-icon-wrap">
+                  <Clock size={20} className="split-card-icon" />
+                </div>
+                <div>
+                  <span className="split-card-kanji">利用時間・利用規約</span>
+                  <h3 className="split-card-title">Daily Sessions &amp; Quiet Etiquette</h3>
+                </div>
               </div>
 
               <div className="sessions-list">
@@ -602,14 +765,20 @@ export default function SpaceDetailPage() {
               </div>
 
               <div className="guidelines-accordion-wrap">
-                <h4 className="guidelines-subheading">Visitor Code of Conduct:</h4>
+                <h4 className="guidelines-subheading">Visitor Code of Conduct</h4>
                 <div className="rules-compact-grid">
-                  {space.guidelines.map((guide, idx) => (
-                    <div key={idx} className="rule-compact-box">
-                      <span className="rule-name">{guide.rule}</span>
-                      <p className="rule-text">{guide.detail}</p>
-                    </div>
-                  ))}
+                  {space.guidelines.map((guide, idx) => {
+                    const GuideIcon = getGuidelineIcon(guide.rule);
+                    return (
+                      <div key={idx} className="rule-compact-box">
+                        <div className="rule-box-header">
+                          <GuideIcon size={15} className="rule-icon" />
+                          <span className="rule-name">{guide.rule}</span>
+                        </div>
+                        <p className="rule-text">{guide.detail}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -622,11 +791,22 @@ export default function SpaceDetailPage() {
         <div className="container">
           <div className="space-cta-banner-box">
             <div className="banner-content">
-              <span className="banner-badge">PLAN YOUR VISIT</span>
+              <span className="banner-badge">PLAN YOUR VISIT · 予約案内</span>
               <h2 className="banner-title">Ready to experience this space?</h2>
               <p className="banner-sub">
-                Entry is complimentary for reading on-site. Reserve your seat in advance to secure priority carrel placement.
+                Entry is complimentary for reading and research on-site. Reserve your seat in advance to secure priority carrel placement with power outlets and ergonomic seating.
               </p>
+              <div className="banner-perks-row">
+                <span className="banner-perk">
+                  <CheckCircle2 size={14} /> Complimentary Access
+                </span>
+                <span className="banner-perk">
+                  <CheckCircle2 size={14} /> Instant QR Pass
+                </span>
+                <span className="banner-perk">
+                  <CheckCircle2 size={14} /> Silent Carrel Guaranteed
+                </span>
+              </div>
             </div>
             <div className="banner-actions">
               <button
@@ -635,12 +815,12 @@ export default function SpaceDetailPage() {
                 onClick={() => setIsBookingOpen(true)}
               >
                 <Calendar size={18} />
-                <span>Reserve a Slot</span>
+                <span>Reserve a Slot Now</span>
                 <ArrowRight size={16} />
               </button>
               <Link to="/#contact" className="banner-secondary-link">
                 <MapPin size={16} />
-                <span>Get Directions (Lajpat Nagar)</span>
+                <span>Directions to Lajpat Nagar Center</span>
               </Link>
             </div>
           </div>
@@ -680,6 +860,51 @@ export default function SpaceDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Lightbox Modal */}
+      {isLightboxOpen && (
+        <div className="space-lightbox-overlay" onClick={() => setIsLightboxOpen(false)}>
+          <div className="space-lightbox-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="space-lightbox-close"
+              onClick={() => setIsLightboxOpen(false)}
+              aria-label="Close photo preview"
+            >
+              <X size={20} />
+            </button>
+            <div className="space-lightbox-media-wrap">
+              <img
+                src={space.gallery[selectedPhotoIndex]?.src || space.heroImage}
+                alt={space.gallery[selectedPhotoIndex]?.caption || space.title}
+                className="space-lightbox-image"
+              />
+              <button
+                type="button"
+                className="lightbox-arrow prev"
+                onClick={() => setSelectedPhotoIndex((prev) => (prev === 0 ? space.gallery.length - 1 : prev - 1))}
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                type="button"
+                className="lightbox-arrow next"
+                onClick={() => setSelectedPhotoIndex((prev) => (prev === space.gallery.length - 1 ? 0 : prev + 1))}
+                aria-label="Next image"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
+            <div className="space-lightbox-footer">
+              <span className="lightbox-caption">{space.gallery[selectedPhotoIndex]?.caption}</span>
+              <span className="lightbox-counter">
+                {selectedPhotoIndex + 1} / {space.gallery.length}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Universal Footer */}
       <Footer />

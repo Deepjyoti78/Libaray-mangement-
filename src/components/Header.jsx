@@ -7,6 +7,7 @@ import {
   Ticket,
   LayoutDashboard,
   ArrowRight,
+  ArrowUpRight,
   Home,
   Info,
   BookOpen,
@@ -24,8 +25,6 @@ const NAV_LINKS = [
   { label: 'Reading Room', href: '#reading-room' },
   { label: 'Manga Corner', href: '#manga-corner' },
   { label: 'Visit Guide', href: '#visit' },
-  { label: 'My Pass', href: '/my-booking' },
-  { label: 'Contact', href: '#contact' },
 ];
 
 const MOBILE_NAV_ITEMS = [
@@ -113,18 +112,19 @@ export default function Header({ onBookSlot }) {
             onClick={(e) => handleNavClick(e, '#home')}
             aria-label="The Library, New Delhi - Home"
           >
-            <div className="header-emblem-mark" aria-hidden="true">
-              <span className="emblem-square" />
-              <span className="emblem-line" />
+            <div className="header-brand-icon" aria-hidden="true">
+              <svg width="28" height="24" viewBox="0 0 28 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 4.5C6 3.5 10 4.5 14 6.5C18 4.5 22 3.5 26 4.5V19.5C22 18.5 18 19.5 14 21.5C10 19.5 6 18.5 2 19.5V4.5Z" />
+                <path d="M14 6.5V21.5" />
+                <path d="M5.5 7.8C8 7.2 10.8 7.6 13 8.8" opacity="0.6" strokeWidth="1.1" />
+                <path d="M22.5 7.8C20 7.2 17.2 7.6 15 8.8" opacity="0.6" strokeWidth="1.1" />
+              </svg>
             </div>
             <div className="header-wordmark">
               <span className="header-wordmark-name">The Library</span>
               <span className="header-wordmark-sub">LIBRARY / NEW DELHI</span>
             </div>
           </a>
-
-          {/* Partition 1: Between Brand and Navigation Links */}
-          <span className="header-partition" aria-hidden="true" />
 
           <nav className="header-nav" aria-label="Main navigation">
             <ul className="header-nav-links">
@@ -141,9 +141,6 @@ export default function Header({ onBookSlot }) {
               ))}
             </ul>
           </nav>
-
-          {/* Partition 2: Between Contact and Language Switcher */}
-          <span className="header-partition" aria-hidden="true" />
 
           <div className="header-actions">
             <div className="header-lang" role="group" aria-label="Language selection">
@@ -164,18 +161,14 @@ export default function Header({ onBookSlot }) {
               </button>
             </div>
 
-            {/* Partition 3: Between Language Switcher and Reserve a Visit */}
-            <span className="header-partition" aria-hidden="true" />
-
             <button
               type="button"
               className="header-book-btn"
               onClick={onBookSlot}
               aria-label="Reserve a Visit"
             >
-              <Calendar className="btn-icon" />
               <span>Reserve a Visit</span>
-              <ArrowRight className="btn-icon-arrow" />
+              <ArrowUpRight className="btn-icon-arrow" size={15} />
             </button>
 
             <button

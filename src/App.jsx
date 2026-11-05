@@ -21,12 +21,14 @@ import AdminLibrariansPage from './pages/AdminLibrariansPage';
 import AdminBranchesPage from './pages/AdminBranchesPage';
 import SpaceDetailPage from './pages/SpaceDetailPage';
 import AdminLayout from './components/AdminLayout';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* Public Visitor Routes */}
             <Route path="/" element={<LandingPage />} />

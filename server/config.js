@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 export const config = {
-  port: parseInt(process.env.PORT || '3001', 10),
+  port: parseInt(process.env.PORT || '3005', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
   databaseUrl: process.env.DATABASE_URL || '',
