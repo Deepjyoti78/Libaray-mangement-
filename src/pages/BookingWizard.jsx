@@ -508,7 +508,12 @@ export default function BookingWizard({ isModal = false, onClose }) {
             LEFT COLUMN: Editorial Photography Panel
             ========================================================================= */}
         <aside className="booking-photo-panel" aria-label="Library atmosphere">
-          <div className="photo-panel-bg" style={{ backgroundImage: "url('/images/library-reading-area.webp')" }} />
+          <div 
+            className="photo-panel-bg" 
+            style={{ 
+              backgroundImage: `url(${facilityId === 'manga-corner' ? '/images/manga-corner.jpg' : '/images/library-reading-area.webp'})` 
+            }} 
+          />
           <div className="photo-panel-overlay" />
 
           <div className="photo-panel-content">
@@ -634,7 +639,9 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') setFacilityId('reading-room'); }}
                   >
                     <div className="facility-pill-top">
-                      <BookOpen className="facility-pill-icon" />
+                      <div className="facility-icon-wrap">
+                        <BookOpen className="facility-pill-icon" />
+                      </div>
                       <div className={`custom-radio-dot ${facilityId === 'reading-room' ? 'checked' : ''}`} />
                     </div>
                     <div className="facility-pill-body">
@@ -654,11 +661,13 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') setFacilityId('manga-corner'); }}
                   >
                     <div className="facility-pill-top">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="facility-pill-icon">
-                        <line x1="5" y1="4" x2="5" y2="20" />
-                        <line x1="9.5" y1="4" x2="9.5" y2="20" />
-                        <line x1="14" y1="4" x2="18.5" y2="20" />
-                      </svg>
+                      <div className="facility-icon-wrap">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="facility-pill-icon">
+                          <line x1="5" y1="4" x2="5" y2="20" />
+                          <line x1="9.5" y1="4" x2="9.5" y2="20" />
+                          <line x1="14" y1="4" x2="18.5" y2="20" />
+                        </svg>
+                      </div>
                       <div className={`custom-radio-dot ${facilityId === 'manga-corner' ? 'checked' : ''}`} />
                     </div>
                     <div className="facility-pill-body">
