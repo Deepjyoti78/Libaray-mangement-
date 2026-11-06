@@ -232,7 +232,7 @@ END:VCALENDAR`;
       {/* Background Atmosphere Stage */}
       <div className="confirmation-bg-stage" aria-hidden="true">
         <img
-          src="/images/a_cinematic_highly_detailed_nighttime_scene_with.png"
+          src="/images/a_highly_detailed_cinematic_night_scene_identical.png"
           alt=""
           className="confirmation-bg-img"
         />

@@ -18,7 +18,7 @@ export default function HeroSection({ onBookSlot }) {
       {/* Background Cinematic Night Scene with Stars, Desks & Warm Lamps in Wildflower Meadow */}
       <div className="hero-cinematic-bg" aria-hidden="true">
         <img
-          src="/images/a_cinematic_highly_detailed_nighttime_scene_with.png"
+          src="/images/a_highly_detailed_cinematic_night_scene_identical.png"
           alt="Peaceful library readers with warm desk lamps under a starry cosmic sky"
           className="hero-cinematic-img"
           loading="eager"

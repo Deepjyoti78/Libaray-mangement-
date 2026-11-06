@@ -12,9 +12,7 @@ export function ThemeProvider({ children }) {
     try {
       const saved = localStorage.getItem('sora_admin_theme');
       if (saved === 'dark' || saved === 'light') return saved;
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
+      return 'light';
     } catch {
       return 'light';
     }

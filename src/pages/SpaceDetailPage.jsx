@@ -453,7 +453,9 @@ export default function SpaceDetailPage() {
 
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     root.scrollTop = 0;
-    document.body.scrollTop = 0;
+    document.documentElement.classList.remove('black-theme', 'dark');
+    document.body.classList.remove('black-theme', 'dark-theme');
+    document.documentElement.setAttribute('data-theme', 'light');
     setSelectedPhotoIndex(0);
 
     const timer = setTimeout(() => {
@@ -484,7 +486,7 @@ export default function SpaceDetailPage() {
   const otherSpaces = Object.values(SPACES_DATA).filter((s) => s.id !== space.id);
 
   return (
-    <div className="space-detail-page-layout">
+    <div className="space-detail-page-layout light-theme" data-theme="light">
       {/* Universal Top Navigation */}
       <Header onBookSlot={() => setIsBookingOpen(true)} />
 
