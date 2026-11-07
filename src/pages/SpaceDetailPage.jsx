@@ -1,38 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  MapPin,
-  CheckCircle2,
-  BookOpen,
-  Wifi,
-  Zap,
-  VolumeX,
-  Volume2,
-  Sun,
-  Shield,
-  Layers,
-  Sparkles,
-  ArrowRight,
-  Info,
-  HelpCircle,
-  Users,
-  Compass,
-  Bookmark,
-  ChevronLeft,
-  ChevronRight,
-  Maximize2,
-  X,
-  Coffee,
-  ShieldCheck
-} from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Calendar, Clock, MapPin, CheckCircle2, BookOpen, Wifi, Zap, VolumeX, Sun, Shield, Layers, Sparkles, ArrowRight, Info, HelpCircle, Users, Compass, Bookmark, ChevronLeft, ChevronRight, Maximize2, X, Coffee, ShieldCheck } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BookingWizard from './BookingWizard';
 
-export const SPACES_DATA = {
+const SPACES_DATA = {
   'reading-room': {
     id: 'reading-room',
     number: '01',
@@ -439,7 +412,10 @@ const getGuidelineIcon = (rule) => {
 
 export default function SpaceDetailPage() {
   const { spaceId } = useParams();
-  const navigate = useNavigate();
+  return <SpaceDetailContent key={spaceId} spaceId={spaceId} />;
+}
+
+function SpaceDetailContent({ spaceId }) {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -456,7 +432,6 @@ export default function SpaceDetailPage() {
     document.documentElement.classList.remove('black-theme', 'dark');
     document.body.classList.remove('black-theme', 'dark-theme');
     document.documentElement.setAttribute('data-theme', 'light');
-    setSelectedPhotoIndex(0);
 
     const timer = setTimeout(() => {
       root.style.scrollBehavior = prevBehavior;
@@ -578,6 +553,7 @@ export default function SpaceDetailPage() {
           <div className="space-main-stage-card">
             <div className="space-main-stage-img-wrap" onClick={() => setIsLightboxOpen(true)}>
               <img
+                key={selectedPhotoIndex}
                 src={space.gallery[selectedPhotoIndex]?.src || space.heroImage}
                 alt={space.gallery[selectedPhotoIndex]?.caption || space.title}
                 className="space-main-stage-img"

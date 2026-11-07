@@ -2110,6 +2110,12 @@ ul, ol {
   cursor: pointer;
 }
 
+.space-card-clickable:active {
+  transform: translateY(-2px) scale(0.985);
+  box-shadow: 0 8px 20px rgba(35, 20, 10, 0.12);
+  transition-duration: 0.1s;
+}
+
 .space-card-clickable:hover {
   transform: translateY(-8px);
   border-color: #B8532F;
@@ -9964,10 +9970,21 @@ ul, ol {
    SPACE DETAIL PAGE STYLES (Dedicated Space Showcases)
    ========================================================================== */
 
+/* Space Detail Page Entrance Choreography */
 .space-detail-page-layout {
   min-height: 100vh;
   background-color: var(--paper, #FAF8F5);
   color: var(--espresso, #2C241E);
+  animation: spacePageFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes spacePageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Space Hero Header - positioned smoothly right under the navbar without breadcrumb clutter */
@@ -9985,6 +10002,33 @@ ul, ol {
   gap: 1rem;
   margin-bottom: 1.25rem;
   flex-wrap: wrap;
+  animation: spaceNavSlideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;
+}
+
+@keyframes spaceNavSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.space-hero-title-col {
+  animation: spaceHeroTitleRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@keyframes spaceHeroTitleRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .space-hero-nav-group {
@@ -10104,6 +10148,19 @@ ul, ol {
   background: linear-gradient(90deg, #AC512E 0%, #D48B6A 100%);
   border-radius: 2px;
   margin-bottom: 0.85rem;
+  transform-origin: left;
+  animation: spaceAccentLineExpand 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
+@keyframes spaceAccentLineExpand {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
 .space-hero-tagline {
@@ -10132,6 +10189,23 @@ ul, ol {
   padding: 0.3rem 0.65rem;
   border-radius: 6px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  animation: spaceTagPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.space-hero-tag:nth-child(1) { animation-delay: 0.22s; }
+.space-hero-tag:nth-child(2) { animation-delay: 0.27s; }
+.space-hero-tag:nth-child(3) { animation-delay: 0.32s; }
+.space-hero-tag:nth-child(4) { animation-delay: 0.37s; }
+
+@keyframes spaceTagPop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .space-hero-tag.highlight {
@@ -10150,6 +10224,20 @@ ul, ol {
   display: flex;
   flex-direction: column;
   gap: 0.95rem;
+  animation: spaceBookingCardIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+}
+
+@keyframes spaceBookingCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.98);
+    box-shadow: 0 2px 10px rgba(26, 18, 12, 0.02);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 8px 24px rgba(26, 18, 12, 0.06);
+  }
 }
 
 .booking-card-header {
@@ -10243,6 +10331,18 @@ ul, ol {
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
   padding: 10px;
+  animation: spaceStageCardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both;
+}
+
+@keyframes spaceStageCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .space-main-stage-img-wrap {
@@ -10260,7 +10360,54 @@ ul, ol {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  animation: spaceImgReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: transform 0.4s ease;
+}
+
+@keyframes spaceImgReveal {
+  from {
+    opacity: 0.65;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.space-stats-section,
+.space-guidelines-section,
+.space-collections-section {
+  animation: spaceSectionReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
+}
+
+@keyframes spaceSectionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-detail-page-layout,
+  .space-hero-top-row,
+  .space-hero-title-col,
+  .space-title-accent,
+  .space-hero-tag,
+  .space-hero-booking-card,
+  .space-main-stage-card,
+  .space-main-stage-img,
+  .space-stats-section,
+  .space-guidelines-section,
+  .space-collections-section {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
 
 .space-main-stage-img-wrap:hover .space-main-stage-img {
