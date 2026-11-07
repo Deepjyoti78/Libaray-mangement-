@@ -1243,22 +1243,27 @@ ul, ol {
   transform: translateX(3px);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .hero-cinematic {
-    padding-top: 105px;
-    padding-bottom: 160px;
+    padding-top: clamp(142px, 18.5vh, 172px) !important;
+    padding-bottom: 140px !important;
   }
   .hero-cinematic-heading {
-    font-size: clamp(1.85rem, 6.8vw, 2.35rem);
+    font-size: clamp(1.85rem, 6.8vw, 2.35rem) !important;
+    margin-bottom: 1rem !important;
+  }
+  .hero-cinematic-subheading {
+    margin-bottom: 1.85rem !important;
   }
   .hero-cinematic-actions {
-    flex-direction: column;
-    width: 100%;
-    max-width: 320px;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    gap: 0.85rem !important;
   }
   .hero-cinematic-btn-primary,
   .hero-cinematic-btn-secondary {
-    width: 100%;
+    width: 100% !important;
   }
 }
 
