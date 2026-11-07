@@ -377,6 +377,15 @@ export default function BookingWizard({ isModal = false, onClose }) {
     }
   };
 
+  const formatSessionTime = (booking, defSessionId) => {
+    if (booking?.sessionStartTime && booking?.sessionEndTime) {
+      const s = booking.sessionStartTime.length > 5 ? booking.sessionStartTime.slice(0, 5) : booking.sessionStartTime;
+      const e = booking.sessionEndTime.length > 5 ? booking.sessionEndTime.slice(0, 5) : booking.sessionEndTime;
+      return `${s} – ${e}`;
+    }
+    return defSessionId === 'morning' ? '11:00 – 14:30' : '15:00 – 18:30';
+  };
+
   // Step 2 Validation -> Proceed to Step 3 (Review)
   const handleProceedToReview = () => {
     const errs = {};
@@ -1263,36 +1272,16 @@ export default function BookingWizard({ isModal = false, onClose }) {
               ===================================================================== */}
           {step === 4 && confirmedBooking && (
             <div key="step-4" className="step-confirmed-layout wizard-step-transition">
-              {/* Animated Confirmation Header */}
+              {/* Clean Confirmed Header matching user reference */}
               <header className="confirmed-hero-header">
-                <div className="confirmed-animation-badge-wrap">
-                  <div className={`confirmed-icon-circle ${isCancelled ? 'is-cancelled' : 'is-confirmed'}`} aria-hidden="true">
-                    {isCancelled ? (
-                      <TicketX className="w-6 h-6 stroke-[2]" />
-                    ) : (
-                      <svg className="confirmed-animated-check" viewBox="0 0 52 52">
-                        <circle className="confirmed-check-circle" cx="26" cy="26" r="23" fill="none" />
-                        <path className="confirmed-check-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                      </svg>
-                    )}
-                  </div>
-                  <div className="confirmed-title-col">
-                    <div className="confirmed-pill-row">
-                      <span className={`confirmed-status-pill ${isCancelled ? 'status-cancelled' : 'status-active'}`}>
-                        <span className="pill-dot" />
-                        {isCancelled ? 'RESERVATION CANCELLED' : 'VISIT CONFIRMED'}
-                      </span>
-                    </div>
-                    <h1 className="step-main-title confirmed-heading">
-                      {isCancelled ? 'Your reservation is cancelled.' : 'Your visit is confirmed!'}
-                    </h1>
-                    <p className="step-main-subtitle confirmed-sub">
-                      {isCancelled
-                        ? 'Your seat has been released. We hope to welcome you another day.'
-                        : 'Your seat is reserved. We look forward to welcoming you to The Library.'}
-                    </p>
-                  </div>
-                </div>
+                <h1 className="step-main-title confirmed-heading">
+                  {isCancelled ? 'Your reservation is cancelled.' : 'Your visit is confirmed!'}
+                </h1>
+                <p className="step-main-subtitle confirmed-sub">
+                  {isCancelled
+                    ? 'Your seat has been released. We hope to welcome you another day.'
+                    : 'Your seat is reserved. We look forward to welcoming you to The Library.'}
+                </p>
               </header>
 
               {/* Stacked Interactive Content Region */}
@@ -1301,9 +1290,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                 <div className={`my-reservation-card ${isCancelled ? 'card-cancelled' : ''}`}>
                   <div className="my-res-card-top">
                     <div className="my-res-brand">
-                      <div className="my-res-emblem" aria-hidden="true">
-                        <BookOpen className="w-3.5 h-3.5" />
-                      </div>
+                      <BookOpen className="my-res-icon-book" />
                       <div>
                         <span className="my-res-tag">RESERVATION PASS</span>
                         <h2 className="my-res-name">{confirmedBooking.facilityName || selectedFacilityObj.name}</h2>
@@ -1345,9 +1332,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                         <div>
                           <span className="detail-label">TIME SLOT</span>
                           <strong className="detail-value">
-                            {confirmedBooking.sessionStartTime && confirmedBooking.sessionEndTime 
-                              ? `${confirmedBooking.sessionStartTime} – ${confirmedBooking.sessionEndTime}`
-                              : (sessionId === 'morning' ? '11:00 AM – 2:30 PM' : '3:00 PM – 6:30 PM')}
+                            {formatSessionTime(confirmedBooking, sessionId)}
                           </strong>
                           <span className="detail-sub">{confirmedBooking.sessionName || (sessionId === 'morning' ? 'Morning Session' : 'Afternoon Session')}</span>
                         </div>
@@ -1391,47 +1376,46 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   </div>
                 </div>
 
-                {/* CARD 2: Quick Actions & Cancellation Card */}
+                {/* Quick Actions Row matching reference image */}
                 {!isCancelled ? (
-                  <div className="res-actions-card">
-                    <div className="res-actions-top-row">
+                  <>
+                    <div className="confirmed-action-buttons-row">
                       <button
                         type="button"
                         id="modal-add-calendar-btn"
-                        className="action-pill-btn"
+                        className="confirmed-action-pill-btn"
                         onClick={handleAddToCalendar}
                         title="Add to your calendar (.ics)"
                       >
-                        <CalendarPlus className="w-3.5 h-3.5 text-stone-700" />
+                        <CalendarPlus className="w-4 h-4 text-stone-700" />
                         <span>Add to calendar</span>
                       </button>
 
                       <button
                         type="button"
                         id="modal-print-pass-btn"
-                        className="action-pill-btn"
+                        className="confirmed-action-pill-btn"
                         onClick={() => window.print()}
                         title="Print your reservation pass"
                       >
-                        <Printer className="w-3.5 h-3.5 text-stone-700" />
+                        <Printer className="w-4 h-4 text-stone-700" />
                         <span>Print pass</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        id="modal-cancel-res-btn"
+                        className="confirmed-action-pill-btn cancel-action-btn"
+                        onClick={() => { setCancelError(''); setShowCancelConfirm(true); }}
+                        title="Cancel this reservation"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                        <span>Cancel reservation</span>
                       </button>
                     </div>
 
-                    {/* Cancel Reservation Section */}
-                    {!showCancelConfirm ? (
-                      <div className="cancel-trigger-section">
-                        <button
-                          type="button"
-                          id="modal-cancel-res-btn"
-                          className="cancel-trigger-link"
-                          onClick={() => { setCancelError(''); setShowCancelConfirm(true); }}
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-red-600" />
-                          <span>Cancel reservation</span>
-                        </button>
-                      </div>
-                    ) : (
+                    {/* Cancellation prompt inline if clicked */}
+                    {showCancelConfirm && (
                       <div className="cancel-confirm-panel">
                         <div className="cancel-warning-head">
                           <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
@@ -1476,7 +1460,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <div className="res-cancelled-notice-card">
                     <div className="cancelled-notice-left">
@@ -1495,7 +1479,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                 <button
                   type="button"
                   id="modal-book-another-btn"
-                  className="confirmed-book-another-btn"
+                  className="confirmed-footer-back-btn"
                   onClick={handleBookAnother}
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -1506,7 +1490,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <button
                     type="button"
                     id="modal-confirmed-done-btn"
-                    className="primary-espresso-btn done-btn"
+                    className="confirmed-footer-done-btn"
                     onClick={onClose}
                   >
                     <span>Done</span>
@@ -1516,10 +1500,10 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <button
                     type="button"
                     id="modal-confirmed-home-btn"
-                    className="primary-espresso-btn done-btn"
+                    className="confirmed-footer-done-btn"
                     onClick={() => navigate('/')}
                   >
-                    <span>Return home</span>
+                    <span>Done</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 )}

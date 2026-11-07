@@ -2434,6 +2434,8 @@ ul, ol {
 }
 
 .detail-value {
+  font-family: var(--font-sans);
+
   font-family: var(--font-serif);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -7152,10 +7154,11 @@ ul, ol {
 
 /* Step 4: In-Popup Confirmation & Reservation Pass */
 .booking-interactive-panel.is-confirmation-step {
+  background-color: #FAF7F2 !important;
   overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: #D8CFC5 transparent;
-  padding: 1rem 1.5rem 0.9rem;
+  padding: 1.4rem 1.85rem 1.25rem !important;
 }
 
 .booking-interactive-panel.is-confirmation-step::-webkit-scrollbar {
@@ -7170,225 +7173,108 @@ ul, ol {
 .step-confirmed-layout {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
   justify-content: space-between;
   box-sizing: border-box;
+  animation: confirmedFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes confirmedFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .confirmed-hero-header {
-  margin-bottom: 0.75rem;
-}
-
-.confirmed-animation-badge-wrap {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
-  width: 100%;
-}
-
-.confirmed-icon-circle {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  margin-top: 0.15rem;
-}
-
-.confirmed-icon-circle.is-confirmed {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: #FFFFFF;
-  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
-  animation: confirmedPopIn 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-}
-
-.confirmed-icon-circle.is-confirmed::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 2px solid rgba(16, 185, 129, 0.4);
-  animation: confirmedRipple 2s ease-out infinite;
-}
-
-.confirmed-icon-circle.is-cancelled {
-  background: #FEE2E2;
-  color: #DC2626;
-  border: 1.5px solid #FCA5A5;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
-  animation: confirmedPopIn 0.4s ease-out both;
-}
-
-@keyframes confirmedPopIn {
-  0% { transform: scale(0.35); opacity: 0; }
-  65% { transform: scale(1.12); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes confirmedRipple {
-  0% { transform: scale(0.9); opacity: 0.8; }
-  100% { transform: scale(1.55); opacity: 0; }
-}
-
-.confirmed-animated-check {
-  width: 28px;
-  height: 28px;
-  stroke: #FFFFFF;
-  stroke-width: 3.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.confirmed-check-circle {
-  stroke-dasharray: 150;
-  stroke-dashoffset: 150;
-  animation: circleDraw 0.6s ease-out forwards;
-}
-
-.confirmed-check-path {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: checkmarkDraw 0.42s 0.25s ease-out forwards;
-}
-
-@keyframes circleDraw {
-  0% { stroke-dashoffset: 150; }
-  100% { stroke-dashoffset: 0; }
-}
-
-@keyframes checkmarkDraw {
-  0% { stroke-dashoffset: 40; }
-  100% { stroke-dashoffset: 0; }
-}
-
-.confirmed-title-col {
-  flex: 1;
-  min-width: 0;
-}
-
-.confirmed-pill-row {
-  margin-bottom: 0.2rem;
-}
-
-.confirmed-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: var(--font-sans);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-}
-
-.confirmed-status-pill.status-active {
-  background: rgba(16, 185, 129, 0.12);
-  color: #047857;
-  border: 1px solid rgba(16, 185, 129, 0.25);
-}
-
-.confirmed-status-pill.status-cancelled {
-  background: rgba(220, 38, 38, 0.1);
-  color: #B91C1C;
-  border: 1px solid rgba(220, 38, 38, 0.2);
-}
-
-.confirmed-status-pill .pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
+  margin-bottom: 0.95rem;
 }
 
 .confirmed-heading {
   font-family: var(--font-serif);
-  font-size: 1.35rem;
+  font-size: 1.68rem;
   font-weight: 400;
-  color: #2A1A12;
-  margin: 0 0 0.12rem;
+  color: #241812;
+  margin: 0 0 0.25rem;
   line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .confirmed-sub {
   font-family: var(--font-sans);
-  font-size: 0.74rem;
-  color: rgba(53, 35, 25, 0.72);
+  font-size: 0.82rem;
+  color: #7A6F68;
   margin: 0;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .confirmed-cards-container {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  margin-bottom: 0.65rem;
+  gap: 0.75rem;
+  margin-bottom: auto;
 }
 
-/* My Reservation Card */
+/* My Reservation Card matching user reference image */
 .my-reservation-card {
   background: #FFFFFF;
-  border: 1.5px solid #E5DCD1;
-  border-radius: 12px;
-  padding: 0.75rem 0.95rem;
-  box-shadow: 0 2px 8px rgba(45, 30, 20, 0.03);
+  border: 1px solid #EAE2D8;
+  border-radius: 16px;
+  padding: 1.15rem 1.4rem;
+  box-shadow: 0 2px 10px rgba(45, 30, 20, 0.025);
   transition: all 0.2s ease;
 }
 
 .my-reservation-card.card-cancelled {
   background: #FAF8F6;
   border-color: #E8DFD7;
-  opacity: 0.85;
+  opacity: 0.88;
 }
 
 .my-res-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #EFE8DE;
-  padding-bottom: 0.45rem;
-  margin-bottom: 0.55rem;
+  border-bottom: 1px solid #EFEAE3;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .my-res-brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
-.my-res-emblem {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: #F6EFE9;
+.my-res-icon-book {
+  width: 22px;
+  height: 22px;
   color: #AC512E;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  stroke-width: 1.8;
   flex-shrink: 0;
 }
 
 .my-res-tag {
   font-family: var(--font-sans);
-  font-size: 0.58rem;
+  font-size: 0.6rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   color: #AC512E;
   display: block;
   line-height: 1;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.25rem;
 }
 
 .my-res-name {
   font-family: var(--font-sans);
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: #2A1A12;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #241812;
   margin: 0;
   line-height: 1.2;
 }
@@ -7397,126 +7283,123 @@ ul, ol {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.15rem;
+  gap: 0.2rem;
 }
 
 .ref-label {
-  font-size: 0.55rem;
+  font-size: 0.56rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: #7A6F66;
+  color: #8C827A;
+  text-transform: uppercase;
 }
 
 .ref-copy-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  background: #FAF5F0;
-  border: 1px solid #E5D5C5;
-  border-radius: 6px;
-  padding: 0.2rem 0.55rem;
+  gap: 0.45rem;
+  background: #FAF4EF;
+  border: 1px solid #EAE0D5;
+  border-radius: 8px;
+  padding: 0.28rem 0.6rem;
   cursor: pointer;
   transition: all 0.15s ease;
-  color: #2A1A12;
+  color: #241812;
 }
 
 .ref-copy-btn:hover {
-  background: #F3E7DC;
+  background: #F4ECE4;
   border-color: #AC512E;
 }
 
 .ref-code {
   font-family: monospace;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #AC512E;
-}
-
-.copied-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #047857;
+  letter-spacing: 0.04em;
+  color: #A64B2A;
 }
 
 .ref-copy-icon {
-  color: #7A6F66;
+  color: #8C827A;
 }
 
+/* Reservation Pass Body Grid */
 .my-res-body-grid {
   display: grid;
-  grid-template-columns: 1fr 105px;
-  gap: 0.85rem;
+  grid-template-columns: 1fr 125px;
+  gap: 1.25rem;
   align-items: center;
 }
 
 .my-res-info-col {
   display: flex;
   flex-direction: column;
-  gap: 0.42rem;
+  gap: 0.75rem;
 }
 
 .my-res-detail-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .my-res-item-icon {
-  width: 0.88rem;
-  height: 0.88rem;
-  color: #AC512E;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: #8C5A40;
   margin-top: 0.15rem;
   flex-shrink: 0;
+  stroke-width: 1.75;
 }
 
 .detail-label {
   display: block;
-  font-size: 0.56rem;
+  font-size: 0.58rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #8A7E75;
+  color: #8C827A;
   line-height: 1;
 }
 
 .detail-value {
-  font-size: 0.76rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #2A1A12;
+  color: #241812;
   line-height: 1.25;
   display: block;
-  margin-top: 0.1rem;
+  margin-top: 0.15rem;
 }
 
 .detail-sub {
-  font-size: 0.66rem;
-  color: #7A6F66;
+  font-size: 0.72rem;
+  color: #8C827A;
   display: block;
-  margin-top: 0.05rem;
+  margin-top: 0.08rem;
 }
 
 .my-res-qr-col {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
+  border-left: 1px solid #EFEAE3;
+  padding-left: 1.25rem;
 }
 
 .my-res-qr-frame {
-  width: 90px;
-  height: 90px;
-  border-radius: 8px;
-  border: 1px solid #E5DCD1;
+  width: 96px;
+  height: 96px;
+  border-radius: 10px;
+  border: 1px solid #EAE3DB;
   background: #FFFFFF;
-  padding: 4px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 .my-res-qr-img {
@@ -7525,17 +7408,14 @@ ul, ol {
   object-fit: contain;
 }
 
-.qr-cancelled-overlay {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  font-size: 0.62rem;
-  color: #7A6F66;
+.qr-hint {
+  font-size: 0.65rem;
   font-weight: 500;
+  color: #8C827A;
+  margin-top: 0.45rem;
 }
 
+.qr-cancelled-overlay,
 .qr-fallback-box {
   display: flex;
   flex-direction: column;
@@ -7547,100 +7427,70 @@ ul, ol {
   font-weight: 500;
 }
 
-.qr-hint {
-  font-size: 0.58rem;
-  font-weight: 500;
-  color: #7A6F66;
+/* Actions Row: 3 side-by-side buttons exactly as in reference image */
+.confirmed-action-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
   margin-top: 0.25rem;
 }
 
-/* Actions Card */
-.res-actions-card {
-  background: #FFFFFF;
-  border: 1.5px solid #E5DCD1;
-  border-radius: 12px;
-  padding: 0.65rem 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.res-actions-top-row {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.action-pill-btn {
+.confirmed-action-pill-btn {
   flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  background: #FAF7F4;
-  border: 1px solid #E2D7CC;
-  border-radius: 8px;
-  padding: 0.42rem 0.65rem;
+  gap: 0.45rem;
+  background: #FFFFFF;
+  border: 1px solid #E5DCD1;
+  border-radius: 10px;
+  padding: 0.6rem 0.5rem;
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 500;
-  color: #352319;
+  color: #2D231E;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(45, 30, 20, 0.02);
+  white-space: nowrap;
 }
 
-.action-pill-btn:hover {
-  background: #F2ECE5;
-  border-color: #BDB0A3;
+.confirmed-action-pill-btn:hover {
+  background: #F9F6F2;
+  border-color: #CFC4B7;
+  color: #1A110D;
 }
 
-.cancel-trigger-section {
-  display: flex;
-  justify-content: center;
-  border-top: 1px solid #F0E9DF;
-  padding-top: 0.45rem;
+.confirmed-action-pill-btn.cancel-action-btn {
+  color: #C0392B;
+  border-color: #F4D5D2;
 }
 
-.cancel-trigger-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: #B91C1C;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-}
-
-.cancel-trigger-link:hover {
+.confirmed-action-pill-btn.cancel-action-btn:hover {
   background: #FEF2F2;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  border-color: #EFA69F;
+  color: #991B1B;
 }
 
 /* Cancel Confirmation Panel */
 .cancel-confirm-panel {
   background: #FEF6F5;
   border: 1px solid #F8D3CE;
-  border-radius: 8px;
-  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  margin-top: 0.15rem;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
   animation: modalPopIn 0.2s ease-out;
 }
 
 .cancel-warning-head {
   display: flex;
   align-items: flex-start;
-  gap: 0.45rem;
-  font-size: 0.72rem;
+  gap: 0.5rem;
+  font-size: 0.74rem;
   color: #7F1D1D;
 }
 
@@ -7651,7 +7501,7 @@ ul, ol {
 
 .cancel-warning-head p {
   margin: 0.1rem 0 0;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   color: #991B1B;
 }
 
@@ -7659,8 +7509,8 @@ ul, ol {
   width: 100%;
   border: 1px solid #E5C3BD;
   border-radius: 6px;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.72rem;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.74rem;
   background: #FFFFFF;
   color: #352319;
   outline: none;
@@ -7676,16 +7526,16 @@ ul, ol {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.45rem;
-  margin-top: 0.2rem;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .cancel-keep-btn {
   background: #FFFFFF;
   border: 1px solid #D5CBC0;
   border-radius: 6px;
-  padding: 0.32rem 0.75rem;
-  font-size: 0.7rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.72rem;
   font-weight: 500;
   color: #352319;
   cursor: pointer;
@@ -7700,8 +7550,8 @@ ul, ol {
   background: #DC2626;
   border: none;
   border-radius: 6px;
-  padding: 0.32rem 0.85rem;
-  font-size: 0.7rem;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: #FFFFFF;
   cursor: pointer;
@@ -7749,37 +7599,54 @@ ul, ol {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.65rem;
-  margin-top: 0.35rem;
+  width: 100%;
+  margin-top: 0.75rem;
   padding-top: 0.35rem;
-  border-top: 1px solid #EFE8DE;
 }
 
-.confirmed-book-another-btn {
+.confirmed-footer-back-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   background: #FFFFFF;
-  border: 1px solid #D8CFC5;
-  border-radius: 8px;
-  padding: 0.52rem 0.95rem;
+  border: 1px solid #E5DCD1;
+  border-radius: 10px;
+  padding: 0.6rem 1.15rem;
   font-family: var(--font-sans);
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  color: #352319;
+  color: #2D231E;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(45, 30, 20, 0.02);
 }
 
-.confirmed-book-another-btn:hover {
-  background: #F4EFEB;
-  border-color: #AC512E;
-  color: #AC512E;
+.confirmed-footer-back-btn:hover {
+  background: #F9F6F2;
+  border-color: #CFC4B7;
 }
 
-.done-btn {
-  padding: 0.55rem 1.45rem;
-  font-size: 0.78rem;
+.confirmed-footer-done-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #231812;
+  border: 1px solid #231812;
+  border-radius: 10px;
+  padding: 0.6rem 1.45rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(35, 24, 18, 0.15);
+}
+
+.confirmed-footer-done-btn:hover {
+  background: #3B291F;
+  border-color: #3B291F;
+  transform: translateY(-1px);
 }
 
 /* ─── CONFIRMATION PAGE ATMOSPHERE & BACKGROUND ─── */
