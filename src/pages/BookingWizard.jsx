@@ -1324,21 +1324,9 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     {isCancelled ? 'RESERVATION RELEASED' : 'RESERVATION CONFIRMED'}
                   </span>
                 </div>
-                <div className="confirmed-heading-flex">
-                  <div className={`confirmed-check-badge ${isCancelled ? 'is-cancelled' : 'is-confirmed'}`} aria-hidden="true">
-                    {isCancelled ? (
-                      <TicketX className="w-4 h-4 text-red-600 stroke-[2.2]" />
-                    ) : (
-                      <svg className="confirmed-svg-check" viewBox="0 0 24 24" fill="none">
-                        <circle className="circle-draw" cx="12" cy="12" r="10" stroke="#10B981" strokeWidth="2.2" />
-                        <path className="path-draw" d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#10B981" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    )}
-                  </div>
-                  <h1 className="step-main-title confirmed-heading">
+                <h1 className="step-main-title confirmed-heading">
                     {isCancelled ? 'Your reservation is cancelled.' : 'Your visit is confirmed!'}
                   </h1>
-                </div>
                 <p className="step-main-subtitle confirmed-sub">
                   {isCancelled
                     ? 'Your seat has been released. We hope to welcome you another day.'
