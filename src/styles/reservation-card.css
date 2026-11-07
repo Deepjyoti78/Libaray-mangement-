@@ -1,0 +1,134 @@
+/* The Reserve your slot card is the presentation contract for every visit flow. */
+:root {
+  --reservation-card-width: 890px;
+  --reservation-card-height: 560px;
+  --reservation-photo-width: 275px;
+  --reservation-card-radius: 22px;
+  --reservation-surface: #FAF8F5;
+  --reservation-panel-padding: 1.15rem 1.6rem;
+  --reservation-title-size: 1.65rem;
+  --reservation-backdrop: rgba(14, 10, 8, 0.65);
+  --reservation-backdrop-blur: 8px;
+  --reservation-shadow: 0 32px 80px -15px rgba(20, 12, 6, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --reservation-mobile-width: 410px;
+  --reservation-mobile-height: min(690px, 92dvh);
+}
+.reservation-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; overflow: auto; overscroll-behavior: contain;
+  background: var(--reservation-backdrop);
+  backdrop-filter: blur(var(--reservation-backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--reservation-backdrop-blur));
+}
+.reservation-dialog, .reservation-wizard { width: 100%; min-width: 0; }
+.reservation-dialog { max-width: var(--reservation-card-width); margin: auto; }
+.reservation-overlay .reservation-card {
+  display: grid; grid-template-columns: var(--reservation-photo-width) minmax(0, 1fr);
+  width: min(var(--reservation-card-width), 100%);
+  height: min(var(--reservation-card-height), calc(100dvh - 48px));
+  min-height: 0; max-height: none; flex-shrink: 0;
+  position: relative; margin: auto; overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: var(--reservation-card-radius);
+  background: var(--reservation-surface); box-shadow: var(--reservation-shadow);
+}
+.reservation-card .reservation-photo { height: 100%; min-height: 0; border-radius: 0; }
+.reservation-photo .photo-panel-content { min-height: 0; }
+.reservation-overlay .reservation-panel {
+  min-height: 0; min-width: 0; height: 100%;
+  display: flex; flex-direction: column;
+  padding: var(--reservation-panel-padding) !important;
+  overflow-x: hidden; overflow-y: auto !important;
+  background: var(--reservation-surface);
+  scrollbar-width: thin; scrollbar-color: #D8CFC5 transparent;
+}
+.reservation-card .reservation-close { top: 16px; right: 20px; width: 32px; height: 32px; }
+.reservation-card :is(.step-main-title, .pass-page-title) { font-size: var(--reservation-title-size) !important; line-height: 1.15 !important; }
+.reservation-card :where(button, a, input, [tabindex="0"]):focus-visible { outline: 2px solid #AC512E; outline-offset: 3px; }
+.reservation-card [data-reservation-autofocus]:focus { outline: none; }
+
+@media (max-width: 860px) {
+  .reservation-overlay { padding: 10px 8px; }
+  .reservation-overlay .reservation-card {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(var(--reservation-mobile-width), 100%);
+    height: var(--reservation-mobile-height);
+    border-radius: 16px;
+  }
+  .reservation-card .reservation-photo { display: none !important; }
+  .reservation-dialog { max-width: var(--reservation-mobile-width); }
+  .reservation-overlay .reservation-panel { padding: 14px 14px 22px !important; }
+  .reservation-card .reservation-close { top: 10px !important; right: 12px !important; width: 32px !important; height: 32px !important; background: rgba(255, 255, 255, 0.95) !important; border: 1px solid #D8CFC5 !important; }
+
+  /* Compact typography and elements on mobile */
+  .step-selection-layout-clean .step-intro-header,
+  .step-selection-layout-clean .step-intro-header-art {
+    margin-bottom: 0.45rem !important;
+  }
+  .step-main-title {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.1rem !important;
+  }
+  .step-main-subtitle {
+    font-size: 0.72rem !important;
+  }
+  .facility-sub-section {
+    margin-bottom: 0.75rem !important;
+  }
+  .section-label-row {
+    margin-bottom: 0.35rem !important;
+  }
+  .facility-pill-card {
+    height: 66px !important;
+    min-height: 66px !important;
+    max-height: 66px !important;
+    padding: 0.45rem 0.65rem !important;
+    overflow: hidden !important;
+  }
+  .facility-pill-name {
+    font-size: 0.8rem !important;
+  }
+  .facility-pill-desc {
+    font-size: 0.62rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .inline-calendar-box {
+    padding: 0.35rem 0.55rem !important;
+  }
+  .cal-day-cell {
+    height: 22px !important;
+  }
+  .day-number-bubble {
+    height: 20px !important;
+    width: 22px !important;
+    font-size: 0.68rem !important;
+  }
+  .session-pill-card {
+    height: 62px !important;
+    min-height: 62px !important;
+    padding: 0.45rem 0.75rem !important;
+  }
+  .step1-primary-btn {
+    width: 100% !important;
+    padding: 0.65rem 1rem !important;
+    justify-content: center !important;
+  }
+  .step1-cta-block {
+    align-items: stretch !important;
+    width: 100% !important;
+    margin-top: 0.45rem !important;
+  }
+  .step1-cta-hint {
+    text-align: center !important;
+    font-size: 0.62rem !important;
+  }
+}
+@media print {
+  .reservation-overlay { position: static; display: block; padding: 0; overflow: visible; background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .reservation-overlay .reservation-card { display: block; width: 100%; height: auto; min-height: 0; max-height: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
+  .reservation-overlay .reservation-panel { height: auto; padding: 24px !important; overflow: visible !important; }
+  .reservation-card .reservation-photo, .reservation-close { display: none !important; }
+}

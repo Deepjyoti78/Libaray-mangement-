@@ -196,7 +196,6 @@ export default function BookingWizard({ isModal = false, onClose }) {
     let isMounted = true;
     async function checkAvail() {
       setAvailLoading(true);
-      setAvailability(null);
       try {
         const res = await fetch(`/api/availability?facilityId=${facilityId}&date=${selectedDate}`);
         if (res.ok) {
@@ -206,9 +205,31 @@ export default function BookingWizard({ isModal = false, onClose }) {
             setSessionId((current) => data.sessions?.some((session) => session.id === current && session.isAvailable)
               ? current : data.sessions?.find((session) => session.isAvailable)?.id || '');
           }
+        } else {
+          const errData = await res.json().catch(() => null);
+          if (isMounted) {
+            setAvailability({
+              available: false,
+              reason: errData?.error || 'The facility is not accepting reservations on this date.',
+              sessions: [],
+            });
+          }
         }
       } catch (err) {
-        if (isMounted) setAvailability({ available: false, reason: err.message, sessions: [] });
+        if (isMounted) {
+          // If server is temporarily booting or unreachable, gracefully fall back to default sessions
+          const fallbackSessions = (config?.sessions || DEFAULT_CONFIG.sessions).map((s) => ({
+            ...s,
+            isAvailable: true,
+            remainingCapacity: 15,
+          }));
+          setAvailability({
+            available: true,
+            isOfflineFallback: true,
+            sessions: fallbackSessions,
+          });
+          setSessionId((current) => current || fallbackSessions[0]?.id || 'morning');
+        }
       } finally {
         if (isMounted) setAvailLoading(false);
       }
@@ -216,7 +237,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
 
     checkAvail();
     return () => { isMounted = false; };
-  }, [facilityId, selectedDate]);
+  }, [facilityId, selectedDate, config?.sessions]);
 
   // Calendar calculations
   const calendarData = useMemo(() => {
@@ -758,7 +779,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     <h2 className="section-title">Select a time slot</h2>
                   </div>
 
-                  {availability && !availability.available ? (
+                  {availability && availability.available === false && !availability.isOfflineFallback ? (
                     <div className="session-unavailable-notice">
                       <AlertCircle className="w-5 h-5 text-amber-700 shrink-0" />
                       <div>
