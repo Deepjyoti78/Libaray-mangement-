@@ -50,7 +50,7 @@
 
 @media (max-width: 860px) {
   .reservation-overlay {
-    padding: 0.65rem 0.5rem;
+    padding: 0.75rem 0.65rem;
     align-items: center;
     justify-content: center;
     background: rgba(18, 12, 8, 0.72);
@@ -59,22 +59,22 @@
   }
   .reservation-overlay .reservation-card {
     grid-template-columns: minmax(0, 1fr);
-    width: min(390px, 100%);
+    width: min(380px, 100%);
     height: auto;
-    max-height: 96dvh;
-    border-radius: 26px;
+    max-height: 86dvh;
+    border-radius: 14px;
     background: #FAF7F2;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
     overflow: hidden;
   }
   .reservation-card .reservation-photo { display: none !important; }
-  .reservation-dialog { max-width: 390px; }
+  .reservation-dialog { max-width: 380px; }
   .reservation-overlay .reservation-panel {
-    padding: 1.15rem 1rem 0.95rem 1rem !important;
+    padding: 0.95rem 0.95rem 0.85rem 0.95rem !important;
     background: #FAF7F2 !important;
-    border-radius: 26px;
+    border-radius: 14px;
     height: auto;
-    max-height: 96dvh;
+    max-height: 86dvh;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none !important;
@@ -83,10 +83,10 @@
     display: none !important;
   }
   .reservation-card .reservation-close {
-    top: 1rem !important;
-    right: 1rem !important;
-    width: 32px !important;
-    height: 32px !important;
+    top: 0.85rem !important;
+    right: 0.85rem !important;
+    width: 30px !important;
+    height: 30px !important;
     background: #FAF7F2 !important;
     border: 1px solid #ECE7E0 !important;
     border-radius: 50% !important;
@@ -98,20 +98,20 @@
     z-index: 120 !important;
   }
 
-  /* Step 1 Clean Mobile Layout */
+  /* Step 1 Compact & Sharper Mobile Layout */
   .step-header-art-box {
     display: none !important;
   }
   .step-selection-layout-clean .step-intro-header,
   .step-selection-layout-clean .step-intro-header-art {
-    margin-bottom: 0.65rem !important;
+    margin-bottom: 0.55rem !important;
     padding-right: 2.25rem !important;
   }
   .category-tag-row {
     display: flex !important;
     align-items: center !important;
     gap: 0.35rem !important;
-    margin-bottom: 0.2rem !important;
+    margin-bottom: 0.15rem !important;
   }
   .category-tag-icon {
     color: #9E5338 !important;
@@ -119,7 +119,7 @@
   }
   .category-tag {
     font-family: var(--font-sans) !important;
-    font-size: 0.7rem !important;
+    font-size: 0.68rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.08em !important;
     color: #9E5338 !important;
@@ -127,34 +127,34 @@
   }
   .step-main-title {
     font-family: var(--font-serif) !important;
-    font-size: 1.72rem !important;
+    font-size: 1.55rem !important;
     font-weight: 400 !important;
     color: #20140E !important;
     line-height: 1.15 !important;
-    margin: 0 0 0.2rem 0 !important;
+    margin: 0 0 0.15rem 0 !important;
     letter-spacing: -0.015em !important;
   }
   .step-main-subtitle {
     font-family: var(--font-sans) !important;
-    font-size: 0.78rem !important;
+    font-size: 0.74rem !important;
     font-weight: 400 !important;
     color: #73655A !important;
-    line-height: 1.3 !important;
+    line-height: 1.25 !important;
     margin: 0 !important;
   }
   .section-label-row {
     display: flex !important;
     align-items: center !important;
-    gap: 0.45rem !important;
-    margin-bottom: 0.35rem !important;
+    gap: 0.4rem !important;
+    margin-bottom: 0.25rem !important;
   }
   .section-number-badge {
-    width: 19px !important;
-    height: 19px !important;
+    width: 18px !important;
+    height: 18px !important;
     border-radius: 50% !important;
     background: #EFE4D8 !important;
     color: #5B2C19 !important;
-    font-size: 0.7rem !important;
+    font-size: 0.68rem !important;
     font-weight: 700 !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -163,26 +163,26 @@
   }
   .section-title {
     font-family: var(--font-sans) !important;
-    font-size: 0.88rem !important;
+    font-size: 0.82rem !important;
     font-weight: 700 !important;
     color: #20140E !important;
     margin: 0 !important;
   }
   .facility-sub-section {
-    margin-bottom: 0.75rem !important;
+    margin-bottom: 0.55rem !important;
   }
   .facility-cards-row {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 0.55rem !important;
-    margin-top: 0.35rem !important;
+    gap: 0.45rem !important;
+    margin-top: 0.25rem !important;
   }
   .facility-pill-card {
     height: auto !important;
-    min-height: 98px !important;
+    min-height: 82px !important;
     max-height: none !important;
-    border-radius: 14px !important;
-    padding: 0.75rem 0.75rem !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 0.65rem !important;
     background: #FFFFFF !important;
     border: 1px solid #ECE7E0 !important;
     display: flex !important;
@@ -202,12 +202,12 @@
     align-items: center !important;
     justify-content: space-between !important;
     width: 100% !important;
-    margin-bottom: 0.45rem !important;
+    margin-bottom: 0.35rem !important;
   }
   .facility-icon-wrap {
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 7px !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 6px !important;
     background: #F6EEE7 !important;
     display: flex !important;
     align-items: center !important;
@@ -215,13 +215,13 @@
     color: #9E5338 !important;
   }
   .facility-pill-icon {
-    width: 15px !important;
-    height: 15px !important;
+    width: 14px !important;
+    height: 14px !important;
     color: #9E5338 !important;
   }
   .custom-radio-dot {
-    width: 17px !important;
-    height: 17px !important;
+    width: 16px !important;
+    height: 16px !important;
     border-radius: 50% !important;
     border: 1.5px solid #D8CEBE !important;
     display: flex !important;
@@ -247,15 +247,15 @@
   }
   .facility-pill-name {
     font-family: var(--font-sans) !important;
-    font-size: 0.88rem !important;
+    font-size: 0.84rem !important;
     font-weight: 700 !important;
     color: #20140E !important;
-    margin: 0 0 0.15rem 0 !important;
+    margin: 0 0 0.12rem 0 !important;
   }
   .facility-pill-desc {
     font-family: var(--font-sans) !important;
-    font-size: 0.68rem !important;
-    line-height: 1.3 !important;
+    font-size: 0.65rem !important;
+    line-height: 1.25 !important;
     color: #73655A !important;
     margin: 0 !important;
     display: block !important;
@@ -270,7 +270,7 @@
   .step1-date-slot-grid {
     display: flex !important;
     flex-direction: column !important;
-    gap: 0.75rem !important;
+    gap: 0.55rem !important;
     width: 100% !important;
   }
   .step1-date-slot-grid > * {
@@ -280,25 +280,25 @@
   /* Step 2 Calendar */
   .inline-calendar-box {
     width: 100% !important;
-    border-radius: 14px !important;
+    border-radius: 10px !important;
     border: 1px solid #ECE7E0 !important;
     background: #FFFFFF !important;
-    padding: 0.65rem 0.85rem !important;
+    padding: 0.5rem 0.65rem !important;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02) !important;
-    margin-top: 0.35rem !important;
+    margin-top: 0.25rem !important;
     box-sizing: border-box !important;
   }
   .cal-header {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    margin-bottom: 0.45rem !important;
+    margin-bottom: 0.3rem !important;
     padding: 0 !important;
   }
   .cal-arrow-btn {
-    width: 26px !important;
-    height: 26px !important;
-    border-radius: 6px !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 5px !important;
     border: none !important;
     background: transparent !important;
     color: #20140E !important;
@@ -309,7 +309,7 @@
   }
   .cal-month-title {
     font-family: var(--font-sans) !important;
-    font-size: 0.9rem !important;
+    font-size: 0.82rem !important;
     font-weight: 700 !important;
     color: #20140E !important;
   }
@@ -317,11 +317,11 @@
     display: grid !important;
     grid-template-columns: repeat(7, 1fr) !important;
     text-align: center !important;
-    margin-bottom: 0.35rem !important;
+    margin-bottom: 0.2rem !important;
   }
   .cal-weekday-cell {
     font-family: var(--font-sans) !important;
-    font-size: 0.68rem !important;
+    font-size: 0.65rem !important;
     font-weight: 600 !important;
     color: #8C7E72 !important;
     text-transform: capitalize !important;
@@ -329,15 +329,15 @@
   .cal-weeks-list {
     display: flex !important;
     flex-direction: column !important;
-    gap: 0.15rem !important;
+    gap: 0.1rem !important;
   }
   .cal-week-row {
     display: grid !important;
     grid-template-columns: repeat(7, 1fr) !important;
-    gap: 0.15rem !important;
+    gap: 0.1rem !important;
   }
   .cal-day-cell {
-    height: 27px !important;
+    height: 25px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -346,13 +346,13 @@
     padding: 0 !important;
   }
   .day-number-bubble {
-    width: 25px !important;
-    height: 25px !important;
-    border-radius: 7px !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 5px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 0.78rem !important;
+    font-size: 0.74rem !important;
     font-weight: 500 !important;
     color: #20140E !important;
   }
@@ -375,8 +375,8 @@
   .session-cards-column {
     display: flex !important;
     flex-direction: column !important;
-    gap: 0.45rem !important;
-    margin-top: 0.35rem !important;
+    gap: 0.35rem !important;
+    margin-top: 0.25rem !important;
     width: 100% !important;
   }
   .session-pill-card {
@@ -386,10 +386,10 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
-    padding: 0.65rem 0.85rem !important;
-    min-height: 52px !important;
+    padding: 0.5rem 0.75rem !important;
+    min-height: 46px !important;
     max-height: none !important;
-    border-radius: 12px !important;
+    border-radius: 8px !important;
     background: #FFFFFF !important;
     border: 1px solid #ECE7E0 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
@@ -412,13 +412,13 @@
     gap: 0.45rem !important;
   }
   .session-time-clock {
-    width: 14px !important;
-    height: 14px !important;
+    width: 13px !important;
+    height: 13px !important;
     color: #7A6F66 !important;
     flex-shrink: 0 !important;
   }
   .session-time-text {
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
     font-weight: 600 !important;
     color: #20140E !important;
   }
@@ -426,10 +426,10 @@
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    padding-left: 1.35rem !important;
+    padding-left: 1.25rem !important;
   }
   .session-name-sub {
-    font-size: 0.72rem !important;
+    font-size: 0.68rem !important;
     color: #7A6F66 !important;
     margin: 0 !important;
   }
@@ -438,20 +438,20 @@
   }
   .session-pill-card.disabled .capacity-indicator {
     position: absolute !important;
-    right: 0.85rem !important;
+    right: 0.75rem !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: #FBEBE8 !important;
     color: #B84B3D !important;
-    padding: 3px 7px !important;
-    border-radius: 5px !important;
-    font-size: 0.7rem !important;
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+    font-size: 0.65rem !important;
     font-weight: 500 !important;
     border: none !important;
   }
   .session-pill-card:not(.disabled) .custom-radio-dot {
     position: absolute !important;
-    right: 0.85rem !important;
+    right: 0.75rem !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
   }
@@ -464,18 +464,18 @@
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 0.4rem !important;
-    margin-top: 0.75rem !important;
+    gap: 0.35rem !important;
+    margin-top: 0.6rem !important;
     width: 100% !important;
   }
   .step1-primary-btn {
     width: 100% !important;
-    height: 48px !important;
-    min-height: 48px !important;
-    border-radius: 12px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    border-radius: 8px !important;
     background: #20140E !important;
     color: #FFFFFF !important;
-    font-size: 0.92rem !important;
+    font-size: 0.88rem !important;
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -486,7 +486,7 @@
     cursor: pointer !important;
   }
   .step1-cta-hint {
-    font-size: 0.72rem !important;
+    font-size: 0.68rem !important;
     color: #73655A !important;
     text-align: center !important;
     margin: 0 !important;
