@@ -163,6 +163,8 @@ export default function BookingWizard({ isModal = false, onClose }) {
   const [cancelReason, setCancelReason] = useState('');
   const [cancelError, setCancelError] = useState('');
   const [isCancelled, setIsCancelled] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // 1. Fetch public configuration on mount (non-blocking background sync)
   useEffect(() => {
@@ -459,6 +461,8 @@ export default function BookingWizard({ isModal = false, onClose }) {
       setShowCancelConfirm(false);
       setCancelReason('');
       setCancelError('');
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3800);
       setStep(4);
     } catch (err) {
       setSubmitError(err.message || 'An error occurred while creating your reservation.');
@@ -474,15 +478,30 @@ export default function BookingWizard({ isModal = false, onClose }) {
   const handleCopyRef = async (refText) => {
     try {
       await navigator.clipboard.writeText(refText);
-      setCopiedRef(true);
-      setTimeout(() => setCopiedRef(false), 2000);
     } catch {
-      // fallback
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = refText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      } catch {
+        // fallback
+      }
     }
+    setCopiedRef(true);
+    setToastMsg('Booking reference copied');
+    setTimeout(() => {
+      setCopiedRef(false);
+      setToastMsg('');
+    }, 2400);
   };
 
   const handleAddToCalendar = () => {
     if (!confirmedBooking) return;
+    setToastMsg('Calendar invite (.ics) downloaded');
+    setTimeout(() => setToastMsg(''), 2500);
     const stamp = (time) => new Date(confirmedBooking.visitDate + 'T' + (time ? time.slice(0, 5) : '11:00') + ':00+05:30').toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     const escape = (text) => String(text).replaceAll('\\', '\\\\').replaceAll('\n', '\\n').replaceAll(',', '\\,').replaceAll(';', '\\;');
     const content = [
@@ -1272,11 +1291,54 @@ export default function BookingWizard({ isModal = false, onClose }) {
               ===================================================================== */}
           {step === 4 && confirmedBooking && (
             <div key="step-4" className="step-confirmed-layout wizard-step-transition">
-              {/* Clean Confirmed Header matching user reference */}
+              {/* Celebratory Luxury Confetti Particles */}
+              {showConfetti && (
+                <div className="confirmed-confetti-canvas" aria-hidden="true">
+                  {Array.from({ length: 30 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`confetti-particle confetti-${(i % 5) + 1}`}
+                      style={{
+                        left: `${(i * 3.3) % 100}%`,
+                        animationDelay: `${(i * 0.05).toFixed(2)}s`,
+                        animationDuration: `${(1.9 + (i % 4) * 0.35).toFixed(2)}s`,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Floating Feedback Toast */}
+              {toastMsg && (
+                <div className="confirmed-toast-alert" role="status">
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>{toastMsg}</span>
+                </div>
+              )}
+
+              {/* Animated Confirmed Header with live beacon & checkmark */}
               <header className="confirmed-hero-header">
-                <h1 className="step-main-title confirmed-heading">
-                  {isCancelled ? 'Your reservation is cancelled.' : 'Your visit is confirmed!'}
-                </h1>
+                <div className="confirmed-status-pill-wrap">
+                  <span className={`confirmed-status-pill ${isCancelled ? 'status-cancelled' : 'status-active'}`}>
+                    <span className="pill-dot" />
+                    {isCancelled ? 'RESERVATION RELEASED' : 'RESERVATION CONFIRMED'}
+                  </span>
+                </div>
+                <div className="confirmed-heading-flex">
+                  <div className={`confirmed-check-badge ${isCancelled ? 'is-cancelled' : 'is-confirmed'}`} aria-hidden="true">
+                    {isCancelled ? (
+                      <TicketX className="w-4 h-4 text-red-600 stroke-[2.2]" />
+                    ) : (
+                      <svg className="confirmed-svg-check" viewBox="0 0 24 24" fill="none">
+                        <circle className="circle-draw" cx="12" cy="12" r="10" stroke="#10B981" strokeWidth="2.2" />
+                        <path className="path-draw" d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#10B981" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                  <h1 className="step-main-title confirmed-heading">
+                    {isCancelled ? 'Your reservation is cancelled.' : 'Your visit is confirmed!'}
+                  </h1>
+                </div>
                 <p className="step-main-subtitle confirmed-sub">
                   {isCancelled
                     ? 'Your seat has been released. We hope to welcome you another day.'
