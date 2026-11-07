@@ -248,7 +248,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
     const closureDates = (config?.closureDates || []).map(c => c.date);
     const advanceDays = config?.settings?.advanceBookingDays ?? 14;
 
-    const daysInWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const monthNames = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
@@ -623,6 +623,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
               <header className="step-intro-header-art">
                 <div className="step-intro-text-col">
                   <div className="category-tag-row">
+                    <Calendar className="category-tag-icon" size={13} strokeWidth={2.2} />
                     <span className="category-tag">BOOK A VISIT</span>
                   </div>
                   <h1 className="step-main-title" tabIndex={-1} data-reservation-autofocus>Reserve your slot</h1>
@@ -694,7 +695,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     </div>
                     <div className="facility-pill-body">
                       <h3 className="facility-pill-name">Reading Room</h3>
-                      <p className="facility-pill-desc">A calm space for reading, study and research.</p>
+                      <p className="facility-pill-desc">A quiet space for reading, studying and research.</p>
                     </div>
                   </div>
 

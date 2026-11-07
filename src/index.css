@@ -8946,13 +8946,14 @@ ul, ol {
   /* Dialog transforms into an elegant native rounded card with sharper edges */
   .booking-modal-dialog {
     width: 100% !important;
-    max-width: 410px !important;
+    max-width: 400px !important;
     height: auto !important;
-    max-height: 88dvh !important;
+    max-height: 92dvh !important;
     margin: auto !important;
-    border-radius: 12px !important;
+    border-radius: 28px !important;
     overflow: hidden !important;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+    background: #FAF7F2 !important;
     animation: mobileModalSheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
@@ -8970,26 +8971,20 @@ ul, ol {
   /* Modal View inside page */
   .new-booking-page.modal-view {
     height: auto !important;
-    max-height: 88dvh !important;
+    max-height: 92dvh !important;
     min-height: auto !important;
-    border-radius: 12px !important;
-    background: #FAF8F5 !important;
+    border-radius: 28px !important;
+    background: #FAF7F2 !important;
     display: flex !important;
     flex-direction: column !important;
     position: relative !important;
-    overflow: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Tactile drag indicator handle at the top of the mobile sheet */
   .new-booking-page.modal-view::before {
-    content: '';
-    display: block;
-    width: 36px;
-    height: 3.5px;
-    background: #D8CEBE;
-    border-radius: 9999px;
-    margin: 8px auto 2px;
-    flex-shrink: 0;
+    display: none !important;
   }
 
   .new-booking-page.modal-view .new-booking-container {
@@ -9355,20 +9350,20 @@ ul, ol {
 
   /* Modal Close Button: Fixed, prominent, easily reachable */
   .booking-modal-close-btn {
-    top: 0.75rem !important;
-    right: 0.85rem !important;
-    width: 36px !important;
-    height: 36px !important;
+    top: 1.15rem !important;
+    right: 1.15rem !important;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 50% !important;
-    background: #EDE5D8 !important;
+    background: #FAF7F2 !important;
     color: #352319 !important;
-    border: none !important;
+    border: 1px solid #ECE7E0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     z-index: 120 !important;
     cursor: pointer !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
     transition: background-color 0.15s ease, transform 0.15s ease !important;
   }
 
@@ -9377,88 +9372,438 @@ ul, ol {
     background: #DFD5C5 !important;
   }
 
-  /* Facility choices on smaller screens - side-by-side & compact */
-  .facility-cards-row {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.5rem !important;
+  /* Hide decorative line art illustration on mobile */
+  .step-header-art-box {
+    display: none !important;
   }
 
-  .facility-pill-card {
-    min-height: 52px !important;
-    height: auto !important;
-    padding: 0.45rem 0.65rem !important;
-    border-radius: 8px !important;
-    background: #FFFFFF !important;
+  /* Step 1 Intro Header */
+  .step-intro-header,
+  .step-intro-header-art {
+    margin-bottom: 0.95rem !important;
+    padding-right: 2.5rem !important;
   }
 
-  .step-selection-layout-clean .facility-sub-section {
+  .category-tag-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .category-tag-icon {
+    color: #9E5338 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .category-tag {
+    font-family: var(--font-sans) !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    color: #9E5338 !important;
+    text-transform: uppercase !important;
+  }
+
+  .step-main-title {
+    font-family: var(--font-serif) !important;
+    font-size: 1.85rem !important;
+    font-weight: 400 !important;
+    color: #20140E !important;
+    line-height: 1.15 !important;
+    margin: 0 0 0.3rem 0 !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  .step-main-subtitle {
+    font-family: var(--font-sans) !important;
+    font-size: 0.82rem !important;
+    font-weight: 400 !important;
+    color: #73655A !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+  }
+
+  /* Section Number Badges and Titles */
+  .section-label-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
     margin-bottom: 0.55rem !important;
   }
 
-  .step1-date-slot-grid {
-    gap: 0.55rem !important;
+  .section-number-badge {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+    background: #EFE4D8 !important;
+    color: #5B2C19 !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
   }
 
-  /* Calendar sizing & touch targets on mobile */
-  .inline-calendar-box {
-    padding: 0.45rem 0.55rem !important;
-    border-radius: 8px !important;
+  .section-title {
+    font-family: var(--font-sans) !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+    margin: 0 !important;
+  }
+
+  /* Step 1 Facility choices - 2-column grid side-by-side */
+  .facility-sub-section {
+    margin-bottom: 1.1rem !important;
+  }
+
+  .facility-cards-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.65rem !important;
+    margin-top: 0.45rem !important;
+  }
+
+  .facility-pill-card {
+    height: auto !important;
+    min-height: 106px !important;
+    border-radius: 14px !important;
+    padding: 0.85rem 0.85rem !important;
     background: #FFFFFF !important;
+    border: 1px solid #ECE7E0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .facility-pill-card.selected {
+    background: #FFF9F5 !important;
+    border: 1.5px solid #C47A5A !important;
+    box-shadow: 0 2px 8px rgba(184, 83, 47, 0.08) !important;
+  }
+
+  .facility-pill-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  .facility-icon-wrap {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    background: #F6EEE7 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #9E5338 !important;
+  }
+
+  .facility-pill-icon {
+    width: 16px !important;
+    height: 16px !important;
+    color: #9E5338 !important;
+  }
+
+  .custom-radio-dot {
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 50% !important;
+    border: 1.5px solid #D8CEBE !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    flex-shrink: 0 !important;
+  }
+
+  .custom-radio-dot.checked {
+    border-color: #9E5338 !important;
+  }
+
+  .custom-radio-dot.checked::after {
+    content: '' !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #9E5338 !important;
+    display: block !important;
+  }
+
+  .facility-pill-body {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .facility-pill-name {
+    font-family: var(--font-sans) !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+    margin: 0 0 0.25rem 0 !important;
+  }
+
+  .facility-pill-desc {
+    font-family: var(--font-sans) !important;
+    font-size: 0.71rem !important;
+    line-height: 1.35 !important;
+    color: #73655A !important;
+    margin: 0 !important;
+    display: block !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    -webkit-line-clamp: unset !important;
+    max-height: none !important;
+  }
+
+  /* STEP 1: Date & Time Slot Grid stacks vertically */
+  .step1-date-slot-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.1rem !important;
+  }
+
+  /* Step 2 Calendar */
+  .inline-calendar-box {
+    border-radius: 16px !important;
+    border: 1px solid #ECE7E0 !important;
+    background: #FFFFFF !important;
+    padding: 0.85rem 0.95rem !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02) !important;
+    margin-top: 0.45rem !important;
   }
 
   .cal-header {
-    margin-bottom: 0.25rem !important;
-    padding: 0 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 0.65rem !important;
+    padding: 0 !important;
   }
 
   .cal-arrow-btn {
     width: 28px !important;
     height: 28px !important;
     border-radius: 6px !important;
+    border: none !important;
+    background: transparent !important;
+    color: #20140E !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
   }
 
   .cal-month-title {
-    font-size: 0.88rem !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
   }
 
   .cal-weekdays-row {
-    margin-bottom: 0.2rem !important;
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    text-align: center !important;
+    margin-bottom: 0.45rem !important;
   }
 
   .cal-weekday-cell {
-    font-size: 0.7rem !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.72rem !important;
     font-weight: 600 !important;
-    padding: 0.15rem 0 !important;
+    color: #8C7E72 !important;
+    text-transform: capitalize !important;
+  }
+
+  .cal-weeks-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.25rem !important;
+  }
+
+  .cal-week-row {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 0.2rem !important;
   }
 
   .cal-day-cell {
-    height: 29px !important;
+    height: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
   }
 
   .day-number-bubble {
-    width: 27px !important;
-    height: 27px !important;
-    font-size: 0.8rem !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.82rem !important;
     font-weight: 500 !important;
-    border-radius: 6px !important;
+    color: #20140E !important;
   }
 
-  .step-intro-header,
-  .step-intro-header-art {
-    margin-bottom: 0.5rem !important;
-    padding-right: 2.25rem; /* Room for close button */
+  .cal-day-cell.selected .day-number-bubble {
+    background: #5D2D1B !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
   }
 
-  .step-main-title {
-    font-size: 1.35rem !important;
-    line-height: 1.15 !important;
-    margin-bottom: 0.15rem !important;
+  .cal-day-cell.disabled .day-number-bubble,
+  .cal-day-cell.pad-cell .day-number-bubble {
+    color: #B5ABA0 !important;
+    opacity: 0.6 !important;
   }
 
-  .step-main-subtitle {
+  /* Step 3 Time Slots */
+  .slot-choice-col {
+    margin-bottom: 0 !important;
+  }
+
+  .session-cards-column {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.65rem !important;
+    margin-top: 0.45rem !important;
+  }
+
+  .session-pill-card {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 0.75rem 0.95rem !important;
+    min-height: 58px !important;
+    border-radius: 14px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #ECE7E0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    cursor: pointer !important;
+  }
+
+  .session-pill-card.selected {
+    background: #FFF9F5 !important;
+    border: 1.5px solid #C47A5A !important;
+    box-shadow: 0 2px 8px rgba(184, 83, 47, 0.08) !important;
+  }
+
+  .session-pill-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 0.2rem !important;
+  }
+
+  .session-time-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+  }
+
+  .session-time-clock {
+    width: 15px !important;
+    height: 15px !important;
+    color: #7A6F66 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .session-time-text {
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    color: #20140E !important;
+  }
+
+  .session-pill-bottom {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-left: 1.45rem !important;
+  }
+
+  .session-name-sub {
     font-size: 0.74rem !important;
-    line-height: 1.3 !important;
+    color: #7A6F66 !important;
+    margin: 0 !important;
+  }
+
+  /* Slot Radio & Capacity Placement */
+  .session-pill-card.disabled .custom-radio-dot {
+    display: none !important;
+  }
+
+  .session-pill-card.disabled .capacity-indicator {
+    position: absolute !important;
+    right: 0.95rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: #FBEBE8 !important;
+    color: #B84B3D !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    font-size: 0.72rem !important;
+    font-weight: 500 !important;
+    border: none !important;
+  }
+
+  .session-pill-card:not(.disabled) .custom-radio-dot {
+    position: absolute !important;
+    right: 0.95rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .session-pill-card:not(.disabled) .capacity-indicator {
+    display: none !important;
+  }
+
+  /* Continue to details CTA & Hint */
+  .step1-cta-block {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin-top: 1rem !important;
+    width: 100% !important;
+  }
+
+  .step1-primary-btn {
+    width: 100% !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    border-radius: 12px !important;
+    background: #20140E !important;
+    color: #FFFFFF !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.55rem !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(32, 20, 14, 0.25) !important;
+    cursor: pointer !important;
+  }
+
+  .step1-cta-hint {
+    font-size: 0.74rem !important;
+    color: #73655A !important;
+    text-align: center !important;
+    margin: 0 !important;
   }
 }
 

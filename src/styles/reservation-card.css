@@ -49,81 +49,447 @@
 .reservation-card [data-reservation-autofocus]:focus { outline: none; }
 
 @media (max-width: 860px) {
-  .reservation-overlay { padding: 10px 8px; }
+  .reservation-overlay {
+    padding: 0.65rem 0.5rem;
+    align-items: center;
+    justify-content: center;
+    background: rgba(18, 12, 8, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
   .reservation-overlay .reservation-card {
     grid-template-columns: minmax(0, 1fr);
-    width: min(var(--reservation-mobile-width), 100%);
-    height: var(--reservation-mobile-height);
-    border-radius: 16px;
+    width: min(390px, 100%);
+    height: auto;
+    max-height: 96dvh;
+    border-radius: 26px;
+    background: #FAF7F2;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
   }
   .reservation-card .reservation-photo { display: none !important; }
-  .reservation-dialog { max-width: var(--reservation-mobile-width); }
-  .reservation-overlay .reservation-panel { padding: 14px 14px 22px !important; }
-  .reservation-card .reservation-close { top: 10px !important; right: 12px !important; width: 32px !important; height: 32px !important; background: rgba(255, 255, 255, 0.95) !important; border: 1px solid #D8CFC5 !important; }
+  .reservation-dialog { max-width: 390px; }
+  .reservation-overlay .reservation-panel {
+    padding: 1.15rem 1rem 0.95rem 1rem !important;
+    background: #FAF7F2 !important;
+    border-radius: 26px;
+    height: auto;
+    max-height: 96dvh;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none !important;
+  }
+  .reservation-overlay .reservation-panel::-webkit-scrollbar {
+    display: none !important;
+  }
+  .reservation-card .reservation-close {
+    top: 1rem !important;
+    right: 1rem !important;
+    width: 32px !important;
+    height: 32px !important;
+    background: #FAF7F2 !important;
+    border: 1px solid #ECE7E0 !important;
+    border-radius: 50% !important;
+    color: #20140E !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 120 !important;
+  }
 
-  /* Compact typography and elements on mobile */
+  /* Step 1 Clean Mobile Layout */
+  .step-header-art-box {
+    display: none !important;
+  }
   .step-selection-layout-clean .step-intro-header,
   .step-selection-layout-clean .step-intro-header-art {
-    margin-bottom: 0.45rem !important;
+    margin-bottom: 0.65rem !important;
+    padding-right: 2.25rem !important;
+  }
+  .category-tag-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    margin-bottom: 0.2rem !important;
+  }
+  .category-tag-icon {
+    color: #9E5338 !important;
+    flex-shrink: 0 !important;
+  }
+  .category-tag {
+    font-family: var(--font-sans) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    color: #9E5338 !important;
+    text-transform: uppercase !important;
   }
   .step-main-title {
-    font-size: 1.35rem !important;
-    margin-bottom: 0.1rem !important;
+    font-family: var(--font-serif) !important;
+    font-size: 1.72rem !important;
+    font-weight: 400 !important;
+    color: #20140E !important;
+    line-height: 1.15 !important;
+    margin: 0 0 0.2rem 0 !important;
+    letter-spacing: -0.015em !important;
   }
   .step-main-subtitle {
-    font-size: 0.72rem !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.78rem !important;
+    font-weight: 400 !important;
+    color: #73655A !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+  }
+  .section-label-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+  .section-number-badge {
+    width: 19px !important;
+    height: 19px !important;
+    border-radius: 50% !important;
+    background: #EFE4D8 !important;
+    color: #5B2C19 !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .section-title {
+    font-family: var(--font-sans) !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+    margin: 0 !important;
   }
   .facility-sub-section {
     margin-bottom: 0.75rem !important;
   }
-  .section-label-row {
-    margin-bottom: 0.35rem !important;
+  .facility-cards-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.55rem !important;
+    margin-top: 0.35rem !important;
   }
   .facility-pill-card {
-    height: 66px !important;
-    min-height: 66px !important;
-    max-height: 66px !important;
-    padding: 0.45rem 0.65rem !important;
-    overflow: hidden !important;
+    height: auto !important;
+    min-height: 98px !important;
+    max-height: none !important;
+    border-radius: 14px !important;
+    padding: 0.75rem 0.75rem !important;
+    background: #FFFFFF !important;
+    border: 1px solid #ECE7E0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    cursor: pointer !important;
+    overflow: visible !important;
+  }
+  .facility-pill-card.selected {
+    background: #FFF9F5 !important;
+    border: 1.5px solid #C47A5A !important;
+    box-shadow: 0 2px 8px rgba(184, 83, 47, 0.08) !important;
+  }
+  .facility-pill-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    margin-bottom: 0.45rem !important;
+  }
+  .facility-icon-wrap {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 7px !important;
+    background: #F6EEE7 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #9E5338 !important;
+  }
+  .facility-pill-icon {
+    width: 15px !important;
+    height: 15px !important;
+    color: #9E5338 !important;
+  }
+  .custom-radio-dot {
+    width: 17px !important;
+    height: 17px !important;
+    border-radius: 50% !important;
+    border: 1.5px solid #D8CEBE !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    flex-shrink: 0 !important;
+  }
+  .custom-radio-dot.checked {
+    border-color: #9E5338 !important;
+  }
+  .custom-radio-dot.checked::after {
+    content: '' !important;
+    width: 7px !important;
+    height: 7px !important;
+    border-radius: 50% !important;
+    background: #9E5338 !important;
+    display: block !important;
+  }
+  .facility-pill-body {
+    display: flex !important;
+    flex-direction: column !important;
   }
   .facility-pill-name {
-    font-size: 0.8rem !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+    margin: 0 0 0.15rem 0 !important;
   }
   .facility-pill-desc {
-    font-size: 0.62rem !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.68rem !important;
+    line-height: 1.3 !important;
+    color: #73655A !important;
+    margin: 0 !important;
+    display: block !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    -webkit-line-clamp: unset !important;
+    max-height: none !important;
   }
+
+  /* STEP 1: Date & Time Slot Grid stacks vertically */
+  .step1-date-slot-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+  }
+  .step1-date-slot-grid > * {
+    width: 100% !important;
+  }
+
+  /* Step 2 Calendar */
   .inline-calendar-box {
-    padding: 0.35rem 0.55rem !important;
+    width: 100% !important;
+    border-radius: 14px !important;
+    border: 1px solid #ECE7E0 !important;
+    background: #FFFFFF !important;
+    padding: 0.65rem 0.85rem !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02) !important;
+    margin-top: 0.35rem !important;
+    box-sizing: border-box !important;
+  }
+  .cal-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 0.45rem !important;
+    padding: 0 !important;
+  }
+  .cal-arrow-btn {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    background: transparent !important;
+    color: #20140E !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+  }
+  .cal-month-title {
+    font-family: var(--font-sans) !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    color: #20140E !important;
+  }
+  .cal-weekdays-row {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    text-align: center !important;
+    margin-bottom: 0.35rem !important;
+  }
+  .cal-weekday-cell {
+    font-family: var(--font-sans) !important;
+    font-size: 0.68rem !important;
+    font-weight: 600 !important;
+    color: #8C7E72 !important;
+    text-transform: capitalize !important;
+  }
+  .cal-weeks-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.15rem !important;
+  }
+  .cal-week-row {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 0.15rem !important;
   }
   .cal-day-cell {
-    height: 22px !important;
+    height: 27px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
   }
   .day-number-bubble {
-    height: 20px !important;
-    width: 22px !important;
-    font-size: 0.68rem !important;
+    width: 25px !important;
+    height: 25px !important;
+    border-radius: 7px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    color: #20140E !important;
+  }
+  .cal-day-cell.selected .day-number-bubble {
+    background: #5D2D1B !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+  }
+  .cal-day-cell.disabled .day-number-bubble,
+  .cal-day-cell.pad-cell .day-number-bubble {
+    color: #B5ABA0 !important;
+    opacity: 0.6 !important;
+  }
+
+  /* Step 3 Time Slots */
+  .slot-choice-col {
+    width: 100% !important;
+    margin-bottom: 0 !important;
+  }
+  .session-cards-column {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.45rem !important;
+    margin-top: 0.35rem !important;
+    width: 100% !important;
   }
   .session-pill-card {
-    height: 62px !important;
-    min-height: 62px !important;
-    padding: 0.45rem 0.75rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 0.65rem 0.85rem !important;
+    min-height: 52px !important;
+    max-height: none !important;
+    border-radius: 12px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #ECE7E0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    cursor: pointer !important;
+  }
+  .session-pill-card.selected {
+    background: #FFF9F5 !important;
+    border: 1.5px solid #C47A5A !important;
+    box-shadow: 0 2px 8px rgba(184, 83, 47, 0.08) !important;
+  }
+  .session-pill-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 0.15rem !important;
+  }
+  .session-time-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+  }
+  .session-time-clock {
+    width: 14px !important;
+    height: 14px !important;
+    color: #7A6F66 !important;
+    flex-shrink: 0 !important;
+  }
+  .session-time-text {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: #20140E !important;
+  }
+  .session-pill-bottom {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-left: 1.35rem !important;
+  }
+  .session-name-sub {
+    font-size: 0.72rem !important;
+    color: #7A6F66 !important;
+    margin: 0 !important;
+  }
+  .session-pill-card.disabled .custom-radio-dot {
+    display: none !important;
+  }
+  .session-pill-card.disabled .capacity-indicator {
+    position: absolute !important;
+    right: 0.85rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: #FBEBE8 !important;
+    color: #B84B3D !important;
+    padding: 3px 7px !important;
+    border-radius: 5px !important;
+    font-size: 0.7rem !important;
+    font-weight: 500 !important;
+    border: none !important;
+  }
+  .session-pill-card:not(.disabled) .custom-radio-dot {
+    position: absolute !important;
+    right: 0.85rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+  .session-pill-card:not(.disabled) .capacity-indicator {
+    display: none !important;
+  }
+
+  /* Continue to details CTA & Hint */
+  .step1-cta-block {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    margin-top: 0.75rem !important;
+    width: 100% !important;
   }
   .step1-primary-btn {
     width: 100% !important;
-    padding: 0.65rem 1rem !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    border-radius: 12px !important;
+    background: #20140E !important;
+    color: #FFFFFF !important;
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
     justify-content: center !important;
-  }
-  .step1-cta-block {
-    align-items: stretch !important;
-    width: 100% !important;
-    margin-top: 0.45rem !important;
+    gap: 0.5rem !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(32, 20, 14, 0.25) !important;
+    cursor: pointer !important;
   }
   .step1-cta-hint {
+    font-size: 0.72rem !important;
+    color: #73655A !important;
     text-align: center !important;
-    font-size: 0.62rem !important;
+    margin: 0 !important;
   }
 }
 @media print {
