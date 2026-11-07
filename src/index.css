@@ -7150,160 +7150,636 @@ ul, ol {
   margin: 0;
 }
 
-/* Step 4: Confirmation Visit Pass: sharp edges */
-.confirmation-content-box {
+/* Step 4: In-Popup Confirmation & Reservation Pass */
+.booking-interactive-panel.is-confirmation-step {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #D8CFC5 transparent;
+  padding: 1rem 1.5rem 0.9rem;
+}
+
+.booking-interactive-panel.is-confirmation-step::-webkit-scrollbar {
+  width: 4px;
+}
+
+.booking-interactive-panel.is-confirmation-step::-webkit-scrollbar-thumb {
+  background: #D8CFC5;
+  border-radius: 4px;
+}
+
+.step-confirmed-layout {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  height: 100%;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
-.visit-pass-card {
+.confirmed-hero-header {
+  margin-bottom: 0.75rem;
+}
+
+.confirmed-animation-badge-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.confirmed-icon-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  margin-top: 0.15rem;
+}
+
+.confirmed-icon-circle.is-confirmed {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+  animation: confirmedPopIn 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.confirmed-icon-circle.is-confirmed::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  animation: confirmedRipple 2s ease-out infinite;
+}
+
+.confirmed-icon-circle.is-cancelled {
+  background: #FEE2E2;
+  color: #DC2626;
+  border: 1.5px solid #FCA5A5;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+  animation: confirmedPopIn 0.4s ease-out both;
+}
+
+@keyframes confirmedPopIn {
+  0% { transform: scale(0.35); opacity: 0; }
+  65% { transform: scale(1.12); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes confirmedRipple {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+.confirmed-animated-check {
+  width: 28px;
+  height: 28px;
+  stroke: #FFFFFF;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.confirmed-check-circle {
+  stroke-dasharray: 150;
+  stroke-dashoffset: 150;
+  animation: circleDraw 0.6s ease-out forwards;
+}
+
+.confirmed-check-path {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: checkmarkDraw 0.42s 0.25s ease-out forwards;
+}
+
+@keyframes circleDraw {
+  0% { stroke-dashoffset: 150; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes checkmarkDraw {
+  0% { stroke-dashoffset: 40; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.confirmed-title-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.confirmed-pill-row {
+  margin-bottom: 0.2rem;
+}
+
+.confirmed-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+.confirmed-status-pill.status-active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.confirmed-status-pill.status-cancelled {
+  background: rgba(220, 38, 38, 0.1);
+  color: #B91C1C;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.confirmed-status-pill .pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.confirmed-heading {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: #2A1A12;
+  margin: 0 0 0.12rem;
+  line-height: 1.2;
+}
+
+.confirmed-sub {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  color: rgba(53, 35, 25, 0.72);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.confirmed-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+/* My Reservation Card */
+.my-reservation-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E5DCD1;
+  border-radius: 12px;
+  padding: 0.75rem 0.95rem;
+  box-shadow: 0 2px 8px rgba(45, 30, 20, 0.03);
+  transition: all 0.2s ease;
+}
+
+.my-reservation-card.card-cancelled {
+  background: #FAF8F6;
+  border-color: #E8DFD7;
+  opacity: 0.85;
+}
+
+.my-res-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #EFE8DE;
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.55rem;
+}
+
+.my-res-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.my-res-emblem {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #F6EFE9;
+  color: #AC512E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.my-res-tag {
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #AC512E;
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.15rem;
+}
+
+.my-res-name {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #2A1A12;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.my-res-ref-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.ref-label {
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #7A6F66;
+}
+
+.ref-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #FAF5F0;
+  border: 1px solid #E5D5C5;
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #2A1A12;
+}
+
+.ref-copy-btn:hover {
+  background: #F3E7DC;
+  border-color: #AC512E;
+}
+
+.ref-code {
+  font-family: monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #AC512E;
+}
+
+.copied-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #047857;
+}
+
+.ref-copy-icon {
+  color: #7A6F66;
+}
+
+.my-res-body-grid {
   display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 1.35rem;
-  background: #FFFDF9;
-  border: 1px solid #D5C3A7;
-  border-radius: 4px;
-  padding: 1.15rem 1.35rem;
-  box-shadow: 0 4px 16px rgba(53, 35, 25, 0.03);
+  grid-template-columns: 1fr 105px;
+  gap: 0.85rem;
+  align-items: center;
 }
 
-.visit-pass-card.cancelled {
-  border-color: #E5DCD0;
-  background: #FAF8F5;
+.my-res-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
 }
 
-.pass-qr-col {
+.my-res-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.my-res-item-icon {
+  width: 0.88rem;
+  height: 0.88rem;
+  color: #AC512E;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.detail-label {
+  display: block;
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8A7E75;
+  line-height: 1;
+}
+
+.detail-value {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #2A1A12;
+  line-height: 1.25;
+  display: block;
+  margin-top: 0.1rem;
+}
+
+.detail-sub {
+  font-size: 0.66rem;
+  color: #7A6F66;
+  display: block;
+  margin-top: 0.05rem;
+}
+
+.my-res-qr-col {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-right: 1px dashed #E5DCD0;
-  padding-right: 1.35rem;
 }
 
-.qr-frame-box {
-  width: 110px;
-  height: 110px;
+.my-res-qr-frame {
+  width: 90px;
+  height: 90px;
+  border-radius: 8px;
+  border: 1px solid #E5DCD1;
   background: #FFFFFF;
-  border: 1px solid #E5DCD0;
-  padding: 0.3rem;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 3px;
-  margin-bottom: 0.4rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
-.pass-qr-image {
+.my-res-qr-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.qr-fallback-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pass-ref-badge {
-  font-family: var(--font-mono, monospace);
-  font-size: 1rem;
-  font-weight: 700;
-  color: #352319;
-  background: #EFE8DD;
-  padding: 0.15rem 0.55rem;
-  border-radius: 2px;
-  margin-bottom: 0.3rem;
-  letter-spacing: 0.05em;
-}
-
-.pass-scan-caption {
-  font-size: 0.65rem;
-  color: #7A6F66;
-  line-height: 1.3;
-  max-width: 130px;
-}
-
-.pass-details-col {
+.qr-cancelled-overlay {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  align-items: center;
   justify-content: center;
+  gap: 0.2rem;
+  font-size: 0.62rem;
+  color: #7A6F66;
+  font-weight: 500;
 }
 
-.pass-detail-item {
+.qr-fallback-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  font-size: 0.62rem;
+  color: #7A6F66;
+  font-weight: 500;
+}
+
+.qr-hint {
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: #7A6F66;
+  margin-top: 0.25rem;
+}
+
+/* Actions Card */
+.res-actions-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E5DCD1;
+  border-radius: 12px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.res-actions-top-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.action-pill-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: #FAF7F4;
+  border: 1px solid #E2D7CC;
+  border-radius: 8px;
+  padding: 0.42rem 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #352319;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.action-pill-btn:hover {
+  background: #F2ECE5;
+  border-color: #BDB0A3;
+}
+
+.cancel-trigger-section {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #F0E9DF;
+  padding-top: 0.45rem;
+}
+
+.cancel-trigger-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #B91C1C;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.cancel-trigger-link:hover {
+  background: #FEF2F2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Cancel Confirmation Panel */
+.cancel-confirm-panel {
+  background: #FEF6F5;
+  border: 1px solid #F8D3CE;
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+  animation: modalPopIn 0.2s ease-out;
+}
+
+.cancel-warning-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  color: #7F1D1D;
+}
+
+.cancel-warning-head strong {
+  display: block;
+  font-weight: 600;
+}
+
+.cancel-warning-head p {
+  margin: 0.1rem 0 0;
+  font-size: 0.68rem;
+  color: #991B1B;
+}
+
+.cancel-reason-input {
+  width: 100%;
+  border: 1px solid #E5C3BD;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.72rem;
+  background: #FFFFFF;
+  color: #352319;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.cancel-reason-input:focus {
+  border-color: #DC2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+}
+
+.cancel-panel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+}
+
+.cancel-keep-btn {
+  background: #FFFFFF;
+  border: 1px solid #D5CBC0;
+  border-radius: 6px;
+  padding: 0.32rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #352319;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancel-keep-btn:hover {
+  background: #F4EFEB;
+}
+
+.cancel-danger-btn {
+  background: #DC2626;
+  border: none;
+  border-radius: 6px;
+  padding: 0.32rem 0.85rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancel-danger-btn:hover:not(:disabled) {
+  background: #B91C1C;
+}
+
+.cancel-danger-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.res-cancelled-notice-card {
+  background: #FEF6F5;
+  border: 1px solid #F8D3CE;
+  border-radius: 12px;
+  padding: 0.75rem 0.95rem;
+}
+
+.cancelled-notice-left {
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-}
-
-.pass-icon-wrap {
-  width: 1.4rem;
-  height: 1.4rem;
-  border-radius: 50%;
-  background: #EFE8DD;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #AC512E;
-  flex-shrink: 0;
-  margin-top: 0.05rem;
-}
-
-.pass-text-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.05rem;
-}
-
-.pass-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #7A6F66;
-  font-weight: 600;
-}
-
-.pass-val {
-  font-size: 0.84rem;
-  color: #352319;
-}
-
-.pass-sub {
-  display: block;
+  color: #991B1B;
   font-size: 0.72rem;
-  color: #7A6F66;
-  font-weight: 400;
 }
 
-.important-info-box {
-  background: #F4EFE6;
-  border-left: 3px solid #352319;
-  border-radius: 0 3px 3px 0;
-  padding: 0.75rem 1rem;
-}
-
-.info-header {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 0.3rem;
-}
-
-.info-title {
+.cancelled-notice-left strong {
+  display: block;
   font-size: 0.78rem;
   font-weight: 600;
-  color: #352319;
 }
 
-.info-bullets-list {
-  margin: 0;
-  padding-left: 1rem;
-  font-size: 0.72rem;
-  color: #554D45;
-  line-height: 1.4;
+.cancelled-notice-left p {
+  margin: 0.15rem 0 0;
+  color: #7F1D1D;
+  line-height: 1.35;
+}
+
+/* Footer Navigation */
+.confirmed-footer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid #EFE8DE;
+}
+
+.confirmed-book-another-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #FFFFFF;
+  border: 1px solid #D8CFC5;
+  border-radius: 8px;
+  padding: 0.52rem 0.95rem;
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: #352319;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.confirmed-book-another-btn:hover {
+  background: #F4EFEB;
+  border-color: #AC512E;
+  color: #AC512E;
+}
+
+.done-btn {
+  padding: 0.55rem 1.45rem;
+  font-size: 0.78rem;
 }
 
 /* ─── CONFIRMATION PAGE ATMOSPHERE & BACKGROUND ─── */

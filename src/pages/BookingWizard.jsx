@@ -1,11 +1,15 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import ReservationCard from '../components/ReservationCard';
+import useReservationDialog from '../hooks/useReservationDialog';
+import { useNavigate } from 'react-router-dom';
 import { 
-  ArrowLeft, ArrowRight, Calendar, Clock, CheckCircle2, 
-  AlertCircle, ShieldCheck, User, Mail, Hash, BookOpen, 
-  Library, ChevronLeft, ChevronRight, Check, FileText, Info, X,
-  Lightbulb, CreditCard
+  ArrowRight, Calendar, Clock, AlertCircle, User, Mail, BookOpen, 
+  ChevronLeft, ChevronRight, FileText, Lightbulb, CreditCard,
+  CheckCircle2, Copy, Check, Printer, CalendarPlus, Trash2, RotateCcw, 
+  QrCode, TicketX, CalendarDays
 } from 'lucide-react';
+import { formatVisitDate } from '../utils/dates';
 
 /**
  * Returns today's date in 'YYYY-MM-DD' formatted for the Asia/Kolkata timezone.
@@ -89,7 +93,7 @@ function getInitialOpenDate(openingDays = ['Tuesday', 'Wednesday', 'Thursday', '
     const dayName = days[d.getDay()];
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
+    const dd = String(d.getUTCDate()).padStart(2, '0');
     const dateStr = `${yyyy}-${mm}-${dd}`;
     const isClosure = closureDates.some(c => (typeof c === 'string' ? c : c.date) === dateStr);
 
@@ -106,15 +110,11 @@ export default function BookingWizard({ isModal = false, onClose }) {
   // Wizard logical steps: 1 = Selection (Space + Date + Slot), 2 = Details, 3 = Review
   const [step, setStep] = useState(1);
 
-  // Close on Escape key press if in modal mode
+  const cardRef = useRef(null);
+  useReservationDialog(cardRef, onClose, isModal);
   useEffect(() => {
-    if (!isModal || !onClose) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isModal, onClose]);
+    cardRef.current?.querySelector('[data-reservation-autofocus]')?.focus({ preventScroll: true });
+  }, [step]);
 
   // Configuration with immediate defaults - no blocking screen
   const [config, setConfig] = useState(DEFAULT_CONFIG);
@@ -155,6 +155,15 @@ export default function BookingWizard({ isModal = false, onClose }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  // Confirmed booking state (Step 4 - in-popup confirmation)
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
+  const [copiedRef, setCopiedRef] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [cancelError, setCancelError] = useState('');
+  const [isCancelled, setIsCancelled] = useState(false);
+
   // 1. Fetch public configuration on mount (non-blocking background sync)
   useEffect(() => {
     async function loadConfig() {
@@ -165,7 +174,13 @@ export default function BookingWizard({ isModal = false, onClose }) {
           setConfig((prev) => ({ ...prev, ...data }));
 
           // Find first open available date to pre-select
-          findFirstOpenDate(data.settings?.openingDays || ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], data.closureDates || []);
+          const nextDate = getInitialOpenDate(data.settings?.openingDays, data.closureDates || []);
+          if (nextDate) {
+            setSelectedDate(nextDate);
+            setCalendarMonth(Number(nextDate.slice(5, 7)) - 1);
+            setCalendarYear(Number(nextDate.slice(0, 4)));
+          }
+          if (data.facilities?.length) setFacilityId((current) => data.facilities.some((facility) => facility.id === current) ? current : data.facilities[0].id);
         }
       } catch (err) {
         console.error('Failed to load configuration:', err);
@@ -174,29 +189,6 @@ export default function BookingWizard({ isModal = false, onClose }) {
     loadConfig();
   }, []);
 
-  // Helper to calculate first available open date
-  const findFirstOpenDate = (openingDays, closureDates) => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const now = new Date();
-    for (let i = 0; i <= 14; i++) {
-      const d = new Date(now);
-      d.setDate(d.getDate() + i);
-      const dayName = days[d.getDay()];
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      const dateStr = `${yyyy}-${mm}-${dd}`;
-      const isClosure = closureDates.some(c => c.date === dateStr);
-
-      if (openingDays.includes(dayName) && !isClosure) {
-        setSelectedDate(dateStr);
-        setCalendarMonth(d.getMonth());
-        setCalendarYear(d.getFullYear());
-        break;
-      }
-    }
-  };
-
   // 2. Fetch real-time availability whenever facility or date changes
   useEffect(() => {
     if (!facilityId || !selectedDate) return;
@@ -204,31 +196,19 @@ export default function BookingWizard({ isModal = false, onClose }) {
     let isMounted = true;
     async function checkAvail() {
       setAvailLoading(true);
+      setAvailability(null);
       try {
         const res = await fetch(`/api/availability?facilityId=${facilityId}&date=${selectedDate}`);
         if (res.ok) {
           const data = await res.json();
           if (isMounted) {
             setAvailability(data);
-            // If currently selected session is no longer available, reset it
-            if (sessionId) {
-              const stillValid = data.sessions?.find((s) => s.id === sessionId && s.isAvailable);
-              if (!stillValid) {
-                // Auto-pick first available session if none selected
-                const firstAvail = data.sessions?.find((s) => s.isAvailable);
-                setSessionId(firstAvail ? firstAvail.id : '');
-              }
-            } else {
-              // Pre-select first available session for convenience
-              const firstAvail = data.sessions?.find((s) => s.isAvailable);
-              if (firstAvail) {
-                setSessionId(firstAvail.id);
-              }
-            }
+            setSessionId((current) => data.sessions?.some((session) => session.id === current && session.isAvailable)
+              ? current : data.sessions?.find((session) => session.isAvailable)?.id || '');
           }
         }
       } catch (err) {
-        console.error('Availability check failed:', err);
+        if (isMounted) setAvailability({ available: false, reason: err.message, sessions: [] });
       } finally {
         if (isMounted) setAvailLoading(false);
       }
@@ -243,7 +223,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
     const todayStr = getTodayInKolkata();
     const openingDays = config?.settings?.openingDays || ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const closureDates = (config?.closureDates || []).map(c => c.date);
-    const advanceDays = config?.settings?.advanceBookingDays || 14;
+    const advanceDays = config?.settings?.advanceBookingDays ?? 14;
 
     const daysInWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
     const monthNames = [
@@ -258,8 +238,8 @@ export default function BookingWizard({ isModal = false, onClose }) {
     const daysInPrevMonth = new Date(calendarYear, calendarMonth, 0).getDate();
 
     // Calculate max allowed date
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + advanceDays);
+    const maxDate = new Date(todayStr + 'T12:00:00Z');
+    maxDate.setUTCDate(maxDate.getUTCDate() + advanceDays);
     const maxDateStr = maxDate.toISOString().split('T')[0];
 
     const cells = [];
@@ -358,6 +338,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
   // Step 1 Validation -> Proceed to Step 2
   const handleProceedToDetails = () => {
     const errs = {};
+    if (!availability || availLoading) errs.sessionId = 'Wait for current availability before continuing.';
     if (!facilityId) errs.facilityId = 'Please select a library space.';
     if (!selectedDate) errs.selectedDate = 'Please select an available date.';
     if (availability && !availability.available) {
@@ -389,6 +370,8 @@ export default function BookingWizard({ isModal = false, onClose }) {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(visitorEmail.trim())) {
       errs.visitorEmail = 'Please provide a valid email format (e.g. name@example.com).';
     }
+
+    if (config.settings.requireMembership && !membershipNo.trim()) errs.membershipNo = 'A membership ID is required.';
 
     if (!agreeRules) {
       errs.agreeRules = 'You must agree to the library visit guidelines to proceed.';
@@ -426,7 +409,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
       let data = null;
       try {
         data = await res.json();
-      } catch (_) {
+      } catch {
         if (!res.ok) {
           throw new Error(
             res.status === 502
@@ -440,13 +423,13 @@ export default function BookingWizard({ isModal = false, onClose }) {
         throw new Error(data?.error || `Failed to complete reservation (status ${res.status}).`);
       }
 
-      // Route directly to confirmation pass
-      if (onClose) {
-        onClose();
-      }
-      navigate(`/booking/confirmation/${data.booking.bookingRef}?token=${data.booking.managementToken}`, {
-        state: { booking: data.booking },
-      });
+      // Transition smoothly to in-popup confirmation card (Step 4)
+      setConfirmedBooking(data.booking);
+      setIsCancelled(false);
+      setShowCancelConfirm(false);
+      setCancelReason('');
+      setCancelError('');
+      setStep(4);
     } catch (err) {
       setSubmitError(err.message || 'An error occurred while creating your reservation.');
       // If error is capacity related, bring user back to selection
@@ -458,15 +441,83 @@ export default function BookingWizard({ isModal = false, onClose }) {
     }
   };
 
+  const handleCopyRef = async (refText) => {
+    try {
+      await navigator.clipboard.writeText(refText);
+      setCopiedRef(true);
+      setTimeout(() => setCopiedRef(false), 2000);
+    } catch {
+      // fallback
+    }
+  };
 
+  const handleAddToCalendar = () => {
+    if (!confirmedBooking) return;
+    const stamp = (time) => new Date(confirmedBooking.visitDate + 'T' + (time ? time.slice(0, 5) : '11:00') + ':00+05:30').toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const escape = (text) => String(text).replaceAll('\\', '\\\\').replaceAll('\n', '\\n').replaceAll(',', '\\,').replaceAll(';', '\\;');
+    const content = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//The Library New Delhi//Reservation//EN', 'CALSCALE:GREGORIAN',
+      'BEGIN:VEVENT', 'UID:' + confirmedBooking.bookingRef + '@library.delhi', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''),
+      'DTSTART:' + stamp(confirmedBooking.sessionStartTime || '11:00'),
+      'DTEND:' + stamp(confirmedBooking.sessionEndTime || '14:30'),
+      'SUMMARY:' + escape('The Library · ' + (confirmedBooking.facilityName || selectedFacilityObj.name)),
+      'DESCRIPTION:' + escape('Booking reference: ' + confirmedBooking.bookingRef),
+      'LOCATION:' + escape('5A, Ring Road, Lajpat Nagar-IV, New Delhi 110024'), 'STATUS:CONFIRMED', 'END:VEVENT', 'END:VCALENDAR', '',
+    ].join('\r\n');
+    const url = URL.createObjectURL(new Blob([content], { type: 'text/calendar;charset=utf-8' }));
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'library-reservation-' + confirmedBooking.bookingRef + '.ics';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const handleCancelReservation = async (e) => {
+    if (e) e.preventDefault();
+    if (!confirmedBooking || cancelling) return;
+    setCancelling(true);
+    setCancelError('');
+    try {
+      const response = await fetch(`/api/bookings/${encodeURIComponent(confirmedBooking.bookingRef)}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Management-Token': confirmedBooking.managementToken,
+        },
+        body: JSON.stringify({ reason: cancelReason.trim() || 'Cancelled by visitor online' }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Your reservation could not be cancelled. Please try again.');
+      setConfirmedBooking((prev) => ({ ...prev, status: 'cancelled', cancelledAt: data.cancelledAt }));
+      setIsCancelled(true);
+      setShowCancelConfirm(false);
+    } catch (err) {
+      setCancelError(err.message || 'Failed to cancel reservation.');
+    } finally {
+      setCancelling(false);
+    }
+  };
+
+  const handleBookAnother = () => {
+    setStep(1);
+    setConfirmedBooking(null);
+    setIsCancelled(false);
+    setShowCancelConfirm(false);
+    setCancelReason('');
+    setCancelError('');
+    setVisitorName('');
+    setVisitorEmail('');
+    setMembershipNo('');
+    setAgreeRules(false);
+  };
 
   const selectedFacilityObj = config?.facilities?.find((f) => f.id === facilityId) || {
     id: 'reading-room',
     name: 'Reading Room',
     description: 'A calm space for reading, study and research.',
   };
-
-  const selectedSessionObj = availability?.sessions?.find((s) => s.id === sessionId);
 
   // Left Photo Editorial Quote per step
   const photoMeta = {
@@ -484,13 +535,18 @@ export default function BookingWizard({ isModal = false, onClose }) {
       sub: 'BOOKS · MANGA · CULTURE · PEOPLE · JAPAN',
       caption: 'BOOKS · MANGA · CULTURE · PEOPLE · JAPAN',
     },
+    4: {
+      headline: isCancelled ? 'There’s always another chapter.' : 'Your seat is reserved.',
+      sub: isCancelled ? 'Your seat has been released.' : 'A quiet corner awaits your arrival.',
+      caption: isCancelled ? 'RESERVATION CANCELLED' : 'RESERVATION CONFIRMED · ENJOY YOUR VISIT',
+    },
   }[step] || {
     headline: 'A space for reading, culture and curiosity.',
     caption: 'BOOKS · MANGA · PEOPLE · JAPAN',
   };
 
   const wizardContent = (
-    <div className={`new-booking-page ${isModal ? 'modal-view' : ''}`}>
+    <div className={isModal ? 'reservation-wizard' : 'new-booking-page'}>
       {/* Top Meta Bar (Only rendered on standalone full-page view) */}
       {!isModal && (
         <nav className="booking-top-bar" aria-label="Page navigation">
@@ -502,74 +558,17 @@ export default function BookingWizard({ isModal = false, onClose }) {
         </nav>
       )}
 
-      {/* Main Two-Column Outer Card Container */}
-      <main className="new-booking-container">
-        {/* =========================================================================
-            LEFT COLUMN: Editorial Photography Panel
-            ========================================================================= */}
-        <aside className="booking-photo-panel" aria-label="Library atmosphere">
-          <div 
-            className="photo-panel-bg" 
-            style={{ 
-              backgroundImage: `url(${facilityId === 'manga-corner' ? '/images/manga-corner.jpg' : '/images/library-reading-area.webp'})` 
-            }} 
-          />
-          <div className="photo-panel-overlay" />
-
-          <div className="photo-panel-content">
-            {/* Top Emblem & Brand */}
-            <div className="photo-panel-header">
-              <div className="photo-brand-emblem" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
-                  <path d="M6 6h10" />
-                  <path d="M6 10h10" />
-                </svg>
-              </div>
-              <div className="photo-brand-text">
-                <span className="photo-brand-title">The Library</span>
-                <span className="photo-brand-subtitle">LIBRARY / NEW DELHI</span>
-              </div>
-            </div>
-
-            {/* Center Editorial Quote */}
-            <div className="photo-panel-quote-box">
-              <h2 className="photo-quote-heading">
-                A space for<br />
-                reading, culture<br />
-                and curiosity.
-              </h2>
-              <div className="photo-quote-line" aria-hidden="true" />
-              <p className="photo-quote-japanese">読書・マンガ・人・日本</p>
-            </div>
-
-            {/* Bottom Tagline */}
-            <div className="photo-panel-footer">
-              <span className="photo-footer-caption">{photoMeta.caption}</span>
-            </div>
-          </div>
-        </aside>
-
-        {/* =========================================================================
-            RIGHT COLUMN: Interactive Step Panel
-            ========================================================================= */}
-        <section className={`booking-interactive-panel ${submitError ? 'has-submit-error' : ''}`} aria-live="polite">
-          {/* Close Modal Button positioned at top right */}
-          {isModal && (
-            <button
-              type="button"
-              className="booking-modal-close-btn"
-              onClick={onClose}
-              aria-label="Close reservation modal"
-              title="Close modal"
-            >
-              <X className="w-4 h-4 stroke-[2.25]" />
-            </button>
-          )}
-
-          {/* =====================================================================
-              STEP 1: SELECTION VIEW (Facility + Calendar & Slot Side-by-Side)
-              ===================================================================== */}
+      <ReservationCard
+        cardRef={cardRef}
+        label="Reserve a Visit"
+        onClose={isModal ? onClose : undefined}
+        quote={photoMeta.headline}
+        description={photoMeta.sub || "読書・マンガ・人・日本"}
+        caption={photoMeta.caption}
+        image={facilityId === 'manga-corner' ? '/images/manga-corner.jpg' : '/images/library-reading-area.webp'}
+        panelClassName={`${submitError ? 'has-submit-error' : ''} ${step === 4 ? 'is-confirmation-step' : ''}`}
+        live="polite"
+      >
           {step === 1 && (
             <div key="step-1" className="step-selection-layout-clean wizard-step-transition">
               <header className="step-intro-header-art">
@@ -577,7 +576,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <div className="category-tag-row">
                     <span className="category-tag">BOOK A VISIT</span>
                   </div>
-                  <h1 className="step-main-title">Reserve your slot</h1>
+                  <h1 className="step-main-title" tabIndex={-1} data-reservation-autofocus>Reserve your slot</h1>
                   <p className="step-main-subtitle">Choose a space, date and time that suits you.</p>
                 </div>
 
@@ -858,6 +857,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                       type="button" 
                       id="continue-to-details-btn"
                       className="primary-espresso-btn step1-primary-btn"
+                      disabled={availLoading || !availability}
                       onClick={handleProceedToDetails}
                     >
                       <span>Continue to details</span>
@@ -880,7 +880,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <div className="category-tag-row">
                     <span className="category-tag">YOUR DETAILS</span>
                   </div>
-                  <h1 className="step-main-title">Tell us about yourself</h1>
+                  <h1 className="step-main-title" tabIndex={-1} data-reservation-autofocus>Tell us about yourself</h1>
                   <p className="step-main-subtitle">Please provide your details to complete your reservation.</p>
                 </div>
 
@@ -976,7 +976,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <div className="field-label-row">
                     <CreditCard className="field-label-icon" />
                     <label htmlFor="membership-no" className="field-label-text">
-                      MEMBERSHIP NUMBER (OPTIONAL)
+                      MEMBERSHIP NUMBER {config.settings.requireMembership ? '(REQUIRED)' : '(OPTIONAL)'}
                     </label>
                   </div>
                   <input
@@ -984,10 +984,12 @@ export default function BookingWizard({ isModal = false, onClose }) {
                     type="text"
                     className="field-text-input"
                     placeholder="Enter your membership number"
+                    required={config.settings.requireMembership}
                     value={membershipNo}
                     onChange={(e) => setMembershipNo(e.target.value)}
                   />
                   <span className="field-helper-text">Required only if specified by the library's booking policy.</span>
+                  {errors.membershipNo && <p className="inline-error-msg">{errors.membershipNo}</p>}
                 </div>
 
                 {/* Agreement Checkbox */}
@@ -1047,7 +1049,7 @@ export default function BookingWizard({ isModal = false, onClose }) {
                   <span className="category-tag">REVIEW YOUR VISIT</span>
                   <span className="category-rule" />
                 </div>
-                <h1 className="step-main-title">Almost there!</h1>
+                <h1 className="step-main-title" tabIndex={-1} data-reservation-autofocus>Almost there!</h1>
                 <p className="step-main-subtitle">Review your booking before confirming.</p>
               </header>
 
@@ -1234,28 +1236,294 @@ export default function BookingWizard({ isModal = false, onClose }) {
               </p>
             </div>
           )}
-        </section>
-      </main>
+
+          {/* =====================================================================
+              STEP 4: VISIT CONFIRMED & RESERVATION PASS (In-Popup View)
+              ===================================================================== */}
+          {step === 4 && confirmedBooking && (
+            <div key="step-4" className="step-confirmed-layout wizard-step-transition">
+              {/* Animated Confirmation Header */}
+              <header className="confirmed-hero-header">
+                <div className="confirmed-animation-badge-wrap">
+                  <div className={`confirmed-icon-circle ${isCancelled ? 'is-cancelled' : 'is-confirmed'}`} aria-hidden="true">
+                    {isCancelled ? (
+                      <TicketX className="w-6 h-6 stroke-[2]" />
+                    ) : (
+                      <svg className="confirmed-animated-check" viewBox="0 0 52 52">
+                        <circle className="confirmed-check-circle" cx="26" cy="26" r="23" fill="none" />
+                        <path className="confirmed-check-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="confirmed-title-col">
+                    <div className="confirmed-pill-row">
+                      <span className={`confirmed-status-pill ${isCancelled ? 'status-cancelled' : 'status-active'}`}>
+                        <span className="pill-dot" />
+                        {isCancelled ? 'RESERVATION CANCELLED' : 'VISIT CONFIRMED'}
+                      </span>
+                    </div>
+                    <h1 className="step-main-title confirmed-heading">
+                      {isCancelled ? 'Your reservation is cancelled.' : 'Your visit is confirmed!'}
+                    </h1>
+                    <p className="step-main-subtitle confirmed-sub">
+                      {isCancelled
+                        ? 'Your seat has been released. We hope to welcome you another day.'
+                        : 'Your seat is reserved. We look forward to welcoming you to The Library.'}
+                    </p>
+                  </div>
+                </div>
+              </header>
+
+              {/* Stacked Interactive Content Region */}
+              <div className="confirmed-cards-container">
+                {/* CARD 1: My Reservation Pass Card */}
+                <div className={`my-reservation-card ${isCancelled ? 'card-cancelled' : ''}`}>
+                  <div className="my-res-card-top">
+                    <div className="my-res-brand">
+                      <div className="my-res-emblem" aria-hidden="true">
+                        <BookOpen className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <span className="my-res-tag">RESERVATION PASS</span>
+                        <h2 className="my-res-name">{confirmedBooking.facilityName || selectedFacilityObj.name}</h2>
+                      </div>
+                    </div>
+                    
+                    <div className="my-res-ref-box">
+                      <span className="ref-label">BOOKING REF</span>
+                      <button
+                        type="button"
+                        id="copy-ref-btn"
+                        className="ref-copy-btn"
+                        onClick={() => handleCopyRef(confirmedBooking.bookingRef)}
+                        title="Copy booking reference"
+                        aria-label={`Copy booking reference ${confirmedBooking.bookingRef}`}
+                      >
+                        <span className="ref-code">{confirmedBooking.bookingRef}</span>
+                        {copiedRef ? (
+                          <span className="copied-tag"><Check className="w-3 h-3" /> Copied</span>
+                        ) : (
+                          <Copy className="w-3.5 h-3.5 ref-copy-icon" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="my-res-body-grid">
+                    <div className="my-res-info-col">
+                      <div className="my-res-detail-item">
+                        <CalendarDays className="my-res-item-icon" />
+                        <div>
+                          <span className="detail-label">VISIT DATE</span>
+                          <strong className="detail-value">{formatVisitDate(confirmedBooking.visitDate)}</strong>
+                        </div>
+                      </div>
+
+                      <div className="my-res-detail-item">
+                        <Clock className="my-res-item-icon" />
+                        <div>
+                          <span className="detail-label">TIME SLOT</span>
+                          <strong className="detail-value">
+                            {confirmedBooking.sessionStartTime && confirmedBooking.sessionEndTime 
+                              ? `${confirmedBooking.sessionStartTime} – ${confirmedBooking.sessionEndTime}`
+                              : (sessionId === 'morning' ? '11:00 AM – 2:30 PM' : '3:00 PM – 6:30 PM')}
+                          </strong>
+                          <span className="detail-sub">{confirmedBooking.sessionName || (sessionId === 'morning' ? 'Morning Session' : 'Afternoon Session')}</span>
+                        </div>
+                      </div>
+
+                      <div className="my-res-detail-item">
+                        <User className="my-res-item-icon" />
+                        <div>
+                          <span className="detail-label">VISITOR</span>
+                          <strong className="detail-value">{confirmedBooking.visitorName || visitorName}</strong>
+                          <span className="detail-sub">{confirmedBooking.visitorEmail || visitorEmail}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* QR Code Column */}
+                    <div className="my-res-qr-col">
+                      <div className="my-res-qr-frame">
+                        {isCancelled ? (
+                          <div className="qr-cancelled-overlay">
+                            <TicketX className="w-8 h-8 text-stone-400" />
+                            <span>Inactive</span>
+                          </div>
+                        ) : confirmedBooking.qrCodeDataUrl ? (
+                          <img
+                            src={confirmedBooking.qrCodeDataUrl}
+                            alt={`Entry QR code for ${confirmedBooking.bookingRef}`}
+                            className="my-res-qr-img"
+                            width="90"
+                            height="90"
+                          />
+                        ) : (
+                          <div className="qr-fallback-box">
+                            <QrCode className="w-8 h-8 text-stone-600" />
+                            <span>Show Ref</span>
+                          </div>
+                        )}
+                      </div>
+                      <span className="qr-hint">{isCancelled ? 'Seat released' : 'Scan at reception'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CARD 2: Quick Actions & Cancellation Card */}
+                {!isCancelled ? (
+                  <div className="res-actions-card">
+                    <div className="res-actions-top-row">
+                      <button
+                        type="button"
+                        id="modal-add-calendar-btn"
+                        className="action-pill-btn"
+                        onClick={handleAddToCalendar}
+                        title="Add to your calendar (.ics)"
+                      >
+                        <CalendarPlus className="w-3.5 h-3.5 text-stone-700" />
+                        <span>Add to calendar</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        id="modal-print-pass-btn"
+                        className="action-pill-btn"
+                        onClick={() => window.print()}
+                        title="Print your reservation pass"
+                      >
+                        <Printer className="w-3.5 h-3.5 text-stone-700" />
+                        <span>Print pass</span>
+                      </button>
+                    </div>
+
+                    {/* Cancel Reservation Section */}
+                    {!showCancelConfirm ? (
+                      <div className="cancel-trigger-section">
+                        <button
+                          type="button"
+                          id="modal-cancel-res-btn"
+                          className="cancel-trigger-link"
+                          onClick={() => { setCancelError(''); setShowCancelConfirm(true); }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                          <span>Cancel reservation</span>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="cancel-confirm-panel">
+                        <div className="cancel-warning-head">
+                          <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                          <div>
+                            <strong>Cancel this visit?</strong>
+                            <p>Your reservation for {formatVisitDate(confirmedBooking.visitDate)} will be released.</p>
+                          </div>
+                        </div>
+
+                        <input
+                          type="text"
+                          id="modal-cancel-reason-input"
+                          className="cancel-reason-input"
+                          placeholder="Reason for cancellation (optional)"
+                          value={cancelReason}
+                          onChange={(e) => setCancelReason(e.target.value)}
+                          maxLength={200}
+                          disabled={cancelling}
+                        />
+
+                        {cancelError && <p className="inline-error-msg">{cancelError}</p>}
+
+                        <div className="cancel-panel-actions">
+                          <button
+                            type="button"
+                            id="modal-keep-res-btn"
+                            className="cancel-keep-btn"
+                            onClick={() => setShowCancelConfirm(false)}
+                            disabled={cancelling}
+                          >
+                            Keep reservation
+                          </button>
+                          <button
+                            type="button"
+                            id="modal-confirm-cancel-btn"
+                            className="cancel-danger-btn"
+                            onClick={handleCancelReservation}
+                            disabled={cancelling}
+                          >
+                            {cancelling ? 'Cancelling...' : 'Confirm cancellation'}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="res-cancelled-notice-card">
+                    <div className="cancelled-notice-left">
+                      <TicketX className="w-5 h-5 text-red-700 shrink-0" />
+                      <div>
+                        <strong>Seat Released</strong>
+                        <p>This reservation has been cancelled. You can reserve another date anytime.</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Confirmed View Footer Navigation */}
+              <div className="confirmed-footer-nav">
+                <button
+                  type="button"
+                  id="modal-book-another-btn"
+                  className="confirmed-book-another-btn"
+                  onClick={handleBookAnother}
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Book another visit</span>
+                </button>
+
+                {onClose ? (
+                  <button
+                    type="button"
+                    id="modal-confirmed-done-btn"
+                    className="primary-espresso-btn done-btn"
+                    onClick={onClose}
+                  >
+                    <span>Done</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    id="modal-confirmed-home-btn"
+                    className="primary-espresso-btn done-btn"
+                    onClick={() => navigate('/')}
+                  >
+                    <span>Return home</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+      </ReservationCard>
     </div>
   );
 
   if (isModal) {
-    return (
+    return createPortal(
       <div 
-        className="booking-modal-backdrop" 
+        className="reservation-overlay" 
         onClick={(e) => {
           if (e.target === e.currentTarget && onClose) {
             onClose();
           }
         }}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Reserve a Visit"
       >
-        <div className="booking-modal-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="reservation-dialog" onClick={(e) => e.stopPropagation()}>
           {wizardContent}
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
