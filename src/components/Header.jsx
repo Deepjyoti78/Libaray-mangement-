@@ -251,7 +251,7 @@ export default function Header({ onBookSlot }) {
               onClick={() => setMobileOpen(false)}
               aria-label="Close navigation drawer"
             >
-              <ChevronsLeft size={18} />
+              <ChevronsLeft size={16} />
             </button>
           </div>
 
@@ -270,7 +270,7 @@ export default function Header({ onBookSlot }) {
                 >
                   <div className="drawer-item-left">
                     <span className="drawer-item-icon-box">
-                      <IconComp size={18} className="drawer-item-icon" />
+                      <IconComp size={16} className="drawer-item-icon" />
                     </span>
                     <span className="drawer-item-label">{item.label}</span>
                   </div>
@@ -294,7 +294,7 @@ export default function Header({ onBookSlot }) {
               aria-label="Reserve a Visit"
             >
               <div className="drawer-btn-left">
-                <Calendar size={18} />
+                <Calendar size={16} />
                 <span>Reserve a Visit</span>
               </div>
               <ArrowRight size={16} />
@@ -309,7 +309,7 @@ export default function Header({ onBookSlot }) {
               }}
             >
               <div className="drawer-btn-left">
-                <Ticket size={18} />
+                <Ticket size={16} />
                 <span>Find My Pass</span>
               </div>
               <ChevronRight size={16} />
@@ -324,7 +324,7 @@ export default function Header({ onBookSlot }) {
               }}
             >
               <div className="drawer-btn-left">
-                <LayoutDashboard size={18} />
+                <LayoutDashboard size={16} />
                 <span>Staff Dashboard</span>
               </div>
               <ChevronRight size={16} />
@@ -359,7 +359,7 @@ export default function Header({ onBookSlot }) {
           onClick={(e) => handleNavClick(e, '#home')}
           aria-label="Home"
         >
-          <Home size={18} strokeWidth={currentSection === 'home' ? 2.3 : 1.8} />
+          <Home size={16} strokeWidth={currentSection === 'home' ? 2.3 : 1.8} />
           <span>Home</span>
         </button>
 
@@ -369,7 +369,7 @@ export default function Header({ onBookSlot }) {
           onClick={onBookSlot}
           aria-label="Book a visit"
         >
-          <Calendar size={18} strokeWidth={1.8} />
+          <Calendar size={16} strokeWidth={1.8} />
           <span>Book</span>
         </button>
 
@@ -379,7 +379,7 @@ export default function Header({ onBookSlot }) {
           onClick={(e) => handleNavClick(e, '#collections')}
           aria-label="Collections"
         >
-          <BookOpen size={18} strokeWidth={currentSection === 'collections' ? 2.3 : 1.8} />
+          <BookOpen size={16} strokeWidth={currentSection === 'collections' ? 2.3 : 1.8} />
           <span>Collections</span>
         </button>
 
@@ -392,7 +392,7 @@ export default function Header({ onBookSlot }) {
           }}
           aria-label="Account"
         >
-          <User size={18} strokeWidth={currentSection === 'account' ? 2.3 : 1.8} />
+          <User size={16} strokeWidth={currentSection === 'account' ? 2.3 : 1.8} />
           <span>Account</span>
         </button>
       </nav>
