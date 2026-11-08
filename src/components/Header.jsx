@@ -42,8 +42,40 @@ export default function Header({ onBookSlot }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeLang, setActiveLang] = useState('EN');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [currentSection, setCurrentSection] = useState('home');
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const updateActiveSection = () => {
+      if (location.pathname === '/my-booking') {
+        setCurrentSection('account');
+        return;
+      }
+      if (location.pathname !== '/' && location.pathname !== '/book') {
+        setCurrentSection(location.pathname);
+        return;
+      }
+      const scrollY = window.scrollY;
+      const aboutEl = document.querySelector('#about');
+      const collectionsEl = document.querySelector('#collections');
+
+      const aboutTop = aboutEl ? aboutEl.offsetTop - 200 : 600;
+      const collectionsTop = collectionsEl ? collectionsEl.offsetTop - 200 : 1200;
+
+      if (scrollY < aboutTop) {
+        setCurrentSection('home');
+      } else if (scrollY >= collectionsTop) {
+        setCurrentSection('collections');
+      } else {
+        setCurrentSection('about');
+      }
+    };
+
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    updateActiveSection();
+    return () => window.removeEventListener('scroll', updateActiveSection);
+  }, [location.pathname, location.hash]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -323,11 +355,11 @@ export default function Header({ onBookSlot }) {
       <nav className="mobile-floating-bottom-nav" aria-label="Mobile Navigation">
         <button
           type="button"
-          className={`mobile-bottom-nav-item ${isItemActive({ href: '#home' }) && !location.hash.includes('collections') ? 'active' : ''}`}
+          className={`mobile-bottom-nav-item ${currentSection === 'home' ? 'active' : ''}`}
           onClick={(e) => handleNavClick(e, '#home')}
           aria-label="Home"
         >
-          <Home size={18} />
+          <Home size={18} strokeWidth={currentSection === 'home' ? 2.3 : 1.8} />
           <span>Home</span>
         </button>
 
@@ -337,30 +369,30 @@ export default function Header({ onBookSlot }) {
           onClick={onBookSlot}
           aria-label="Book a visit"
         >
-          <Calendar size={18} />
+          <Calendar size={18} strokeWidth={1.8} />
           <span>Book</span>
         </button>
 
         <button
           type="button"
-          className={`mobile-bottom-nav-item ${location.hash === '#collections' ? 'active' : ''}`}
+          className={`mobile-bottom-nav-item ${currentSection === 'collections' ? 'active' : ''}`}
           onClick={(e) => handleNavClick(e, '#collections')}
           aria-label="Collections"
         >
-          <BookOpen size={18} />
+          <BookOpen size={18} strokeWidth={currentSection === 'collections' ? 2.3 : 1.8} />
           <span>Collections</span>
         </button>
 
         <button
           type="button"
-          className={`mobile-bottom-nav-item ${location.pathname === '/my-booking' ? 'active' : ''}`}
+          className={`mobile-bottom-nav-item ${currentSection === 'account' ? 'active' : ''}`}
           onClick={(e) => {
             e.preventDefault();
             navigate('/my-booking');
           }}
           aria-label="Account"
         >
-          <User size={18} />
+          <User size={18} strokeWidth={currentSection === 'account' ? 2.3 : 1.8} />
           <span>Account</span>
         </button>
       </nav>

@@ -29,6 +29,12 @@ export default function HeroSection({ onBookSlot }) {
 
       <div className="container hero-cinematic-container">
         <div className="hero-cinematic-content">
+          {/* Eyebrow Pill Badge */}
+          <div className="hero-eyebrow-pill" aria-label="The Japan Foundation New Delhi">
+            <span className="hero-eyebrow-dot" aria-hidden="true" />
+            <span>THE JAPAN FOUNDATION · NEW DELHI</span>
+          </div>
+
           <h1 className="hero-cinematic-heading">
             <span className="hero-cinematic-title-italic">A quieter world</span>
             <span className="hero-cinematic-title-regular">begins with a book.</span>
@@ -58,6 +64,16 @@ export default function HeroSection({ onBookSlot }) {
               <span>Explore the Collection</span>
               <ArrowRight className="btn-cinematic-arrow" size={14} />
             </a>
+          </div>
+
+          {/* Operational Hours & Feature Pill */}
+          <div className="hero-feature-pills" aria-label="Library operational status">
+            <span className="hero-pill-item">
+              <span className="hero-live-dot" aria-hidden="true" />
+              Open Today · 11:00 – 18:30
+            </span>
+            <span className="hero-pill-sep" aria-hidden="true">·</span>
+            <span className="hero-pill-item">Free Admission</span>
           </div>
         </div>
       </div>
