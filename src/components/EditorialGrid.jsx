@@ -1,7 +1,83 @@
-import { ArrowRight } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+const SPACES = [
+  {
+    id: 'reading-room',
+    to: '/spaces/reading-room',
+    title: 'Reading Room',
+    img: '/images/library-study-room.webp',
+    alt: 'Reading room with study desks and books',
+    tag: 'Quiet Sanctuary',
+    hasBookIcon: true,
+    num: '01',
+    colTag: 'Silent Study',
+    desc: 'Quiet reading, study and research.'
+  },
+  {
+    id: 'community-area',
+    to: '/spaces/community-area',
+    title: 'Community Area',
+    img: '/images/library-reading-area.webp',
+    alt: 'Community reading lounge',
+    tag: 'Community & Lounge',
+    num: '02',
+    colTag: 'Collaborative',
+    desc: 'Relax, read and connect with fellow members.'
+  },
+  {
+    id: 'manga-corner',
+    to: '/spaces/manga-corner',
+    title: 'Manga Corner',
+    img: '/images/manga-corner-collection.jpg',
+    alt: 'Manga collection shelves',
+    tag: 'Curated Volumes',
+    num: '03',
+    colTag: 'Curated Volumes',
+    desc: 'Explore a wide range of Japanese manga and graphic novels.'
+  },
+  {
+    id: 'visitor-info',
+    to: '/spaces/visitor-info',
+    title: 'Visitor Information',
+    img: '/images/library-circulation-desk.webp',
+    alt: 'Library circulation desk counter',
+    tag: 'Reception & Loans',
+    num: '04',
+    colTag: 'Visitor Guide',
+    desc: 'Circulation desk, membership verification, and hours.'
+  }
+];
+
 export default function EditorialGrid() {
+  const gridRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const cards = el.querySelectorAll('.space-showcase-card');
+      if (!cards.length) return;
+      const scrollLeft = el.scrollLeft;
+      const cardWidth = cards[0].offsetWidth + 14;
+      const idx = Math.round(scrollLeft / cardWidth);
+      setActiveIndex(Math.max(0, Math.min(SPACES.length - 1, idx)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollToIndex = (idx) => {
+    if (!gridRef.current) return;
+    const cards = gridRef.current.querySelectorAll('.space-showcase-card');
+    if (cards[idx]) {
+      cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      setActiveIndex(idx);
+    }
+  };
+
   const handleScroll = (e, targetId) => {
     e.preventDefault();
     const el = document.querySelector(targetId);
@@ -33,163 +109,88 @@ export default function EditorialGrid() {
           </div>
         </div>
 
-        {/* Responsive Spaces Showcase Cards (4 cards in one row on desktop) */}
-        <div className="spaces-showcase-grid reveal" id="spaces">
-          {/* Space Card 1: Reading Room */}
-          <Link
-            to="/spaces/reading-room"
-            className="space-showcase-card space-card-clickable"
-            id="reading-room"
-            title="Explore Reading Room Details & Photos"
-          >
-            <div className="space-card-media">
-              <img
-                src="/images/library-study-room.webp"
-                alt="Reading room with study desks and books"
-                width={700}
-                height={460}
-                loading="lazy"
-                className="space-card-img"
-              />
-              <span className="space-card-tag">Quiet Sanctuary</span>
-            </div>
-            <div className="space-card-content">
-              <div className="space-card-meta">
-                <span className="section-number">01</span>
-                <span className="col-tag">Silent Study</span>
+        {/* Responsive Spaces Showcase Cards (4 cards in one row on desktop, swipeable carousel on mobile) */}
+        <div className="spaces-showcase-grid reveal" id="spaces" ref={gridRef}>
+          {SPACES.map((space) => (
+            <Link
+              key={space.id}
+              to={space.to}
+              className="space-showcase-card space-card-clickable"
+              id={space.id}
+              title={`Explore ${space.title} Details & Photos`}
+            >
+              <div className="space-card-media">
+                <img
+                  src={space.img}
+                  alt={space.alt}
+                  width={700}
+                  height={460}
+                  loading="lazy"
+                  className="space-card-img"
+                />
+                <span className="space-card-tag">
+                  {space.hasBookIcon && <BookOpen size={11} className="space-tag-icon" />}
+                  <span>{space.tag}</span>
+                </span>
               </div>
-              <div className="space-card-title-row">
-                <h3 className="heading-md space-card-title">Reading Room</h3>
-                <div className="space-circle-arrow-btn" aria-hidden="true">
-                  <ArrowRight size={13} />
+              <div className="space-card-content">
+                <div className="space-card-meta">
+                  <span className="section-number">{space.num}</span>
+                  <span className="col-tag">{space.colTag}</span>
                 </div>
+                <div className="space-card-title-row">
+                  <h3 className="heading-md space-card-title">{space.title}</h3>
+                  <div className="space-circle-arrow-btn" aria-hidden="true">
+                    <ArrowRight size={13} />
+                  </div>
+                </div>
+                <p className="space-card-desc">
+                  {space.desc}
+                </p>
+                <span className="text-link space-card-action">
+                  <span>View Full Details &amp; Photos</span>
+                  <ArrowRight size={13} className="btn-icon-arrow" />
+                </span>
               </div>
-              <p className="space-card-desc">
-                Quiet reading, study and research.
-              </p>
-              <span className="text-link space-card-action desktop-only-action">
-                <span>View Full Details &amp; Photos</span>
-                <ArrowRight className="btn-icon-arrow" />
-              </span>
-            </div>
-          </Link>
+            </Link>
+          ))}
+        </div>
 
-          {/* Space Card 2: Community Area */}
-          <Link
-            to="/spaces/community-area"
-            className="space-showcase-card space-card-clickable"
-            id="community-area"
-            title="Explore Community Area Details & Photos"
+        {/* Mobile Carousel Controls (Arrows & Pagination Dots) */}
+        <div className="spaces-carousel-controls" aria-label="Spaces carousel pagination">
+          <button
+            type="button"
+            className="spaces-carousel-arrow-btn"
+            onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))}
+            disabled={activeIndex === 0}
+            aria-label="Previous space"
           >
-            <div className="space-card-media">
-              <img
-                src="/images/library-reading-area.webp"
-                alt="Community reading lounge"
-                width={700}
-                height={460}
-                loading="lazy"
-                className="space-card-img"
-              />
-              <span className="space-card-tag">Community &amp; Lounge</span>
-            </div>
-            <div className="space-card-content">
-              <div className="space-card-meta">
-                <span className="section-number">02</span>
-                <span className="col-tag">Collaborative</span>
-              </div>
-              <div className="space-card-title-row">
-                <h3 className="heading-md space-card-title">Community Area</h3>
-                <div className="space-circle-arrow-btn" aria-hidden="true">
-                  <ArrowRight size={13} />
-                </div>
-              </div>
-              <p className="space-card-desc">
-                Relax, read and connect with fellow members.
-              </p>
-              <span className="text-link space-card-action desktop-only-action">
-                <span>View Full Details &amp; Photos</span>
-                <ArrowRight className="btn-icon-arrow" />
-              </span>
-            </div>
-          </Link>
+            <ChevronLeft size={16} />
+          </button>
 
-          {/* Space Card 3: Manga Corner */}
-          <Link
-            to="/spaces/manga-corner"
-            className="space-showcase-card space-card-clickable"
-            id="manga-corner"
-            title="Explore Manga Corner Details & Photos"
-          >
-            <div className="space-card-media">
-              <img
-                src="/images/manga-corner-collection.jpg"
-                alt="Manga collection shelves"
-                width={700}
-                height={460}
-                loading="lazy"
-                className="space-card-img"
+          <div className="spaces-carousel-dots" role="tablist">
+            {SPACES.map((space, idx) => (
+              <button
+                key={space.id}
+                type="button"
+                role="tab"
+                aria-selected={activeIndex === idx}
+                aria-label={`Go to ${space.title}`}
+                className={`spaces-carousel-dot ${activeIndex === idx ? 'active' : ''}`}
+                onClick={() => scrollToIndex(idx)}
               />
-              <span className="space-card-tag">Curated Volumes</span>
-            </div>
-            <div className="space-card-content">
-              <div className="space-card-meta">
-                <span className="section-number">03</span>
-                <span className="col-tag">Curated Volumes</span>
-              </div>
-              <div className="space-card-title-row">
-                <h3 className="heading-md space-card-title">Manga Corner</h3>
-                <div className="space-circle-arrow-btn" aria-hidden="true">
-                  <ArrowRight size={13} />
-                </div>
-              </div>
-              <p className="space-card-desc">
-                Explore a wide range of manga and more.
-              </p>
-              <span className="text-link space-card-action desktop-only-action">
-                <span>View Full Details &amp; Photos</span>
-                <ArrowRight className="btn-icon-arrow" />
-              </span>
-            </div>
-          </Link>
+            ))}
+          </div>
 
-          {/* Space Card 4: Visitor Information (Side-by-side with Manga Corner) */}
-          <Link
-            to="/spaces/visitor-info"
-            className="space-showcase-card space-card-clickable"
-            id="visit"
-            title="Explore Visitor Information & Circulation Desk"
+          <button
+            type="button"
+            className="spaces-carousel-arrow-btn"
+            onClick={() => scrollToIndex(Math.min(SPACES.length - 1, activeIndex + 1))}
+            disabled={activeIndex === SPACES.length - 1}
+            aria-label="Next space"
           >
-            <div className="space-card-media">
-              <img
-                src="/images/library-circulation-desk.webp"
-                alt="Library circulation desk counter"
-                width={700}
-                height={460}
-                loading="lazy"
-                className="space-card-img"
-              />
-              <span className="space-card-tag">Reception &amp; Loans</span>
-            </div>
-            <div className="space-card-content">
-              <div className="space-card-meta">
-                <span className="section-number">04</span>
-                <span className="col-tag">Visitor Guide</span>
-              </div>
-              <div className="space-card-title-row">
-                <h3 className="heading-md space-card-title">Visitor Information</h3>
-                <div className="space-circle-arrow-btn" aria-hidden="true">
-                  <ArrowRight size={13} />
-                </div>
-              </div>
-              <p className="space-card-desc">
-                Circulation desk, membership, and hours.
-              </p>
-              <span className="text-link space-card-action desktop-only-action">
-                <span>View Full Details &amp; Photos</span>
-                <ArrowRight className="btn-icon-arrow" />
-              </span>
-            </div>
-          </Link>
+            <ChevronRight size={16} />
+          </button>
         </div>
       </div>
     </section>

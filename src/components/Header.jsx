@@ -16,7 +16,8 @@ import {
   CreditCard,
   Phone,
   ChevronRight,
-  ChevronsLeft
+  ChevronsLeft,
+  User
 } from 'lucide-react';
 
 const NAV_LINKS = [
@@ -317,6 +318,52 @@ export default function Header({ onBookSlot }) {
           </div>
         </div>
       </aside>
+
+      {/* Floating Bottom Navigation for Mobile Devices */}
+      <nav className="mobile-floating-bottom-nav" aria-label="Mobile Navigation">
+        <button
+          type="button"
+          className={`mobile-bottom-nav-item ${isItemActive({ href: '#home' }) && !location.hash.includes('collections') ? 'active' : ''}`}
+          onClick={(e) => handleNavClick(e, '#home')}
+          aria-label="Home"
+        >
+          <Home size={18} />
+          <span>Home</span>
+        </button>
+
+        <button
+          type="button"
+          className="mobile-bottom-nav-item"
+          onClick={onBookSlot}
+          aria-label="Book a visit"
+        >
+          <Calendar size={18} />
+          <span>Book</span>
+        </button>
+
+        <button
+          type="button"
+          className={`mobile-bottom-nav-item ${location.hash === '#collections' ? 'active' : ''}`}
+          onClick={(e) => handleNavClick(e, '#collections')}
+          aria-label="Collections"
+        >
+          <BookOpen size={18} />
+          <span>Collections</span>
+        </button>
+
+        <button
+          type="button"
+          className={`mobile-bottom-nav-item ${location.pathname === '/my-booking' ? 'active' : ''}`}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate('/my-booking');
+          }}
+          aria-label="Account"
+        >
+          <User size={18} />
+          <span>Account</span>
+        </button>
+      </nav>
     </>
   );
 }
