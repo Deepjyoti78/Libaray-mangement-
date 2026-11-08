@@ -22,6 +22,17 @@ export function isAllowedOrigin(origin) {
     allowed.add('http://localhost:5174');
     allowed.add('http://127.0.0.1:5174');
   }
+  if (process.env.VERCEL) {
+    if (process.env.VERCEL_URL) allowed.add(`https://${process.env.VERCEL_URL}`);
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) allowed.add(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
+    allowed.add('https://libaray-mangement.vercel.app');
+  }
+  try {
+    const u = new URL(origin);
+    if (u.hostname === 'libaray-mangement.vercel.app') return true;
+    if (process.env.VERCEL_URL && u.hostname === process.env.VERCEL_URL) return true;
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL && u.hostname === process.env.VERCEL_PROJECT_PRODUCTION_URL) return true;
+  } catch {}
   return allowed.has(origin);
 }
 

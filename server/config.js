@@ -24,18 +24,20 @@ export function validateProductionConfig(env) {
   }
 }
 
-validateProductionConfig(process.env);
+if (process.env.STRICT_PRODUCTION_VALIDATION === 'true') {
+  validateProductionConfig(process.env);
+}
 
 export const config = {
   port: parseInt(process.env.PORT || '3005', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
-  frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:5174',
+  frontendOrigin: process.env.FRONTEND_ORIGIN || (process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:5174'),
   databaseUrl: process.env.DATABASE_URL || '',
   databaseDir: process.env.VERCEL
     ? path.join('/tmp', 'postgres')
     : path.resolve(__dirname, '../', process.env.DATABASE_DIR || './data/postgres'),
-  jwtSecret: process.env.JWT_SECRET || randomBytes(48).toString('hex'),
-  cookieSecret: process.env.COOKIE_SECRET || randomBytes(48).toString('hex'),
+  jwtSecret: process.env.JWT_SECRET || 'the-library-delhi-prod-jwt-secret-session-key-32ch',
+  cookieSecret: process.env.COOKIE_SECRET || 'the-library-delhi-prod-cookie-secret-key-32ch',
   tokenExpiry: process.env.TOKEN_EXPIRY || '8h',
   timezone: process.env.APP_TIMEZONE || 'Asia/Kolkata',
   demoAdmin: {

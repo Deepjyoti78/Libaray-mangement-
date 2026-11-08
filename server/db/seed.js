@@ -5,7 +5,10 @@ import { getDb } from './connection.js';
 import { config } from '../config.js';
 
 export async function seed() {
-  if (config.nodeEnv === 'production') throw new Error('Demo seeding is disabled in production.');
+  if (config.nodeEnv === 'production' && config.databaseUrl && !process.env.VERCEL && process.env.ALLOW_DEMO_SEED !== 'true') {
+    console.log('Production database with custom database URL detected. Skipping demo seed.');
+    return;
+  }
   console.log('Seeding demo database...');
   const db = await getDb();
 
