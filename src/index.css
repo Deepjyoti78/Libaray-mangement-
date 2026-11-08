@@ -11,7 +11,9 @@
 :root {
   /* Palette strictly as specified */
   --paper: #F2EDE3;
-  --surface: #F8F5EE;
+  --surface: #FAF6EE;
+  --card-warm: #FAF6EE;
+  --card-warm-border: #E2D9CC;
   --espresso: #352319;
   --terracotta: #AC512E;
   --sand: #D5C3A7;
@@ -2079,8 +2081,8 @@ ul, ol {
 
 .space-showcase-card {
   position: relative;
-  background-color: #FFFFFF;
-  border: 1px solid #D8CFC4;
+  background-color: var(--card-warm, #FAF6EE);
+  border: 1px solid var(--card-warm-border, #E2D9CC);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -2670,7 +2672,7 @@ ul, ol {
 }
 
 .collection-card:hover {
-  background-color: #FFFFFF;
+  background-color: var(--card-warm, #FAF6EE);
   transform: translateY(-8px);
   box-shadow: 0 20px 40px -10px rgba(35, 20, 10, 0.16), 0 0 0 1px rgba(184, 83, 47, 0.25);
   z-index: 2;
@@ -8330,7 +8332,7 @@ ul, ol {
   grid-template-columns: 135px 1fr;
   gap: 1.1rem;
   padding: 0.75rem 1rem;
-  background: #FFFFFF;
+  background: var(--card-warm, #FAF6EE);
   border: 1px solid #E8DFD5;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(36, 24, 18, 0.03);
@@ -8349,7 +8351,7 @@ ul, ol {
 .confirmation-card-container .qr-frame-box {
   width: 82px;
   height: 82px;
-  background: #FFFFFF;
+  background: var(--card-warm, #FAF6EE);
   border: 1px solid #ECE4DA;
   border-radius: 6px;
   padding: 0.25rem;
@@ -10567,8 +10569,8 @@ ul, ol {
 
 /* Hero Booking Card in Right Column */
 .space-hero-booking-card {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border, #ECE7E0);
+  background-color: var(--card-warm, #FAF6EE);
+  border: 1px solid var(--card-warm-border, #E2D9CC);
   border-radius: 16px;
   padding: 1.35rem 1.45rem;
   box-shadow: 0 8px 24px rgba(26, 18, 12, 0.06);
@@ -10676,8 +10678,8 @@ ul, ol {
 }
 
 .space-main-stage-card {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border, #ECE7E0);
+  background-color: var(--card-warm, #FAF6EE);
+  border: 1px solid var(--card-warm-border, #E2D9CC);
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
@@ -10918,8 +10920,8 @@ ul, ol {
 }
 
 .space-stat-card {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border, #ECE7E0);
+  background-color: var(--card-warm, #FAF6EE);
+  border: 1px solid var(--card-warm-border, #E2D9CC);
   border-radius: 14px;
   padding: 1.25rem 1.35rem;
   display: flex;
@@ -11015,8 +11017,8 @@ ul, ol {
 }
 
 .space-feature-card {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border, #ECE7E0);
+  background-color: var(--card-warm, #FAF6EE);
+  border: 1px solid var(--card-warm-border, #E2D9CC);
   border-radius: 14px;
   padding: 1.5rem;
   display: flex;
@@ -11087,8 +11089,8 @@ ul, ol {
 }
 
 .split-col-card {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border, #ECE7E0);
+  background-color: var(--card-warm, #FAF6EE);
+  border: 1px solid var(--card-warm-border, #E2D9CC);
   border-radius: 16px;
   padding: 1.75rem 1.85rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
@@ -11528,8 +11530,8 @@ ul, ol {
 }
 
 .other-space-card {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border, #ECE7E0);
+  background-color: var(--card-warm, #FAF6EE);
+  border: 1px solid var(--card-warm-border, #E2D9CC);
   border-radius: 14px;
   overflow: hidden;
   text-decoration: none;
