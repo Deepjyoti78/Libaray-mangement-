@@ -3605,6 +3605,16 @@ ul, ol {
     box-shadow: 0 2px 8px rgba(56, 36, 25, 0.22) !important;
   }
 
+  .mobile-bottom-nav-item:first-child.active {
+    border-radius: 9999px 12px 12px 9999px !important;
+    padding-left: 11px !important;
+  }
+
+  .mobile-bottom-nav-item:last-child.active {
+    border-radius: 12px 9999px 9999px 12px !important;
+    padding-right: 11px !important;
+  }
+
   .mobile-bottom-nav-item.active svg {
     color: #FFFFFF !important;
     transform: scale(1.05) !important;
