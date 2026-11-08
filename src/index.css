@@ -3573,8 +3573,8 @@ ul, ol {
     background: transparent !important;
     border: none !important;
     color: #5C4A3E !important;
-    padding: 5px 10px !important;
-    border-radius: 9999px !important;
+    padding: 5px 8px !important;
+    border-radius: 12px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -3583,7 +3583,7 @@ ul, ol {
     cursor: pointer !important;
     text-decoration: none !important;
     font-family: var(--font-sans) !important;
-    font-size: 0.65rem !important;
+    font-size: 0.64rem !important;
     font-weight: 500 !important;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
     flex: 1 !important;
@@ -3601,6 +3601,7 @@ ul, ol {
     background: #382419 !important;
     color: #FFFFFF !important;
     font-weight: 600 !important;
+    border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(56, 36, 25, 0.22) !important;
   }
 
@@ -3859,6 +3860,7 @@ ul, ol {
     width: 100%;
     justify-content: center;
     box-sizing: border-box;
+    border-radius: 8px !important;
   }
 
   .info-strip-grid {
