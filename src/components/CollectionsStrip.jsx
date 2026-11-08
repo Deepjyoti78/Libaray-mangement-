@@ -1,5 +1,5 @@
 import { ArrowRight, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 
 const COLLECTIONS = [
   {

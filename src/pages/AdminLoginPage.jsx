@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, Navigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import { BookOpen, Lock, Mail, AlertCircle, ArrowRight, ArrowLeft, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('admin@library.delhi');
-  const [password, setPassword] = useState('LibraryDemo2026!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -143,7 +143,7 @@ export default function AdminLoginPage() {
           </form>
 
           {/* Seed Demo Credentials Helper Box */}
-          <div className="sora-demo-helper-box">
+          {import.meta.env.DEV && <div className="sora-demo-helper-box">
             <div className="sora-demo-header">
               <ShieldCheck size={14} className="sora-demo-shield" />
               <span className="sora-demo-tag">DEMO ADMINISTRATOR CREDENTIALS</span>
@@ -165,7 +165,7 @@ export default function AdminLoginPage() {
             >
               Fill Demo Credentials
             </button>
-          </div>
+          </div>}
         </div>
 
         {/* Simple Footer */}

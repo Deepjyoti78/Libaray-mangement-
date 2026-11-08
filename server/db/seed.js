@@ -5,6 +5,7 @@ import { getDb } from './connection.js';
 import { config } from '../config.js';
 
 export async function seed() {
+  if (config.nodeEnv === 'production') throw new Error('Demo seeding is disabled in production.');
   console.log('Seeding demo database...');
   const db = await getDb();
 
@@ -365,7 +366,7 @@ export async function seed() {
   }
 
   console.log('Demo database seeded successfully.');
-  console.log(`Admin user: ${config.demoAdmin.email} / ${config.demoAdmin.password}`);
+  console.log(`Demo admin user: ${config.demoAdmin.email}`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

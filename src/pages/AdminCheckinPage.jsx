@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Html5Qrcode } from 'html5-qrcode';
-import { 
-  QrCode, Search, CheckCircle2, AlertCircle, Camera, 
-  CameraOff, ArrowRight, UserCheck, ShieldCheck, RefreshCw 
-} from 'lucide-react';
+import { QrCode, Search, CheckCircle2, AlertCircle, Camera, CameraOff, ArrowRight, UserCheck, ShieldCheck } from 'lucide-react';
 
 export default function AdminCheckinPage() {
   const [searchParams] = useSearchParams();
@@ -18,24 +14,18 @@ export default function AdminCheckinPage() {
   const [scannerActive, setScannerActive] = useState(false);
   const [cameraError, setCameraError] = useState('');
   const scannerRef = useRef(null);
+  const checkinBusy = useRef(false);
 
   // Check-in processing state
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
 
-  // Auto-fill and submit if ref in query params
-  useEffect(() => {
-    if (prefillRef) {
-      setManualInput(prefillRef);
-      handleCheckinSubmit(prefillRef);
-    }
-  }, [prefillRef]);
-
   // Clean up scanner on unmount
   useEffect(() => {
     return () => {
-      stopScanner();
+      const scanner = scannerRef.current;
+      if (scanner?.isScanning) void scanner.stop().catch(console.error);
     };
   }, []);
 
@@ -46,6 +36,7 @@ export default function AdminCheckinPage() {
 
     try {
       if (!scannerRef.current) {
+        const { Html5Qrcode } = await import('html5-qrcode');
         scannerRef.current = new Html5Qrcode('qr-reader-container');
       }
 
@@ -61,10 +52,10 @@ export default function AdminCheckinPage() {
             if (navigator.vibrate) navigator.vibrate(100);
           } catch {}
 
-          stopScanner();
+          await stopScanner();
           await handleCheckinSubmit(decodedText);
         },
-        (errorMessage) => {
+        (_errorMessage) => {
           // ignore scan frame errors
         }
       );
@@ -80,7 +71,7 @@ export default function AdminCheckinPage() {
   };
 
   const stopScanner = async () => {
-    if (scannerRef.current && scannerActive) {
+    if (scannerRef.current?.isScanning) {
       try {
         await scannerRef.current.stop();
       } catch (e) {
@@ -91,12 +82,14 @@ export default function AdminCheckinPage() {
   };
 
   const handleCheckinSubmit = async (payloadToSubmit) => {
+    if (checkinBusy.current) return;
     const payload = payloadToSubmit || manualInput;
     if (!payload || (typeof payload === 'string' && !payload.trim())) {
       setError('Please provide a booking reference or QR credential.');
       return;
     }
 
+    checkinBusy.current = true;
     setProcessing(true);
     setError('');
     setResult(null);
@@ -112,7 +105,7 @@ export default function AdminCheckinPage() {
       let data = null;
       try {
         data = await res.json();
-      } catch (_) {}
+      } catch {}
       if (!res.ok) {
         throw new Error(data?.error || `Check-in validation failed (status ${res.status}).`);
       }
@@ -122,6 +115,7 @@ export default function AdminCheckinPage() {
     } catch (err) {
       setError(err.message);
     } finally {
+      checkinBusy.current = false;
       setProcessing(false);
     }
   };

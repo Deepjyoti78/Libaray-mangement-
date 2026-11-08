@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { cleanupTestDatabase, databaseReady } from './setup.js';
 import assert from 'node:assert/strict';
 import { query, getDb } from '../server/db/connection.js';
 import { createReservation, getFacilityAvailability, getBookingByRef, cancelReservation } from '../server/services/bookingService.js';
@@ -6,14 +7,10 @@ import { processCheckin } from '../server/services/checkinService.js';
 import { startServer } from '../server/index.js';
 
 test('Library Booking and Check-in System - Full Specification Test Suite', async (t) => {
-  let serverInstance = null;
-  try {
-    const health = await fetch('http://localhost:3001/api/health').catch(() => null);
-    if (!health || !health.ok) {
-      const init = await startServer();
-      serverInstance = init?.server;
-    }
-  } catch (_) {}
+  await databaseReady;
+  const { server: serverInstance } = await startServer();
+  if (!serverInstance.listening) await new Promise((resolve) => serverInstance.once('listening', resolve));
+  const baseUrl = `http://127.0.0.1:${serverInstance.address().port}`;
 
   t.after(async () => {
     if (serverInstance) {
@@ -21,6 +18,7 @@ test('Library Booking and Check-in System - Full Specification Test Suite', asyn
     }
     const db = await getDb();
     await db.close();
+    await cleanupTestDatabase();
   });
   // Setup: Find a valid upcoming open date (e.g. Wednesday or Thursday within advance window)
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -312,7 +310,7 @@ test('Library Booking and Check-in System - Full Specification Test Suite', asyn
     );
   });
 
-  await t.test('10. A repeated check-in does not record another arrival', async () => {
+  await t.test('10. A repeated check-in does not record another arrival', async (checkinTest) => {
     const booking = await createReservation({
       facilityId: 'reading-room',
       sessionId: 'morning',
@@ -321,6 +319,7 @@ test('Library Booking and Check-in System - Full Specification Test Suite', asyn
       visitorEmail: `checkinguy_${runId}@test.com`,
     });
 
+    checkinTest.mock.timers.enable({ apis: ['Date'], now: new Date(`${testDate}T11:30:00+05:30`) });
     // 1st Check-in -> succeeds
     const res1 = await processCheckin({
       payload: booking.bookingRef,
@@ -341,12 +340,12 @@ test('Library Booking and Check-in System - Full Specification Test Suite', asyn
   });
 
   await t.test('11. An unauthorized visitor cannot access staff routes', async () => {
-    const res = await fetch('http://localhost:3001/api/admin/stats');
+    const res = await fetch(`${baseUrl}/api/admin/stats`);
     assert.equal(res.status, 401, 'Unauthenticated request should return 401');
   });
 
   await t.test('12. An unauthenticated API request cannot perform staff operations', async () => {
-    const res = await fetch('http://localhost:3001/api/admin/check-in', {
+    const res = await fetch(`${baseUrl}/api/admin/check-in`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ payload: 'JF-2026-TEST' }),

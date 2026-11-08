@@ -1,7 +1,7 @@
-import { query, transaction } from '../db/connection.js';
+import { transaction } from '../db/connection.js';
 import { hashToken } from '../utils/tokens.js';
 import { validateStatusTransition, logAuditEvent } from './statusService.js';
-import { getNowInKolkata } from '../utils/dates.js';
+import { getNowInKolkata, sessionInstant } from '../utils/dates.js';
 
 /**
  * Validates a scanned QR payload or manual search reference and performs check-in.
@@ -83,6 +83,13 @@ export async function processCheckin({ payload, staffUserId }) {
 
     if (b.status !== 'confirmed') {
       throw new Error(`Cannot check in a reservation with status '${b.status}'.`);
+    }
+
+    const visitDate = b.visit_date instanceof Date ? b.visit_date.toISOString().slice(0, 10) : String(b.visit_date);
+    const now = getNowInKolkata();
+    if (visitDate !== now.dateStr) throw new Error('Check-in is allowed only on the booked visit date.');
+    if (now.raw < sessionInstant(visitDate, b.start_time) || now.raw >= sessionInstant(visitDate, b.end_time)) {
+      throw new Error('Check-in is allowed only during the booked session hours.');
     }
 
     // 4. Validate state transition

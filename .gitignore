@@ -32,3 +32,6 @@ data/
 *.njsproj
 *.sln
 *.sw?
+
+# Independent nested folders
+RelayForge/

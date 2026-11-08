@@ -1,28 +1,7 @@
+import CollectionStatus from '../components/CollectionStatus';
 import React, { useState, useEffect } from 'react';
-import {
-  Settings,
-  Save,
-  Plus,
-  Trash2,
-  Calendar,
-  AlertCircle,
-  CheckCircle2,
-  ShieldCheck,
-  History,
-  Building2,
-  Clock,
-  Sliders,
-  RotateCcw,
-  Check,
-  X,
-  User,
-  Info,
-  CalendarDays,
-  Sparkles,
-  Moon,
-  Sun,
-} from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { Save, Plus, Trash2, Calendar, CheckCircle2, Building2, Clock, Sliders, RotateCcw, Check, X, CalendarDays, Sparkles, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../context/theme';
 import ConfirmationModal from '../components/ConfirmationModal';
 
 const INITIAL_CAPACITIES = [
@@ -68,92 +47,21 @@ const INITIAL_SETTINGS = {
   require_membership: false,
 };
 
-const INITIAL_CLOSURES = [
-  {
-    id: 1,
-    override_date: '2026-11-01',
-    reason: 'Diwali National Holiday & Facility Deep Clean',
-  },
-  {
-    id: 2,
-    override_date: '2026-11-15',
-    reason: 'Rare Folios & Manuscript Preservation Day',
-  },
-  {
-    id: 3,
-    override_date: '2026-12-25',
-    reason: 'Winter Solstice Cultural Recess',
-  },
-];
 
-const INITIAL_AUDIT_LOGS = [
-  {
-    id: 101,
-    created_at: '2026-10-26T11:42:00Z',
-    actor_type: 'staff',
-    actor_name: 'Aarav Mehta',
-    actor_role: 'Super Admin',
-    action: 'POLICY_UPDATE',
-    entity_type: 'Capacity Limits',
-    entity_id: 'reading-room/morning',
-    details: 'Increased morning study hall limit from 12 to 15 seats',
-  },
-  {
-    id: 102,
-    created_at: '2026-10-26T10:15:00Z',
-    actor_type: 'staff',
-    actor_name: 'Keiko Tanaka',
-    actor_role: 'Chief Librarian',
-    action: 'MEMBER_REGISTER',
-    entity_type: 'Patron',
-    entity_id: 'MEM-10873',
-    details: 'Approved Japanese Scholar tier for Ananya Roy',
-  },
-  {
-    id: 103,
-    created_at: '2026-10-26T09:30:00Z',
-    actor_type: 'staff',
-    actor_name: 'Rohit Sen',
-    actor_role: 'Circulation Officer',
-    action: 'LOAN_RETURN',
-    entity_type: 'Volume',
-    entity_id: '978-4-06-275889-1',
-    details: 'Received return for Norwegian Wood (Copy #2)',
-  },
-  {
-    id: 104,
-    created_at: '2026-10-25T18:00:00Z',
-    actor_type: 'system',
-    actor_name: 'Cron Service',
-    actor_role: 'Automated Daemon',
-    action: 'FINE_CALCULATION',
-    entity_type: 'Ledger',
-    entity_id: 'BATCH-2026-10-25',
-    details: 'Assessed ₹10 daily overdue charge on 2 active past-due loans',
-  },
-  {
-    id: 105,
-    created_at: '2026-10-25T14:10:00Z',
-    actor_type: 'staff',
-    actor_name: 'Haruka Sato',
-    actor_role: 'Cataloger',
-    action: 'CATALOG_INGEST',
-    entity_type: 'Volume',
-    entity_id: '978-4-08-872509-3',
-    details: 'Registered 8 copies of One Piece: Romance Dawn Vol. 1',
-  },
-];
 
 const ALL_WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function AdminSettingsPage() {
-  const { theme, isDark, setTheme } = useTheme();
+  const [today] = useState(() => new Date().toISOString().slice(0, 10));
+  const { isDark, setTheme } = useTheme();
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
-  const [capacities, setCapacities] = useState(INITIAL_CAPACITIES);
-  const [closures, setClosures] = useState(INITIAL_CLOSURES);
-  const [auditLogs, setAuditLogs] = useState(INITIAL_AUDIT_LOGS);
+  const [capacities, setCapacities] = useState([]);
+  const [closures, setClosures] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [loadFailed, setLoadFailed] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   // New closure date form state
@@ -167,35 +75,28 @@ export default function AdminSettingsPage() {
     setTimeout(() => setToastMessage(''), 3500);
   };
 
-  // Try fetching live settings from server, falling back to mock defaults
   useEffect(() => {
-    const fetchLiveSettings = async () => {
+    const controller = new AbortController();
+    async function loadSettings() {
       try {
-        const [settingsRes, auditRes] = await Promise.all([
-          fetch('/api/admin/settings', { credentials: 'include' }),
-          fetch('/api/admin/audit', { credentials: 'include' }),
+        const [response, audit] = await Promise.all([
+          fetch('/api/admin/settings', { credentials: 'include', signal: controller.signal }),
+          fetch('/api/admin/audit', { credentials: 'include', signal: controller.signal }),
         ]);
-
-        if (settingsRes.ok) {
-          const data = await settingsRes.json();
-          if (data.settings) setSettings((prev) => ({ ...prev, ...data.settings }));
-          if (data.capacities && data.capacities.length > 0) setCapacities(data.capacities);
-          if (data.closures && data.closures.length > 0) setClosures(data.closures);
+        if (!response.ok || !audit.ok) throw new Error('Could not load settings. Reload before making changes.');
+        const [data, logs] = await Promise.all([response.json(), audit.json()]);
+        if (!controller.signal.aborted) {
+          setSettings((previous) => ({ ...previous, ...data.settings }));
+          setCapacities(data.capacities || []);
+          setClosures(data.closures || []);
+          setAuditLogs(logs);
         }
-
-        if (auditRes.ok) {
-          const auditData = await auditRes.json();
-          if (Array.isArray(auditData) && auditData.length > 0) {
-            setAuditLogs(auditData);
-          }
-        }
-      } catch (err) {
-        // Fallback gracefully to default state
-        console.info('Loaded administrative policies from local operational defaults.');
-      }
-    };
-
-    fetchLiveSettings();
+      } catch (cause) {
+        if (!controller.signal.aborted) { setError(cause.message); setLoadFailed(true); }
+      } finally { if (!controller.signal.aborted) setLoading(false); }
+    }
+    void loadSettings();
+    return () => controller.abort();
   }, []);
 
   // Handle capacity update
@@ -219,58 +120,57 @@ export default function AdminSettingsPage() {
     setSettings((prev) => ({ ...prev, opening_days: updated }));
   };
 
-  // Save all settings
-  const handleSaveSettings = async (e) => {
-    e.preventDefault();
+  const refreshAudit = async () => {
+    const response = await fetch('/api/admin/audit', { credentials: 'include' });
+    if (response.ok) setAuditLogs(await response.json());
+  };
+
+  const handleSaveSettings = async (event) => {
+    event.preventDefault();
     setSaving(true);
-    setSaveSuccess(false);
-
+    setError('');
     try {
-      const res = await fetch('/api/admin/settings', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ settings, capacities }),
-      });
-
-      if (!res.ok) {
-        throw new Error('API save responded with status: ' + res.status);
-      }
-    } catch (_) {
-      // Local state is preserved and confirmed
-    } finally {
-      setTimeout(() => {
-        setSaving(false);
-        setSaveSuccess(true);
-        showToast('All system rules and facility limits saved successfully.');
-        setTimeout(() => setSaveSuccess(false), 4000);
-      }, 500);
-    }
+      const response = await fetch('/api/admin/settings', { method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ settings, capacities }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Settings could not be saved.');
+      showToast('System rules and facility limits saved successfully.');
+      await refreshAudit();
+    } catch (cause) { setError(cause.message); }
+    finally { setSaving(false); }
   };
 
-  // Add closure
-  const handleAddClosure = (e) => {
-    e.preventDefault();
-    if (!newClosureDate) return;
-
-    const newEntry = {
-      id: Date.now(),
-      override_date: newClosureDate,
-      reason: newClosureReason || 'Scheduled Maintenance / Event Closure',
-    };
-
-    setClosures([newEntry, ...closures]);
-    setNewClosureDate('');
-    setNewClosureReason('');
-    showToast(`Added exceptional closure for ${newEntry.override_date}`);
+  const handleAddClosure = async (event) => {
+    event.preventDefault();
+    if (!newClosureDate || saving) return;
+    setSaving(true);
+    setError('');
+    try {
+      const response = await fetch('/api/admin/settings/closures', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overrideDate: newClosureDate, reason: newClosureReason || 'Scheduled closure' }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Closure could not be saved.');
+      setClosures((previous) => [{ ...data, override_date: newClosureDate }, ...previous.filter((closure) => closure.override_date !== newClosureDate)]);
+      setNewClosureDate('');
+      setNewClosureReason('');
+      showToast('Exceptional closure saved.');
+      await refreshAudit();
+    } catch (cause) { setError(cause.message); }
+    finally { setSaving(false); }
   };
 
-  // Delete closure
-  const executeDeleteClosure = () => {
-    if (!closureToDelete) return;
-    setClosures(closures.filter((c) => c.id !== closureToDelete.id));
-    showToast('Removed closure schedule override.');
-    setClosureToDelete(null);
+  const executeDeleteClosure = async () => {
+    if (!closureToDelete || saving) return;
+    setSaving(true);
+    setError('');
+    try {
+      const response = await fetch('/api/admin/settings/closures/' + closureToDelete.id, { method: 'DELETE', credentials: 'include' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Closure could not be removed.');
+      setClosures((previous) => previous.filter((closure) => closure.id !== closureToDelete.id));
+      setClosureToDelete(null);
+      showToast('Closure removed.');
+      await refreshAudit();
+    } catch (cause) { setError(cause.message); }
+    finally { setSaving(false); }
   };
 
   // Helper for initials
@@ -286,6 +186,8 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="admin-bookings-page admin-settings-page">
+      <CollectionStatus loading={loading} saving={saving} error={error} reload={() => window.location.reload()} />
+      <fieldset disabled={loading || saving || loadFailed} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {/* 1. Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -720,7 +622,7 @@ export default function AdminSettingsPage() {
                 className="closure-date-field"
                 value={newClosureDate}
                 onChange={(e) => setNewClosureDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
+                min={today}
                 title="Select closure date"
               />
               <input
@@ -873,6 +775,7 @@ export default function AdminSettingsPage() {
           ) : null
         }
       />
+      </fieldset>
     </div>
   );
 }

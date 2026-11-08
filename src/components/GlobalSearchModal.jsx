@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Book, User, X } from 'lucide-react';
+import { Search, Book, User } from 'lucide-react';
 
 export default function GlobalSearchModal({ isOpen, onClose }) {
   const [query, setQuery] = useState('');
@@ -8,39 +8,33 @@ export default function GlobalSearchModal({ isOpen, onClose }) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-    } else {
-      setQuery('');
-      setResults({ books: [], members: [] });
-    }
-  }, [isOpen]);
+    inputRef.current?.focus();
+  }, []);
 
   // Live search debounced
   useEffect(() => {
-    if (!query.trim()) {
-      setResults({ books: [], members: [] });
-      return;
-    }
+    if (!query.trim()) return;
+    const controller = new AbortController();
 
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
         const res = await fetch(`/api/admin/search?q=${encodeURIComponent(query)}`, {
           credentials: 'include',
+          signal: controller.signal,
         });
         if (res.ok) {
           const data = await res.json();
-          setResults(data);
+          if (!controller.signal.aborted) setResults(data);
         }
       } catch (err) {
-        console.error('Search error:', err);
+        if (!controller.signal.aborted) console.error('Search error:', err);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }, 200);
 
-    return () => clearTimeout(timer);
+    return () => { clearTimeout(timer); controller.abort(); };
   }, [query]);
 
   if (!isOpen) return null;
@@ -56,7 +50,7 @@ export default function GlobalSearchModal({ isOpen, onClose }) {
             className="search-modal-input"
             placeholder="Search books by title, author, or search members..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => { setQuery(e.target.value); setResults({ books: [], members: [] }); setLoading(false); }}
           />
           <kbd className="esc-badge" onClick={onClose}>ESC</kbd>
         </div>

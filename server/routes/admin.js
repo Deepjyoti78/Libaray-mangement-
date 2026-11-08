@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+
 import { config } from '../config.js';
 import { query, transaction } from '../db/connection.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
@@ -10,7 +11,8 @@ import { validateBody, staffLoginSchema, checkinSchema } from '../middleware/val
 import { processCheckin } from '../services/checkinService.js';
 import { getBookingByRef, cancelReservation } from '../services/bookingService.js';
 import { validateStatusTransition, logAuditEvent } from '../services/statusService.js';
-import { getNowInKolkata } from '../utils/dates.js';
+import { getNowInKolkata, isValidDate } from '../utils/dates.js';
+import { applyRecordChanges, listRecords, getReports } from '../services/managementService.js';
 
 const router = express.Router();
 
@@ -70,7 +72,6 @@ router.post(
 
       res.json({
         success: true,
-        token,
         user: {
           id: user.id,
           name: user.name,
@@ -208,7 +209,7 @@ router.get('/bookings', requireAuth, async (req, res) => {
     }
     if (search) {
       whereClauses.push(
-        `(UPPER(b.booking_ref) LIKE $${pIdx} OR LOWER(b.visitor_name) LIKE $${pIdx} OR LOWER(b.visitor_email) LIKE $${pIdx})`
+        `(LOWER(b.booking_ref) LIKE $${pIdx} OR LOWER(b.visitor_name) LIKE $${pIdx} OR LOWER(b.visitor_email) LIKE $${pIdx})`
       );
       params.push(`%${search.trim().toLowerCase()}%`);
       pIdx++;
@@ -273,7 +274,7 @@ router.get('/bookings/:ref', requireAuth, async (req, res) => {
       booking,
       auditHistory: auditRes.rows,
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to load booking details.' });
   }
 });
@@ -320,6 +321,9 @@ router.post('/bookings/:ref/status', requireAuth, async (req, res) => {
         reason: reason || 'Cancelled by staff administrator',
       });
       return res.json(result);
+    }
+    if (status === 'checked_in') {
+      return res.json(await processCheckin({ payload: ref, staffUserId: req.user.id }));
     }
 
     // Execute state transition
@@ -388,7 +392,7 @@ router.get('/settings', requireAuth, async (req, res) => {
         override_date: c.override_date instanceof Date ? c.override_date.toISOString().split('T')[0] : String(c.override_date),
       })),
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to load settings.' });
   }
 });
@@ -399,7 +403,21 @@ router.get('/settings', requireAuth, async (req, res) => {
  */
 router.put('/settings', requireAuth, requireRole('admin'), async (req, res) => {
   try {
-    const { settings = {}, capacities = [] } = req.body;
+    const settingsSchema = z.object({
+      daily_booking_limit: z.coerce.number().int().min(1).max(20).optional(),
+      advance_booking_days: z.coerce.number().int().min(0).max(365).optional(),
+      cancellation_cutoff_hours: z.coerce.number().min(0).max(8760).optional(),
+      opening_days: z.array(z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])).max(7).optional(),
+      require_membership: z.boolean().optional(),
+      standard_loan_days: z.coerce.number().int().min(1).max(365).optional(),
+      max_active_loans_general: z.coerce.number().int().min(1).max(100).optional(),
+      max_active_loans_scholar: z.coerce.number().int().min(1).max(100).optional(),
+      overdue_fine_per_day: z.coerce.number().min(0).max(10000).optional(),
+    }).strict();
+    const { settings, capacities } = z.object({
+      settings: settingsSchema.default({}),
+      capacities: z.array(z.object({ facility_id: z.string().min(1), session_id: z.string().min(1), capacity: z.coerce.number().int().min(0).max(1000000) }).passthrough()).max(100).default([]),
+    }).parse(req.body);
 
     await transaction(async (tx) => {
       for (const [key, val] of Object.entries(settings)) {
@@ -444,7 +462,7 @@ router.put('/settings', requireAuth, requireRole('admin'), async (req, res) => {
 router.post('/settings/closures', requireAuth, requireRole('admin'), async (req, res) => {
   try {
     const { overrideDate, isClosed = true, reason } = req.body;
-    if (!overrideDate || !/^\d{4}-\d{2}-\d{2}$/.test(overrideDate)) {
+    if (!isValidDate(overrideDate) || typeof isClosed !== 'boolean') {
       return res.status(400).json({ error: 'Valid overrideDate (YYYY-MM-DD) is required.' });
     }
 
@@ -496,7 +514,7 @@ router.get('/audit', requireAuth, async (req, res) => {
        LIMIT 50;`
     );
     res.json(logsRes.rows);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to retrieve audit events.' });
   }
 });
@@ -505,106 +523,47 @@ router.get('/audit', requireAuth, async (req, res) => {
  * GET /api/admin/dashboard-analytics
  * KPI totals, book categories, and overdue trend
  */
-router.get('/dashboard-analytics', requireAuth, async (req, res) => {
+router.get('/dashboard-analytics', requireAuth, async (req, res, next) => {
   try {
-    const booksRes = await query(`SELECT COALESCE(SUM(copies_total), 12480)::int as total_books FROM books;`);
-    const loansRes = await query(`SELECT COUNT(*)::int as total_loans, COUNT(*) FILTER (WHERE status = 'overdue')::int as overdue_count FROM loans;`);
-    const membersRes = await query(`SELECT COUNT(*)::int as active_members FROM members WHERE status = 'active';`);
-
-    const totalBooks = parseInt(booksRes.rows[0]?.total_books || 12480, 10);
-    const totalLoans = Math.max(10320, parseInt(loansRes.rows[0]?.total_loans || 0, 10));
-    const activeMembers = Math.max(4305, parseInt(membersRes.rows[0]?.active_members || 0, 10));
-    const overdueItems = Math.max(196, parseInt(loansRes.rows[0]?.overdue_count || 0, 10));
-
-    const catQuery = await query(`
-      SELECT category, COALESCE(SUM(copies_total), 0)::int as count
-      FROM books
-      GROUP BY category
-      ORDER BY count DESC;
-    `);
-
-    const refCategories = [
-      { category: 'Fiction', count: 3820 },
-      { category: 'Science & Tech', count: 2460 },
-      { category: 'History', count: 1840 },
-      { category: 'Literature', count: 1620 },
-      { category: 'Reference', count: 1310 },
-      { category: 'Other', count: 1430 },
-    ];
-
-    const categories = refCategories.map((ref) => {
-      const match = catQuery.rows.find((r) => r.category.toLowerCase().includes(ref.category.toLowerCase().slice(0, 4)));
-      const count = match ? match.count : ref.count;
-      return {
-        name: ref.category,
-        count,
-        percentage: Math.round((count / totalBooks) * 100),
-      };
-    });
-
-    const overdueRes = await query(`
-      SELECT stat_date, overdue_count 
-      FROM overdue_daily_stats 
-      ORDER BY stat_date ASC;
-    `);
-
+    const reports = await getReports();
+    const books = await listRecords('books');
+    const loans = await listRecords('loans');
+    const overdue = loans.filter((loan) => loan.status !== 'returned' && loan.dueDate < getNowInKolkata().dateStr);
+    const trend = new Map();
+    overdue.forEach((loan) => trend.set(loan.dueDate, (trend.get(loan.dueDate) || 0) + 1));
     res.json({
-      kpi: {
-        totalBooks,
-        totalLoans,
-        activeMembers,
-        overdueItems,
-        trends: {
-          books: '+0.94 last month',
-          loans: '+0.94 last month',
-          members: '+0.94 last month',
-          overdue: '+0.94 last month',
-        },
-      },
-      categories,
-      overdueTrend: overdueRes.rows.map((r) => ({
-        date: r.stat_date instanceof Date ? r.stat_date.toISOString().split('T')[0] : String(r.stat_date),
-        count: parseInt(r.overdue_count, 10),
-      })),
+      kpi: { totalBooks: books.reduce((sum, book) => sum + book.copiesTotal, 0), totalLoans: reports.totalLoans, activeMembers: reports.activeMembers, overdueItems: overdue.length, trends: {} },
+      categories: reports.categories.map((category) => ({ ...category, percentage: category.percent })),
+      overdueTrend: [...trend].sort(([a], [b]) => a.localeCompare(b)).map(([date, count]) => ({ date, count })),
     });
-  } catch (err) {
-    console.error('Error fetching dashboard analytics:', err);
-    res.status(500).json({ error: 'Failed to retrieve dashboard analytics.' });
-  }
+  } catch (error) { next(error); }
 });
 
-/**
- * GET /api/admin/circulation
- * Monthly, weekly, or yearly pixel-chart statistics
- */
-router.get('/circulation', requireAuth, async (req, res) => {
+router.get('/circulation', requireAuth, async (req, res, next) => {
   try {
     const period = req.query.period || 'monthly';
-    const year = parseInt(req.query.year || '2025', 10);
-
-    const statsRes = await query(`
-      SELECT period_key as key, period_label as label, year, issued_count as issued, returned_count as returned, sort_order
-      FROM circulation_stats
-      WHERE period_type = $1 AND year = $2
-      ORDER BY sort_order ASC;
-    `, [period, year]);
-
-    res.json({
-      period,
-      year,
-      totalLoans: 10320,
-      data: statsRes.rows.map((r) => ({
-        key: r.key,
-        label: r.label,
-        year: r.year,
-        issued: parseInt(r.issued, 10),
-        returned: parseInt(r.returned, 10),
-        total: parseInt(r.issued, 10) + parseInt(r.returned, 10),
-      })),
-    });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to retrieve circulation data.' });
-  }
+    if (!['monthly', 'weekly', 'yearly'].includes(period)) return res.status(400).json({ error: 'Invalid circulation period.' });
+    const year = Number(req.query.year || getNowInKolkata().dateStr.slice(0, 4));
+    if (!Number.isInteger(year) || year < 1900 || year > 9999) return res.status(400).json({ error: 'Invalid year.' });
+    const unit = { monthly: 'month', weekly: 'week', yearly: 'year' }[period];
+    const loans = await listRecords('loans');
+    const buckets = new Map();
+    const bucket = (date) => {
+      let key = date.slice(0, unit === 'year' ? 4 : 7);
+      if (unit === 'week') {
+        const monday = new Date(date + 'T12:00:00Z');
+        monday.setUTCDate(monday.getUTCDate() - (monday.getUTCDay() + 6) % 7);
+        key = monday.toISOString().slice(0, 10);
+      }
+      if (!buckets.has(key)) buckets.set(key, { key, label: key, year: Number(date.slice(0, 4)), issued: 0, returned: 0 });
+      return buckets.get(key);
+    };
+    for (const loan of loans) {
+      if (unit === 'year' || loan.issueDate.startsWith(String(year))) bucket(loan.issueDate).issued++;
+      if (loan.returnDate && (unit === 'year' || loan.returnDate.startsWith(String(year)))) bucket(loan.returnDate).returned++;
+    }
+    res.json({ period, year, totalLoans: loans.length, data: [...buckets.values()].sort((a, b) => a.key.localeCompare(b.key)).map((row) => ({ ...row, total: row.issued + row.returned })) });
+  } catch (error) { next(error); }
 });
 
 /**
@@ -668,7 +627,7 @@ router.get('/loans', requireAuth, async (req, res) => {
         due_date: r.due_date instanceof Date ? r.due_date.toISOString().split('T')[0] : String(r.due_date),
       })),
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to retrieve loans list.' });
   }
 });
@@ -679,71 +638,30 @@ router.get('/loans', requireAuth, async (req, res) => {
  */
 router.post('/loans', requireAuth, async (req, res) => {
   try {
-    const { memberName, bookTitle, type = 'Loan', issueDate, dueDate } = req.body;
-
-    if (!memberName || !bookTitle) {
-      return res.status(400).json({ error: 'Member name and Book title are required.' });
+    const { memberNo, memberName, bookTitle, type = 'Loan', issueDate, dueDate } = req.body;
+    let number = memberNo;
+    if (!number && memberName) {
+      const matches = await query('SELECT member_no FROM members WHERE LOWER(name) = LOWER($1)', [memberName.trim()]);
+      if (matches.rows.length === 1) number = matches.rows[0].member_no;
     }
-
-    // Lookup or create member
-    let mRes = await query(`SELECT id FROM members WHERE LOWER(name) = LOWER($1) LIMIT 1;`, [memberName.trim()]);
-    let memberId = mRes.rows[0]?.id;
-    if (!memberId) {
-      const newNo = `MEM-${Math.floor(10000 + Math.random() * 90000)}`;
-      const newM = await query(
-        `INSERT INTO members (member_no, name, email, phone) VALUES ($1, $2, $3, '') RETURNING id;`,
-        [newNo, memberName.trim(), `${memberName.toLowerCase().replace(/\s+/g, '.')}@example.com`]
-      );
-      memberId = newM.rows[0]?.id;
-    }
-
-    // Lookup or create book
-    let bRes = await query(`SELECT id FROM books WHERE LOWER(title) LIKE LOWER($1) LIMIT 1;`, [`%${bookTitle.trim()}%`]);
-    let bookId = bRes.rows[0]?.id;
-    if (!bookId) {
-      const newB = await query(
-        `INSERT INTO books (isbn, title, author, category, copies_total, copies_available) VALUES ('978-custom', $1, 'Various', 'Fiction', 10, 9) RETURNING id;`,
-        [bookTitle.trim()]
-      );
-      bookId = newB.rows[0]?.id;
-    }
-
-    const loanCode = `#0${Math.floor(4000 + Math.random() * 5900)}`;
-    const today = new Date().toISOString().split('T')[0];
-    const due = dueDate || new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
-
-    const insertRes = await query(`
-      INSERT INTO loans (loan_code, book_id, member_id, type, issue_date, due_date, status)
-      VALUES ($1, $2, $3, $4, $5, $6, 'active')
-      RETURNING id, loan_code;
-    `, [loanCode, bookId, memberId, type, issueDate || today, due]);
-
-    res.status(201).json({
-      success: true,
-      loan: insertRes.rows[0],
-      message: 'Transaction recorded successfully.',
-    });
-  } catch (err) {
-    console.error('Error creating loan transaction:', err);
-    res.status(500).json({ error: 'Failed to record loan transaction.' });
-  }
+    if (!number) throw new Error('Enter a valid member number, or the unique name of an existing member.');
+    const today = getNowInKolkata().dateStr;
+    const due = new Date(today + 'T12:00:00Z');
+    due.setUTCDate(due.getUTCDate() + 14);
+    const items = await applyRecordChanges('loans', [{ type: 'create', data: { memberNo: number, bookTitle, type, issueDate: issueDate || today, dueDate: dueDate || due.toISOString().slice(0, 10), status: 'active' } }], req.user);
+    const loan = items[0];
+    res.status(201).json({ success: true, loan: { ...loan, loan_code: loan.loanCode } });
+  } catch (error) { res.status(error.status || 400).json({ error: error.message }); }
 });
 
-/**
- * PATCH /api/admin/loans/:id/status
- */
 router.patch('/loans/:id/status', requireAuth, async (req, res) => {
   try {
-    const { status } = req.body;
-    if (!['active', 'due_soon', 'overdue', 'returned'].includes(status)) {
-      return res.status(400).json({ error: 'Invalid status provided.' });
-    }
-
-    await query(`UPDATE loans SET status = $1 WHERE id = $2;`, [status, req.params.id]);
-    res.json({ success: true, message: `Loan status updated to ${status}.` });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update loan status.' });
-  }
+    const items = await listRecords('loans');
+    const existing = items.find((loan) => loan.id === Number(req.params.id));
+    if (!existing) return res.status(404).json({ error: 'Loan not found.' });
+    await applyRecordChanges('loans', [{ type: 'update', id: existing.id, version: existing.version, data: { ...existing, status: req.body.status } }], req.user);
+    res.json({ success: true });
+  } catch (error) { res.status(error.status || 400).json({ error: error.message }); }
 });
 
 /**
@@ -775,7 +693,7 @@ router.get('/search', requireAuth, async (req, res) => {
       books: booksRes.rows,
       members: membersRes.rows,
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Search failed.' });
   }
 });

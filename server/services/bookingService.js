@@ -1,5 +1,5 @@
 import { query, transaction } from '../db/connection.js';
-import { getDayOfWeek, isDateInPast, isDateBeyondAdvanceWindow, hasSessionEndedToday, getNowInKolkata } from '../utils/dates.js';
+import { getDayOfWeek, isDateInPast, isDateBeyondAdvanceWindow, hasSessionEndedToday, getNowInKolkata, isValidDate, sessionInstant } from '../utils/dates.js';
 import { generateBookingRef, generateSecureToken, hashToken, generateQrCode } from '../utils/tokens.js';
 import { validateStatusTransition, logAuditEvent } from './statusService.js';
 import { sendBookingConfirmationEmail, sendBookingCancellationEmail } from './emailService.js';
@@ -11,6 +11,7 @@ export async function getPublicConfig() {
   const facilitiesRes = await query(`SELECT id, name, description, image_url, active FROM facilities WHERE active = true ORDER BY name;`);
   const sessionsRes = await query(`SELECT id, name, start_time, end_time, active FROM sessions WHERE active = true ORDER BY start_time;`);
   const settingsRes = await query(`SELECT key, value FROM settings;`);
+  const closuresRes = await query(`SELECT override_date::text AS date FROM closure_dates WHERE is_closed = true ORDER BY override_date`);
 
   const settingsMap = {};
   settingsRes.rows.forEach((r) => {
@@ -24,10 +25,11 @@ export async function getPublicConfig() {
   return {
     facilities: facilitiesRes.rows,
     sessions: sessionsRes.rows,
+    closureDates: closuresRes.rows,
     settings: {
       dailyBookingLimit: parseInt(settingsMap.daily_booking_limit || '1', 10),
-      advanceBookingDays: parseInt(settingsMap.advance_booking_days || '14', 10),
-      cancellationCutoffHours: parseInt(settingsMap.cancellation_cutoff_hours || '2', 10),
+      advanceBookingDays: parseInt(settingsMap.advance_booking_days ?? 14, 10),
+      cancellationCutoffHours: Number(settingsMap.cancellation_cutoff_hours ?? 2),
       openingDays: settingsMap.opening_days || ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       requireMembership: settingsMap.require_membership === true || settingsMap.require_membership === 'true',
     },
@@ -39,7 +41,11 @@ export async function getPublicConfig() {
  * Retrieves date and session availability for a specific facility
  */
 export async function getFacilityAvailability(facilityId, dateStr) {
+  if (!isValidDate(dateStr)) throw new Error('Invalid visit date.');
   const config = await getPublicConfig();
+  if (!config.facilities.some((facility) => facility.id === facilityId)) {
+    throw new Error('Invalid or inactive facility selected.');
+  }
 
   // 1. Date validation
   if (isDateInPast(dateStr)) {
@@ -155,8 +161,16 @@ export async function createReservation({
 }) {
   const emailNorm = visitorEmail.toLowerCase().trim();
   const nameNorm = visitorName.trim();
+  if (!isValidDate(visitDate)) throw new Error('Invalid visit date.');
 
   return await transaction(async (tx) => {
+    // Lock both the visitor/day and facility/session/day before checking counts.
+    // Dedicated rows also protect empty slots across independent PostgreSQL clients.
+    const keys = [`visitor:${visitDate}:${emailNorm}`, `slot:${visitDate}:${facilityId}:${sessionId}`].sort();
+    for (const key of keys) {
+      await tx.query(`INSERT INTO booking_locks (lock_key) VALUES ($1) ON CONFLICT DO NOTHING`, [key]);
+      await tx.query(`SELECT lock_key FROM booking_locks WHERE lock_key = $1 FOR UPDATE`, [key]);
+    }
     // 1. Fetch public settings
     const settingsRes = await tx.query(`SELECT key, value FROM settings;`);
     const settings = {};
@@ -164,9 +178,14 @@ export async function createReservation({
       try { settings[r.key] = JSON.parse(r.value); } catch { settings[r.key] = r.value; }
     });
 
-    const advanceDays = parseInt(settings.advance_booking_days || '14', 10);
+    const advanceDays = parseInt(settings.advance_booking_days ?? 14, 10);
     const dailyLimit = parseInt(settings.daily_booking_limit || '1', 10);
     const openingDays = settings.opening_days || ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    if ((settings.require_membership === true || settings.require_membership === 'true') && !membershipNo?.trim()) {
+      throw new Error('A membership ID is required to reserve a slot.');
+    }
+    const facilityRes = await tx.query(`SELECT id FROM facilities WHERE id = $1 AND active = true FOR SHARE`, [facilityId]);
+    if (!facilityRes.rows.length) throw new Error('Invalid or inactive facility selected.');
 
     // 2. Validate date & opening days
     if (isDateInPast(visitDate)) {
@@ -209,7 +228,7 @@ export async function createReservation({
       `SELECT id, booking_ref FROM bookings 
        WHERE visitor_email = $1 
          AND visit_date = $2 
-         AND status IN ('confirmed', 'checked_in');`,
+         AND status IN ('confirmed', 'checked_in', 'completed');`,
       [emailNorm, visitDate]
     );
     if (existingUserBookingsRes.rows.length >= dailyLimit) {
@@ -221,10 +240,11 @@ export async function createReservation({
     // 6. Enforce Capacity with atomic check
     const capRes = await tx.query(
       `SELECT capacity FROM facility_session_capacities 
-       WHERE facility_id = $1 AND session_id = $2;`,
+       WHERE facility_id = $1 AND session_id = $2 FOR SHARE;`,
       [facilityId, sessionId]
     );
-    const maxCapacity = capRes.rows.length > 0 ? parseInt(capRes.rows[0].capacity, 10) : 10;
+    if (!capRes.rows.length) throw new Error('This facility does not offer the selected session.');
+    const maxCapacity = parseInt(capRes.rows[0].capacity, 10);
 
     const currentBookedRes = await tx.query(
       `SELECT COUNT(*)::int as count FROM bookings 
@@ -274,7 +294,6 @@ export async function createReservation({
       ]
     );
 
-    const bookingId = insertRes.rows[0].id;
 
     // 9. Audit event
     await logAuditEvent(tx, {
@@ -395,7 +414,7 @@ export async function getBookingByRef(bookingRef, { managementToken = null, isSt
 export async function cancelReservation(bookingRef, { managementToken = null, isStaff = false, staffId = null, reason = '' } = {}) {
   return await transaction(async (tx) => {
     const res = await tx.query(
-      `SELECT b.*, f.name as facility_name, s.name as session_name 
+      `SELECT b.*, f.name as facility_name, s.name as session_name, s.start_time
        FROM bookings b
        LEFT JOIN facilities f ON f.id = b.facility_id
        LEFT JOIN sessions s ON s.id = b.session_id
@@ -417,7 +436,7 @@ export async function cancelReservation(bookingRef, { managementToken = null, is
 
       // Check cancellation cutoff window
       const settingsRes = await tx.query(`SELECT value FROM settings WHERE key = 'cancellation_cutoff_hours';`);
-      const cutoffHours = parseInt(settingsRes.rows[0]?.value || '2', 10);
+      const cutoffHours = Number(settingsRes.rows[0]?.value ?? 2);
 
       // Check if session start is within cutoff window
       const now = getNowInKolkata();
@@ -425,6 +444,10 @@ export async function cancelReservation(bookingRef, { managementToken = null, is
       if (visitDateStr < now.dateStr) {
         throw new Error('Cannot cancel a reservation for a date in the past.');
       }
+      if (sessionInstant(visitDateStr, b.start_time).getTime() - now.raw.getTime() <= cutoffHours * 3600000) {
+        throw new Error(`Online cancellation closes ${cutoffHours} hours before the session starts.`);
+      }
+      if (b.status !== 'confirmed') throw new Error('Only confirmed reservations can be cancelled online.');
     }
 
     // Validate lifecycle status transition

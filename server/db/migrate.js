@@ -13,13 +13,14 @@ export async function migrate() {
   try {
     const schemaPath = path.resolve(__dirname, 'schema.sql');
     schemaSql = fs.readFileSync(schemaPath, 'utf8');
-  } catch (_) {
+  } catch {
     schemaSql = SCHEMA_SQL;
   }
 
   const db = await getDb();
   // Split on statement ends to execute clean statements
   const statements = schemaSql
+    .replace(/^--.*$/gm, '')
     .split(';')
     .map((s) => s.trim())
     .filter((s) => s.length > 0);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import EditorialGrid from '../components/EditorialGrid';
@@ -9,9 +9,11 @@ import BookingWizard from './BookingWizard';
 
 export default function LandingPage({ initialBookingOpen = false }) {
   const location = useLocation();
-  const [isBookingOpen, setIsBookingOpen] = useState(
+  const navigate = useNavigate();
+  const [bookingOpen, setIsBookingOpen] = useState(
     initialBookingOpen || location.pathname === '/book'
   );
+  const isBookingOpen = bookingOpen || location.pathname === '/book';
 
   /* Ensure public site always renders in pristine Japanese washi paper palette */
   useEffect(() => {
@@ -42,13 +44,6 @@ export default function LandingPage({ initialBookingOpen = false }) {
     return () => observer.disconnect();
   }, []);
 
-  // Sync state if route is /book
-  useEffect(() => {
-    if (location.pathname === '/book') {
-      setIsBookingOpen(true);
-    }
-  }, [location.pathname]);
-
   const handleOpenBooking = () => {
     setIsBookingOpen(true);
   };
@@ -56,7 +51,7 @@ export default function LandingPage({ initialBookingOpen = false }) {
   const handleCloseBooking = () => {
     setIsBookingOpen(false);
     if (window.location.pathname === '/book') {
-      window.history.pushState(null, '', '/');
+      navigate('/', { replace: true });
     }
   };
 

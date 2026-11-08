@@ -1,4 +1,4 @@
-import { BookOpen, Users, Landmark, Sparkles } from 'lucide-react';
+import { BookOpen, Users, Landmark } from 'lucide-react';
 
 const HIGHLIGHTS = [
   {

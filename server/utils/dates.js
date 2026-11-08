@@ -2,6 +2,16 @@
 
 const TIMEZONE = 'Asia/Kolkata';
 
+export function isValidDate(dateStr) {
+  if (typeof dateStr !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+  const date = new Date(`${dateStr}T12:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === dateStr;
+}
+
+export function sessionInstant(dateStr, timeStr) {
+  return new Date(`${dateStr}T${timeStr.slice(0, 5)}:00+05:30`);
+}
+
 /**
  * Returns current date/time parts in Asia/Kolkata timezone
  */
@@ -73,5 +83,5 @@ export function hasSessionEndedToday(dateStr, sessionEndTime) {
   const current = getNowInKolkata();
   if (dateStr < current.dateStr) return true;
   if (dateStr > current.dateStr) return false;
-  return current.timeStr > sessionEndTime;
+  return current.timeStr >= sessionEndTime.slice(0, 5);
 }

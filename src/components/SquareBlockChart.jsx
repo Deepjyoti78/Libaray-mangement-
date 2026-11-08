@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 /**
  * SquareBlockChart
@@ -11,21 +11,17 @@ export default function SquareBlockChart({
   data = [],
   period = 'monthly',
   onPeriodChange,
-  totalLoans = 10320,
+  totalLoans = 0,
 }) {
   const { isDark } = useTheme();
-  const [hoveredIdx, setHoveredIdx] = useState(5); // Default hovered on Jun (index 5) as in reference!
+  const [hoveredIdx, setHoveredIdx] = useState(null); // Default hovered on Jun (index 5) as in reference!
 
   // Y-axis tick marks
-  const yTicks = [
-    { value: 60000, label: '60k' },
-    { value: 50000, label: '50k' },
-    { value: 40000, label: '40k' },
-    { value: 30000, label: '30k' },
-    { value: 20000, label: '20k' },
-    { value: 10000, label: '10k' },
-    { value: 0, label: '0' },
-  ];
+  const maxVal = Math.max(6, ...data.map((item) => item.issued + item.returned));
+  const yTicks = Array.from({ length: 7 }, (_, index) => {
+    const value = Math.round(maxVal * (6 - index) / 6);
+    return { value, label: value >= 1000 ? (value / 1000).toFixed(1) + 'k' : String(value) };
+  });
 
   // Grid dimensions
   const svgWidth = 780;
@@ -44,7 +40,7 @@ export default function SquareBlockChart({
   const cellGap = 2.4;
   const stepY = cellSize + cellGap;
 
-  const maxVal = 60000;
+
   const itemsCount = data.length || 12;
   const colSpacing = chartWidth / itemsCount;
 
@@ -204,11 +200,11 @@ export default function SquareBlockChart({
             // Calculate stacked cell counts
             const issuedCells = Math.min(
               totalVerticalCells,
-              Math.max(1, Math.round((item.issued / maxVal) * totalVerticalCells))
+              Math.max(0, Math.round((item.issued / maxVal) * totalVerticalCells))
             );
             const returnedCells = Math.min(
               totalVerticalCells - issuedCells,
-              Math.max(1, Math.round((item.returned / maxVal) * totalVerticalCells))
+              Math.max(0, Math.round((item.returned / maxVal) * totalVerticalCells))
             );
 
             const isHovered = hoveredIdx === colIdx;
@@ -349,7 +345,7 @@ export default function SquareBlockChart({
                   className="tooltip-header"
                   fill={isDark ? '#FFFFFF' : '#111111'}
                 >
-                  {activeItem.label} {activeItem.year || 2025}
+                  {activeItem.label} {activeItem.year || ''}
                 </text>
 
                 {/* Tooltip Row 1: Books Issued */}

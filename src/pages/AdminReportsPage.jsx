@@ -1,59 +1,34 @@
-import React, { useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import {
-  BarChart2,
-  TrendingUp,
-  Users,
-  Clock,
-  Download,
-  Calendar,
-  BookOpen,
-  Filter,
-  CheckCircle2,
-  Layers,
-  ArrowUpRight,
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useTheme } from '../context/theme';
+import { BarChart2, TrendingUp, Users, Clock, Download } from 'lucide-react';
 
-const MONTHLY_CIRCULATION = [
-  { month: 'Jan 2026', issued: 2850, returned: 2620, net: '+230' },
-  { month: 'Feb 2026', issued: 3120, returned: 2980, net: '+140' },
-  { month: 'Mar 2026', issued: 3450, returned: 3310, net: '+140' },
-  { month: 'Apr 2026', issued: 3980, returned: 3720, net: '+260' },
-  { month: 'May 2026', issued: 2900, returned: 3100, net: '-200' },
-  { month: 'Jun 2026', issued: 4120, returned: 3890, net: '+230' },
-  { month: 'Jul 2026', issued: 3680, returned: 3510, net: '+170' },
-  { month: 'Aug 2026', issued: 3790, returned: 3640, net: '+150' },
-  { month: 'Sep 2026', issued: 4050, returned: 3880, net: '+170' },
-  { month: 'Oct 2026', issued: 4320, returned: 4180, net: '+140' },
-];
 
-const TOP_BORROWED_BOOKS = [
-  { rank: 1, title: 'Norwegian Wood', author: 'Haruki Murakami', category: 'Fiction', borrows: 428, turnover: '94%' },
-  { rank: 2, title: 'One Piece: Romance Dawn (Vol. 1)', author: 'Eiichiro Oda', category: 'Manga', borrows: 392, turnover: '98%' },
-  { rank: 3, title: 'Kokoro', author: 'Natsume Soseki', category: 'Literature', borrows: 310, turnover: '85%' },
-  { rank: 4, title: 'Your Name (Kimi no Na wa)', author: 'Makoto Shinkai', category: 'Fiction', borrows: 285, turnover: '92%' },
-  { rank: 5, title: 'Demon Slayer (Vol. 1)', author: 'Koyoharu Gotouge', category: 'Manga', borrows: 274, turnover: '89%' },
-  { rank: 6, title: 'Modern Japanese Architecture', author: 'Kengo Kuma', category: 'Arts & Culture', borrows: 215, turnover: '76%' },
-  { rank: 7, title: 'Snow Country', author: 'Yasunari Kawabata', category: 'Literature', borrows: 198, turnover: '78%' },
-  { rank: 8, title: 'AI & Robotics in Japan', author: 'Dr. Hiroshi Ishiguro', category: 'Science & Tech', borrows: 165, turnover: '70%' },
-];
 
-const CATEGORY_DISTRIBUTION = [
-  { name: 'Fiction', count: 3820, percent: 31, color: '#1A1A1A' },
-  { name: 'Manga & Graphic Novels', count: 3200, percent: 26, color: '#333333' },
-  { name: 'Science & Tech', count: 2460, percent: 20, color: '#555555' },
-  { name: 'Japanese History', count: 1840, percent: 15, color: '#777777' },
-  { name: 'Arts & Traditional Crafts', count: 1160, percent: 8, color: '#999999' },
-];
 
 export default function AdminReportsPage() {
   const { isDark } = useTheme();
-  const [reportPeriod, setReportPeriod] = useState('2026');
+  const [report, setReport] = useState({ monthly: [], topBooks: [], categories: [], totalLoans: 0, retention: 0, utilization: 0, averageLoanDays: 0 });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const controller = new AbortController();
+    async function load() {
+      try {
+        const response = await fetch('/api/admin/reports', { credentials: 'include', signal: controller.signal });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Could not load reports.');
+        if (!controller.signal.aborted) setReport(data);
+      } catch (cause) { if (!controller.signal.aborted) setError(cause.message); }
+      finally { if (!controller.signal.aborted) setLoading(false); }
+    }
+    void load();
+    return () => controller.abort();
+  }, []);
 
   // Export full report CSV
   const handleExportFullReport = () => {
     const headers = ['Month', 'Volumes Issued', 'Volumes Returned', 'Net Circulation'];
-    const rows = MONTHLY_CIRCULATION.map((r) => [
+    const rows = report.monthly.map((r) => [
       `"${r.month}"`,
       r.issued,
       r.returned,
@@ -71,6 +46,8 @@ export default function AdminReportsPage() {
 
   return (
     <div className="admin-bookings-page admin-reports-page">
+      {error && <p role="alert">{error}</p>}
+      {loading && <p role="status">Loading reports…</p>}
       {/* 1. Page Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -89,7 +66,7 @@ export default function AdminReportsPage() {
             title="Download annual circulation report"
           >
             <Download size={14} className="pill-cal-icon" />
-            <span>Export Full Annual Report</span>
+            <span>Export Circulation Report</span>
           </button>
         </div>
       </div>
@@ -98,12 +75,12 @@ export default function AdminReportsPage() {
       <div className="bookings-kpi-grid">
         <div className="bookings-kpi-card">
           <div className="kpi-top-row">
-            <span className="kpi-label">ANNUAL CIRCULATION</span>
+            <span className="kpi-label">TOTAL CIRCULATION</span>
             <div className="kpi-icon-wrap"><BarChart2 size={17} /></div>
           </div>
-          <div className="kpi-main-number">36,260 Loans</div>
+          <div className="kpi-main-number">{report.totalLoans.toLocaleString()} Loans</div>
           <div className="kpi-footer-row">
-            <span className="kpi-trend positive">+14.2% YoY growth</span>
+            <span className="kpi-trend positive">Recorded lending transactions</span>
           </div>
         </div>
 
@@ -112,7 +89,7 @@ export default function AdminReportsPage() {
             <span className="kpi-label">PATRON RETENTION</span>
             <div className="kpi-icon-wrap"><Users size={17} /></div>
           </div>
-          <div className="kpi-main-number">94.2%</div>
+          <div className="kpi-main-number">{report.retention}%</div>
           <div className="kpi-footer-row">
             <span className="kpi-trend positive">Active borrowers returning</span>
           </div>
@@ -123,7 +100,7 @@ export default function AdminReportsPage() {
             <span className="kpi-label">COLLECTION UTILIZATION</span>
             <div className="kpi-icon-wrap"><TrendingUp size={17} /></div>
           </div>
-          <div className="kpi-main-number">68.5%</div>
+          <div className="kpi-main-number">{report.utilization}%</div>
           <div className="kpi-footer-row">
             <span className="kpi-sub-label">High active turnover</span>
           </div>
@@ -134,7 +111,7 @@ export default function AdminReportsPage() {
             <span className="kpi-label">AVG. LOAN DURATION</span>
             <div className="kpi-icon-wrap"><Clock size={17} /></div>
           </div>
-          <div className="kpi-main-number">11.4 Days</div>
+          <div className="kpi-main-number">{report.averageLoanDays} Days</div>
           <div className="kpi-footer-row">
             <span className="kpi-sub-label">Standard 14-day policy</span>
           </div>
@@ -147,7 +124,7 @@ export default function AdminReportsPage() {
         <div className="reports-card-panel">
           <div className="reports-card-header">
             <div className="reports-card-title-box">
-              <h2 className="reports-card-title">Monthly Lending &amp; Return Flow (2026)</h2>
+              <h2 className="reports-card-title">Monthly Lending &amp; Return Flow</h2>
               <span className="reports-card-subtitle">Volume transactions processed through circulation desk</span>
             </div>
           </div>
@@ -164,7 +141,7 @@ export default function AdminReportsPage() {
                 </tr>
               </thead>
               <tbody>
-                {MONTHLY_CIRCULATION.map((m) => (
+                {report.monthly.map((m) => (
                   <tr key={m.month}>
                     <td style={{ fontWeight: 600, color: isDark ? '#FFFFFF' : '#111111' }}>{m.month}</td>
                     <td style={{ fontFamily: 'monospace', fontSize: '13px', color: isDark ? '#E4E4E7' : '#111111' }}>{m.issued.toLocaleString()}</td>
@@ -187,7 +164,7 @@ export default function AdminReportsPage() {
                         <div
                           className="mini-chart-bar-fill"
                           style={{
-                            width: `${Math.min(100, (m.issued / 4500) * 100)}%`,
+                            width: `${Math.min(100, (m.issued / Math.max(1, ...report.monthly.map((row) => row.issued))) * 100)}%`,
                             backgroundColor: isDark ? '#FFFFFF' : '#111111',
                           }}
                         />
@@ -210,14 +187,14 @@ export default function AdminReportsPage() {
           </div>
 
           <div className="category-bars-list">
-            {CATEGORY_DISTRIBUTION.map((cat, idx) => {
+            {report.categories.map((cat, idx) => {
               const darkColors = ['#FFFFFF', '#E4E4E7', '#A1A1AA', '#71717A', '#52525B'];
               return (
                 <div key={cat.name} className="cat-bar-item">
                   <div className="cat-bar-labels">
                     <span className="cat-name">{cat.name}</span>
                     <span className="cat-count-pct">
-                      {cat.count.toLocaleString()} titles ({cat.percent}%)
+                      {cat.count.toLocaleString()} copies ({cat.percent}%)
                     </span>
                   </div>
                   <div className="copies-progress-track">
@@ -238,7 +215,7 @@ export default function AdminReportsPage() {
           <div className="reports-top-titles-section">
             <h3 className="section-small-title">Most Borrowed Volumes</h3>
             <div className="top-titles-list">
-              {TOP_BORROWED_BOOKS.slice(0, 5).map((b) => (
+              {report.topBooks.slice(0, 5).map((b) => (
                 <div key={b.rank} className="top-title-row">
                   <div className="top-rank-badge">#{b.rank}</div>
                   <div className="top-title-text">

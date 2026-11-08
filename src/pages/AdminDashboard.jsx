@@ -1,15 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import {
-  BookOpen,
-  ShoppingCart,
-  Users,
-  AlertCircle,
-  Calendar,
-  Download,
-  ChevronDown,
-  RefreshCw,
-} from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../context/auth';
+import { BookOpen, ShoppingCart, Users, AlertCircle, Calendar, Download, ChevronDown } from 'lucide-react';
 import KpiCard from '../components/KpiCard';
 import SquareBlockChart from '../components/SquareBlockChart';
 import BooksByCategoryCard from '../components/BooksByCategoryCard';
@@ -21,13 +12,13 @@ export default function AdminDashboard() {
   const { user } = useAuth();
 
   // State
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [analyticsData, setAnalyticsData] = useState({
     kpi: {
-      totalBooks: 12480,
-      totalLoans: 10320,
-      activeMembers: 4305,
-      overdueItems: 196,
+      totalBooks: 0,
+      totalLoans: 0,
+      activeMembers: 0,
+      overdueItems: 0,
     },
     categories: [],
     overdueTrend: [],
@@ -35,7 +26,7 @@ export default function AdminDashboard() {
 
   const [circulationPeriod, setCirculationPeriod] = useState('monthly');
   const [circulationData, setCirculationData] = useState([]);
-  const [totalCirculationLoans, setTotalCirculationLoans] = useState(10320);
+  const [totalCirculationLoans, setTotalCirculationLoans] = useState(0);
 
   // Table state
   const [loans, setLoans] = useState([]);
@@ -46,7 +37,7 @@ export default function AdminDashboard() {
 
   // Filter Period for header
   const [headerPeriod, setHeaderPeriod] = useState('Daily');
-  const [selectedDate, setSelectedDate] = useState('2025-11-06');
+  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [periodDropdownOpen, setPeriodDropdownOpen] = useState(false);
 
@@ -66,20 +57,20 @@ export default function AdminDashboard() {
   };
 
   // 2. Fetch circulation statistics
-  const fetchCirculationData = async (period = circulationPeriod) => {
+  const fetchCirculationData = useCallback(async (period) => {
     try {
-      const res = await fetch(`/api/admin/circulation?period=${period}&year=2025`, {
+      const res = await fetch(`/api/admin/circulation?period=${period}&year=${selectedDate.slice(0, 4)}`, {
         credentials: 'include',
       });
       if (res.ok) {
         const data = await res.json();
         setCirculationData(data.data || []);
-        if (data.totalLoans) setTotalCirculationLoans(data.totalLoans);
+        if (data.totalLoans !== undefined) setTotalCirculationLoans(data.totalLoans);
       }
     } catch (err) {
       console.error('Failed to load circulation stats:', err);
     }
-  };
+  }, [selectedDate]);
 
   // 3. Fetch recent loans table
   const fetchLoans = async (page = loansPage, search = loansSearch) => {
@@ -110,7 +101,7 @@ export default function AdminDashboard() {
       setLoading(false);
     }
     init();
-  }, []);
+  }, [fetchCirculationData]);
 
   // Handle circulation period switch
   const handlePeriodChange = (newPeriod) => {
@@ -285,25 +276,25 @@ export default function AdminDashboard() {
           icon={BookOpen}
           label="TOTAL BOOKS"
           value={analyticsData.kpi.totalBooks}
-          sparklineData={[10, 16, 12, 22, 18, 25, 20, 29]}
+
         />
         <KpiCard
           icon={ShoppingCart}
           label="TOTAL LOANS"
           value={analyticsData.kpi.totalLoans}
-          sparklineData={[8, 14, 18, 15, 20, 24, 28, 30]}
+
         />
         <KpiCard
           icon={Users}
           label="ACTIVE MEMBERS"
           value={analyticsData.kpi.activeMembers}
-          sparklineData={[12, 10, 18, 16, 22, 21, 26, 28]}
+
         />
         <KpiCard
           icon={AlertCircle}
           label="OVERDUE ITEMS"
           value={analyticsData.kpi.overdueItems}
-          sparklineData={[14, 20, 16, 24, 19, 28, 22, 31]}
+
         />
       </section>
 

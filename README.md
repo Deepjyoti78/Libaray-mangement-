@@ -23,11 +23,11 @@ This project is a full-stack slot-booking and visitor check-in system designed f
 ## 2. Technology Stack & Architecture
 
 - **Frontend**: React 19, Vite, React Router v7, Lucide Icons, Vanilla CSS design tokens adhering to Japanese editorial aesthetics (`#F2EDE3` paper, `#352319` espresso, `#AC512E` terracotta).
-- **Backend**: Node.js, Express 4, Zod schema validation, JSON Web Tokens (`jsonwebtoken`), bcrypt password hashing (`bcryptjs`), QR Code generation (`qrcode`), Nodemailer with development fallback.
+- **Backend**: Node.js, Express 5, Zod schema validation, JSON Web Tokens (`jsonwebtoken`), bcrypt password hashing (`bcryptjs`), QR Code generation (`qrcode`), Nodemailer with development fallback.
 - **Database**:
   - Embedded Persistent PostgreSQL engine (`@electric-sql/pglite`) storing to local `./data/postgres`.
   - Supports standard external PostgreSQL via `DATABASE_URL` (using `pg.Pool`).
-  - Full ACID transaction support with row-level locks (`SELECT ... FOR UPDATE OF b`) for atomic capacity management and concurrency protection.
+  - ACID transactions use dedicated row locks for both visitor/day limits and facility/session/day capacity, including when a slot has no bookings yet.
 
 ---
 
@@ -40,14 +40,14 @@ This project is a full-stack slot-booking and visitor check-in system designed f
 - `bookings`: Reservations with unguessable `JF-2026-XXXXX` public references, SHA-256 hashed check-in tokens, visitor details, status lifecycle (`confirmed`, `checked_in`, `completed`, `cancelled`, `no_show`), and timestamps.
 - `closure_dates`: Exceptional holidays and maintenance overrides.
 - `settings`: Operational policies (daily limits, advance booking window, cancellation cutoffs).
-- `audit_events`: Tamper-evident log of staff and system actions.
+- `audit_events`: Audit log of staff and system actions.
 
 ---
 
 ## 4. Setup & Running Locally
 
 ### Prerequisites
-- Node.js 18+ (tested on Node.js v24.2.0)
+- Node.js 22.12+ (tested on Node.js v24.2.0)
 - npm
 
 ### 1. Install Dependencies
@@ -61,8 +61,8 @@ Copy the provided `.env.example` to `.env`:
 cp .env.example .env
 ```
 Key variables:
-- `PORT=3001` (Backend server port)
-- `FRONTEND_ORIGIN=http://localhost:5173` (Frontend CORS origin)
+- `PORT=3005` (Backend server port)
+- `FRONTEND_ORIGIN=http://localhost:5174` (Frontend CORS origin)
 - `JWT_SECRET=super-secret-jwt-key-for-development-only-replace-in-prod`
 - `DEMO_ADMIN_EMAIL=admin@library.delhi`
 - `DEMO_ADMIN_PASSWORD=LibraryDemo2026!`
@@ -80,14 +80,14 @@ Run both frontend and backend concurrently:
 npm start
 ```
 Or start them individually:
-- Backend: `npm run server` (runs at `http://localhost:3001`)
-- Frontend: `npm run dev` (runs at `http://localhost:5173`)
+- Backend: `npm run server` (runs at `http://localhost:3005`)
+- Frontend: `npm run client` (runs at `http://localhost:5174`)
 
 ---
 
 ## 5. Staff Admin Credentials (Development Seed)
 
-- **URL**: `http://localhost:5173/admin/login`
+- **URL**: `http://localhost:5174/admin/login`
 - **Email**: `admin@library.delhi`
 - **Password**: `LibraryDemo2026!`
 - *(A one-click "Quick-fill demo admin credentials" button is also provided on the login page for rapid evaluation.)*
@@ -96,7 +96,7 @@ Or start them individually:
 
 ## 6. Automated Test Suite
 
-A test suite containing 14 end-to-end specification tests is included in `tests/booking.test.js`:
+The original 14 booking specifications and regression tests for persistence, concurrent updates, policy enforcement, and production security are included in `tests/`:
 
 ```bash
 npm test
@@ -136,3 +136,13 @@ npm test
 - **Prototype Disclaimer**: This is an independent student prototype concept and has **no affiliation with The Japan Foundation, New Delhi**.
 - **Fictional Data**: All capacities, member IDs, and schedules are demonstration placeholders.
 - **Camera Access**: In local development, camera QR scanning requires `localhost` or an HTTPS origin due to browser WebRTC security policies. Manual booking reference search is provided as a seamless fallback.
+
+## Production setup
+
+Use an HTTPS `FRONTEND_ORIGIN`, unique `JWT_SECRET` and `COOKIE_SECRET` values of at least 32 characters, and a persistent database. Vercel deployments require `DATABASE_URL`; temporary serverless disk storage is not supported.
+
+An empty production database creates no demo accounts or sample records. Supply `BOOTSTRAP_ADMIN_EMAIL` and a unique `BOOTSTRAP_ADMIN_PASSWORD` (at least 12 characters) to create the first administrator. Remove the bootstrap password after initialization. Essential spaces and sessions are created with zero capacity; set the real seat limits in Admin Settings before accepting bookings. The demo seed command is disabled in production.
+
+Catalog, members, loans, fines, staff, and branches now use authenticated database-backed management APIs. Staff creation requires an initial password and administrator access. Loan issue/return updates inventory atomically. Conflicting edits are rejected instead of overwriting another staff member’s changes. Reports are calculated from stored records.
+
+`npm test` always uses a new temporary database and a dynamically allocated API port. It never reads or resets the development database. Optional external PostgreSQL tests use `TEST_DATABASE_URL` and a separate temporary schema.

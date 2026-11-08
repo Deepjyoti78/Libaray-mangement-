@@ -1,27 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import {
-  Search,
-  RefreshCw,
-  Download,
-  UserCheck,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  Clock,
-  CalendarDays,
-  Eye,
-  MoreHorizontal,
-  Copy,
-  Check,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Building2,
-  ShieldCheck,
-  User,
-} from 'lucide-react';
+import { Search, RefreshCw, Download, UserCheck, CheckCircle2, XCircle, AlertCircle, Clock, CalendarDays, Eye, MoreHorizontal, Copy, Check, X, Plus, Building2, ShieldCheck, User } from 'lucide-react';
 import ConfirmationModal from '../components/ConfirmationModal';
 import TablePagination from '../components/TablePagination';
 
@@ -44,7 +23,7 @@ export default function AdminBookingsPage() {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [stats, setStats] = useState({
+  const [, setStats] = useState({
     total_bookings: 0,
     expected_count: 0,
     checked_in_count: 0,

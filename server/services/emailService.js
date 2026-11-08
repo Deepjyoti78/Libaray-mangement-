@@ -66,6 +66,7 @@ ${config.frontendOrigin}/booking/confirmation/${ref}?token=${managementToken}
   }
 
   // Development Fallback: clearly report that email delivery is simulated/logged
+  if (config.nodeEnv === 'test') return { delivered: false, mode: 'test' };
   console.log('─────────────────────────────────────────────────────────────────');
   console.log('📧 [DEV EMAIL SERVICE] Simulated Delivery (SMTP Unconfigured)');
   console.log(`To: ${email}`);

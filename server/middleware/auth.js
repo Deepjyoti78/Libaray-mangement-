@@ -32,7 +32,7 @@ export async function requireAuth(req, res, next) {
 
     req.user = staffRes.rows[0];
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({ error: 'Invalid or expired session. Please log in again.' });
   }
 }

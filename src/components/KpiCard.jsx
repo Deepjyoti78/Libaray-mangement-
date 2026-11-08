@@ -9,7 +9,7 @@ export default function KpiCard({
   icon: Icon,
   label,
   value,
-  sparklineData = [8, 14, 18, 12, 22, 26, 20, 28],
+  sparklineData = [],
 }) {
   const maxVal = Math.max(...sparklineData, 30);
 

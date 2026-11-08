@@ -1,101 +1,13 @@
+import useCollection from '../hooks/useCollection';
+import CollectionStatus from '../components/CollectionStatus';
 import React, { useState, useMemo } from 'react';
-import {
-  Search,
-  Plus,
-  ShieldCheck,
-  UserCheck,
-  Key,
-  Lock,
-  Edit2,
-  Trash2,
-  X,
-  Check,
-  Mail,
-  Building2,
-  AlertCircle,
-  Clock,
-  RotateCw,
-} from 'lucide-react';
+import { Search, Plus, ShieldCheck, UserCheck, Key, Lock, Edit2, X, Check, Building2 } from 'lucide-react';
 
-const INITIAL_STAFF = [
-  {
-    id: 1,
-    name: 'Aarav Mehta',
-    email: 'admin@library.delhi',
-    phone: '+91 98111 22334',
-    role: 'Super Admin',
-    branch: 'Central Reading Room (Lajpat Nagar)',
-    permissions: ['Root System', 'Catalog', 'Circulation', 'Fines & Waivers', 'User Management', 'Settings'],
-    status: 'active',
-    lastActive: 'Just now (Active)',
-    twoFactor: true,
-  },
-  {
-    id: 2,
-    name: 'Keiko Tanaka',
-    email: 'keiko.tanaka@japanfoundation.org',
-    phone: '+91 98222 33445',
-    role: 'Chief Librarian',
-    branch: 'Special Collections & Arts Pavilion',
-    permissions: ['Catalog Master', 'Circulation', 'Fines & Waivers', 'Reports & Acquisitions'],
-    status: 'active',
-    lastActive: '12 mins ago',
-    twoFactor: true,
-  },
-  {
-    id: 3,
-    name: 'Rohit Sen',
-    email: 'rohit.sen@library.delhi',
-    phone: '+91 98333 44556',
-    role: 'Circulation Officer',
-    branch: 'Main Desk (Ground Floor)',
-    permissions: ['Check-in/Check-out', 'Member Registration', 'Collect Fines'],
-    status: 'active',
-    lastActive: '45 mins ago',
-    twoFactor: true,
-  },
-  {
-    id: 4,
-    name: 'Haruka Sato',
-    email: 'haruka.sato@japanfoundation.org',
-    phone: '+91 98444 55667',
-    role: 'Cataloger Specialist',
-    branch: 'Manga Corner & Media Center',
-    permissions: ['ISBN Cataloging', 'Shelf Assignment', 'Inventory Audits'],
-    status: 'active',
-    lastActive: '2 hours ago',
-    twoFactor: true,
-  },
-  {
-    id: 5,
-    name: 'Sunil Bhattacharya',
-    email: 'sunil.b@library.delhi',
-    phone: '+91 98555 66778',
-    role: 'Circulation Officer',
-    branch: 'Central Reading Room',
-    permissions: ['Check-in/Check-out', 'Reservations Desk'],
-    status: 'on_leave',
-    lastActive: '3 days ago',
-    twoFactor: true,
-  },
-  {
-    id: 6,
-    name: 'Mayumi Endo',
-    email: 'mayumi.e@japanfoundation.org',
-    phone: '+91 98666 77889',
-    role: 'Senior Librarian',
-    branch: 'Japanese Language Lab',
-    permissions: ['Catalog', 'Circulation', 'Scholar Liaison', 'Acquisitions'],
-    status: 'active',
-    lastActive: 'Yesterday',
-    twoFactor: true,
-  },
-];
 
 const ROLES = ['All', 'Super Admin', 'Chief Librarian', 'Senior Librarian', 'Circulation Officer', 'Cataloger Specialist'];
 
 export default function AdminLibrariansPage() {
-  const [staffList, setStaffList] = useState(INITIAL_STAFF);
+  const [staffList, setStaffList, collectionStatus] = useCollection('staff');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('All');
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
@@ -103,6 +15,7 @@ export default function AdminLibrariansPage() {
 
   // New staff form
   const [newStaffForm, setNewStaffForm] = useState({
+    password: '',
     name: '',
     email: '',
     phone: '',
@@ -132,7 +45,7 @@ export default function AdminLibrariansPage() {
   const adminCount = staffList.filter((s) => s.role.includes('Admin') || s.role.includes('Chief')).length;
 
   // Add staff
-  const handleInviteStaff = (e) => {
+  const handleInviteStaff = async (e) => {
     e.preventDefault();
     const created = {
       id: Date.now(),
@@ -143,12 +56,13 @@ export default function AdminLibrariansPage() {
       branch: newStaffForm.branch,
       permissions: newStaffForm.permissions,
       status: 'active',
-      lastActive: 'Invitation Pending',
+      password: newStaffForm.password,
       twoFactor: false,
     };
-    setStaffList([created, ...staffList]);
+    if (!(await setStaffList([created, ...staffList]))) return;
     setIsInviteModalOpen(false);
     setNewStaffForm({
+      password: '',
       name: '',
       email: '',
       phone: '',
@@ -159,12 +73,12 @@ export default function AdminLibrariansPage() {
   };
 
   // Save edit
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
     if (!editingStaff) return;
-    setStaffList(
+    if (!(await setStaffList(
       staffList.map((s) => (s.id === editingStaff.id ? { ...s, ...editingStaff } : s))
-    );
+    ))) return;
     setEditingStaff(null);
   };
 
@@ -191,6 +105,8 @@ export default function AdminLibrariansPage() {
 
   return (
     <div className="admin-bookings-page admin-librarians-page">
+      <CollectionStatus {...collectionStatus} />
+      <fieldset disabled={collectionStatus.loading || collectionStatus.saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {/* 1. Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -209,7 +125,7 @@ export default function AdminLibrariansPage() {
             title="Invite a new staff member"
           >
             <Plus size={14} className="pill-cal-icon" />
-            <span>Invite Staff Member</span>
+            <span>Add Staff Account</span>
           </button>
         </div>
       </div>
@@ -389,7 +305,7 @@ export default function AdminLibrariansPage() {
             <div className="modal-dialog-header">
               <div className="modal-header-text">
                 <span className="dialog-eyebrow">STAFF ONBOARDING</span>
-                <h2 className="dialog-title">Invite New Team Member</h2>
+                <h2 className="dialog-title">Add Staff Account</h2>
               </div>
               <button
                 type="button"
@@ -401,6 +317,11 @@ export default function AdminLibrariansPage() {
             </div>
 
             <form onSubmit={handleInviteStaff} className="catalog-modal-form">
+              <div className="form-field-item">
+                <label htmlFor="initial-staff-password">Initial password *</label>
+                <input id="initial-staff-password" type="password" autoComplete="new-password" minLength={12} required value={newStaffForm.password} onChange={(event) => setNewStaffForm({ ...newStaffForm, password: event.target.value })} />
+                <small>At least 12 characters. Share the account credentials securely with the staff member.</small>
+              </div>
               <div className="form-grid-2col">
                 <div className="form-field-item">
                   <label>Full Name *</label>
@@ -494,7 +415,7 @@ export default function AdminLibrariansPage() {
                 </button>
                 <button type="submit" className="action-primary-btn">
                   <Plus size={15} />
-                  <span>Send Staff Invitation</span>
+                  <span>Create Staff Account</span>
                 </button>
               </div>
             </form>
@@ -596,6 +517,7 @@ export default function AdminLibrariansPage() {
           </div>
         </div>
       )}
+      </fieldset>
     </div>
   );
 }

@@ -5,9 +5,9 @@ export default function AddTransactionModal({ isOpen, onClose, onCreated }) {
   const [memberName, setMemberName] = useState('');
   const [bookTitle, setBookTitle] = useState('');
   const [type, setType] = useState('Loan');
-  const [issueDate, setIssueDate] = useState(new Date().toISOString().split('T')[0]);
+  const [issueDate, setIssueDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [dueDate, setDueDate] = useState(
-    new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0]
+    () => new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0]
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

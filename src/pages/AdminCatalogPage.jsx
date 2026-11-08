@@ -1,238 +1,10 @@
+import useCollection from '../hooks/useCollection';
+import CollectionStatus from '../components/CollectionStatus';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import {
-  Search,
-  Plus,
-  Download,
-  Filter,
-  SlidersHorizontal,
-  ChevronDown,
-  BookOpen,
-  ArrowLeftRight,
-  CheckCircle2,
-  AlertCircle,
-  AlertTriangle,
-  Eye,
-  Edit2,
-  Trash2,
-  X,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Layers,
-  Sparkles,
-  Barcode,
-  MapPin,
-  ExternalLink,
-} from 'lucide-react';
+import { Search, Plus, Download, SlidersHorizontal, ChevronDown, BookOpen, ArrowLeftRight, CheckCircle2, AlertTriangle, Eye, Edit2, Trash2, X, Check, Layers, Barcode, MapPin } from 'lucide-react';
 import TablePagination from '../components/TablePagination';
 
 // Initial curated Japanese and bilingual library catalog
-const INITIAL_BOOKS = [
-  {
-    id: 1,
-    isbn: '978-4-06-275889-1',
-    title: 'Norwegian Wood',
-    japaneseTitle: 'ノルウェイの森',
-    author: 'Haruki Murakami',
-    authorJa: '村上 春樹',
-    category: 'Fiction',
-    language: 'Japanese / English',
-    shelf: 'JPN.813.6/M97n',
-    copiesTotal: 6,
-    copiesAvailable: 4,
-    year: 1987,
-    status: 'available',
-    description: 'A nostalgic story of loss, grief and awakening sexuality in late 1960s Tokyo, centered on college student Toru Watanabe.',
-    publisher: 'Kodansha',
-  },
-  {
-    id: 2,
-    isbn: '978-4-10-100101-2',
-    title: 'Kokoro',
-    japaneseTitle: 'こころ',
-    author: 'Natsume Soseki',
-    authorJa: '夏目 漱石',
-    category: 'Literature',
-    language: 'Japanese / English',
-    shelf: 'JPN.813.5/N27k',
-    copiesTotal: 5,
-    copiesAvailable: 2,
-    year: 1914,
-    status: 'available',
-    description: 'A classic masterpiece dealing with isolation, modernity and the complex transition from the Meiji era to modern industrial Japan.',
-    publisher: 'Shinchosha',
-  },
-  {
-    id: 3,
-    isbn: '978-4-08-872509-3',
-    title: 'One Piece: Romance Dawn (Vol. 1)',
-    japaneseTitle: 'ONE PIECE 巻一',
-    author: 'Eiichiro Oda',
-    authorJa: '尾田 栄一郎',
-    category: 'Manga',
-    language: 'Japanese',
-    shelf: 'MANGA.J.741/O21o',
-    copiesTotal: 8,
-    copiesAvailable: 1,
-    year: 1997,
-    status: 'low_stock',
-    description: 'Monkey D. Luffy embarks on an epic voyage to find the legendary treasure and become the King of the Pirates.',
-    publisher: 'Shueisha Jump Comics',
-  },
-  {
-    id: 4,
-    isbn: '978-4-00-310101-5',
-    title: 'Rashomon and Other Stories',
-    japaneseTitle: '羅生門・鼻',
-    author: 'Ryunosuke Akutagawa',
-    authorJa: '芥川 龍之介',
-    category: 'Literature',
-    language: 'English Translation',
-    shelf: 'JPN.813.4/A38r',
-    copiesTotal: 4,
-    copiesAvailable: 4,
-    year: 1915,
-    status: 'available',
-    description: 'Iconic psychological short stories examining morality, truth and human survival during desolate times in Kyoto.',
-    publisher: 'Iwanami Bunko',
-  },
-  {
-    id: 5,
-    isbn: '978-4-79-813456-7',
-    title: 'Modern Japanese Architecture & Spatial Design',
-    japaneseTitle: '日本の現代建築と空間',
-    author: 'Kengo Kuma & Associates',
-    authorJa: '隈 研吾',
-    category: 'Arts & Culture',
-    language: 'Bilingual (EN/JA)',
-    shelf: 'ART.720.9/K96m',
-    copiesTotal: 3,
-    copiesAvailable: 3,
-    year: 2021,
-    status: 'available',
-    description: 'Exploration of natural timber, transparency, and traditional Japanese joinery in modern civic and museum structures.',
-    publisher: 'Shoeisha Architecture',
-  },
-  {
-    id: 6,
-    isbn: '978-4-04-101234-8',
-    title: 'Your Name (Kimi no Na wa) Light Novel',
-    japaneseTitle: '君の名は。',
-    author: 'Makoto Shinkai',
-    authorJa: '新海 誠',
-    category: 'Fiction',
-    language: 'Japanese',
-    shelf: 'JPN.813.6/S52y',
-    copiesTotal: 5,
-    copiesAvailable: 0,
-    year: 2016,
-    status: 'lent_out',
-    description: 'Two teenagers, Mitsuha and Taki, discover they are magically swapping bodies across time and distance in Japan.',
-    publisher: 'Kadokawa Bunko',
-  },
-  {
-    id: 7,
-    isbn: '978-4-10-109205-8',
-    title: 'Snow Country',
-    japaneseTitle: '雪国',
-    author: 'Yasunari Kawabata',
-    authorJa: '川端 康成',
-    category: 'Literature',
-    language: 'Japanese / English',
-    shelf: 'JPN.813.5/K22s',
-    copiesTotal: 5,
-    copiesAvailable: 3,
-    year: 1937,
-    status: 'available',
-    description: 'Nobel laureate Kawabata poignant depiction of an illicit love affair at an isolated hot-spring town in northern Japan.',
-    publisher: 'Shinchosha',
-  },
-  {
-    id: 8,
-    isbn: '978-4-53-231901-4',
-    title: 'AI, Robotics & High-Speed Rail Innovation in Japan',
-    japaneseTitle: '日本のAIロボティクスと新幹線イノベーション',
-    author: 'Dr. Hiroshi Ishiguro',
-    authorJa: '石黒 浩',
-    category: 'Science & Tech',
-    language: 'English Translation',
-    shelf: 'SCI.629.8/I77a',
-    copiesTotal: 4,
-    copiesAvailable: 2,
-    year: 2023,
-    status: 'available',
-    description: 'Insight into cutting-edge humanoid robotics, Shinkansen automated safety algorithms, and automation ethics.',
-    publisher: 'Nikkei Publishing',
-  },
-  {
-    id: 9,
-    isbn: '978-4-15-209801-1',
-    title: 'The Memory Police',
-    japaneseTitle: '密やかな結晶',
-    author: 'Yoko Ogawa',
-    authorJa: '小川 洋子',
-    category: 'Fiction',
-    language: 'Japanese / English',
-    shelf: 'JPN.813.6/O34m',
-    copiesTotal: 6,
-    copiesAvailable: 5,
-    year: 1994,
-    status: 'available',
-    description: 'An evocative Orwellian meditation on state control, remembrance, and vanishing objects on an isolated island.',
-    publisher: 'Hayakawa Publishing',
-  },
-  {
-    id: 10,
-    isbn: '978-4-09-123456-0',
-    title: 'Demon Slayer: Kimetsu no Yaiba (Vol. 1)',
-    japaneseTitle: '鬼滅の刃 1',
-    author: 'Koyoharu Gotouge',
-    authorJa: '吾峠 呼世晴',
-    category: 'Manga',
-    language: 'Japanese',
-    shelf: 'MANGA.J.741/G68d',
-    copiesTotal: 7,
-    copiesAvailable: 2,
-    year: 2016,
-    status: 'available',
-    description: 'Tanjiro Kamado sets out on a quest to avenge his slain family and cure his demon-turned sister Nezuko during the Taisho era.',
-    publisher: 'Shueisha',
-  },
-  {
-    id: 11,
-    isbn: '978-4-13-021001-9',
-    title: 'A History of Japan: From Prehistory to the 21st Century',
-    japaneseTitle: '概説 日本の歴史',
-    author: 'Prof. Kenji Takahashi',
-    authorJa: '高橋 健司',
-    category: 'History',
-    language: 'English Translation',
-    shelf: 'HIST.952.0/T13h',
-    copiesTotal: 4,
-    copiesAvailable: 4,
-    year: 2022,
-    status: 'available',
-    description: 'Thorough scholarly chronicle spanning Jomon civilization, the Heian court, Samurai warfare, Meiji restoration, and postwar economic ascent.',
-    publisher: 'University of Tokyo Press',
-  },
-  {
-    id: 12,
-    isbn: '978-4-88-335123-5',
-    title: 'Kenkyusha Japanese-English Comprehensive Dictionary',
-    japaneseTitle: '新和英大辞典',
-    author: 'Editorial Committee',
-    authorJa: '研究社 編集部',
-    category: 'Reference',
-    language: 'Bilingual (JA/EN)',
-    shelf: 'REF.813.0/K33d',
-    copiesTotal: 5,
-    copiesAvailable: 5,
-    year: 2020,
-    status: 'available',
-    description: 'The premier reference authority for Japanese idioms, classical terms, technical compounds, and grammar.',
-    publisher: 'Kenkyusha',
-  },
-];
 
 const CATEGORIES = [
   'All',
@@ -253,13 +25,13 @@ const AVAILABILITY_OPTIONS = [
 ];
 
 export default function AdminCatalogPage() {
-  const [books, setBooks] = useState(INITIAL_BOOKS);
+  const [books, setBooks, collectionStatus] = useCollection('books');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedBooks, setSelectedBooks] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize] = useState(8);
 
   // Custom theme dropdown state
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
@@ -337,7 +109,7 @@ export default function AdminCatalogPage() {
   const totalLent = totalCopies - totalAvailable;
 
   // Handle book creation
-  const handleCreateBook = (e) => {
+  const handleCreateBook = async (e) => {
     e.preventDefault();
     const created = {
       id: Date.now(),
@@ -347,7 +119,7 @@ export default function AdminCatalogPage() {
       year: parseInt(newBookForm.year, 10) || 2024,
       status: 'available',
     };
-    setBooks([created, ...books]);
+    if (!(await setBooks([created, ...books]))) return;
     setIsAddModalOpen(false);
     setNewBookForm({
       title: '',
@@ -365,12 +137,12 @@ export default function AdminCatalogPage() {
   };
 
   // Handle edit save
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
     if (!editingBook) return;
-    setBooks(
+    if (!(await setBooks(
       books.map((b) => (b.id === editingBook.id ? { ...b, ...editingBook } : b))
-    );
+    ))) return;
     if (inspectedBook?.id === editingBook.id) {
       setInspectedBook({ ...inspectedBook, ...editingBook });
     }
@@ -378,9 +150,9 @@ export default function AdminCatalogPage() {
   };
 
   // Handle confirm retire / delete
-  const handleConfirmRetire = () => {
+  const handleConfirmRetire = async () => {
     if (!bookToRetire) return;
-    setBooks((prev) => prev.filter((b) => b.id !== bookToRetire.id));
+    if (!(await setBooks((prev) => prev.filter((b) => b.id !== bookToRetire.id)))) return;
     if (inspectedBook?.id === bookToRetire.id) setInspectedBook(null);
     if (editingBook?.id === bookToRetire.id) setEditingBook(null);
     setBookToRetire(null);
@@ -427,6 +199,8 @@ export default function AdminCatalogPage() {
 
   return (
     <div className="admin-bookings-page admin-catalog-page">
+      <CollectionStatus {...collectionStatus} />
+      <fieldset disabled={collectionStatus.loading || collectionStatus.saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {/* 1. Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -1183,6 +957,7 @@ export default function AdminCatalogPage() {
           </div>
         </div>
       )}
+      </fieldset>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 export default function OverdueTrendChart({ data = [] }) {
   const { isDark } = useTheme();
@@ -16,7 +16,7 @@ export default function OverdueTrendChart({ data = [] }) {
   const chartWidth = svgWidth - paddingLeft - paddingRight;
   const chartHeight = svgHeight - paddingTop - paddingBottom;
 
-  const maxOverdue = 4000;
+  const maxOverdue = Math.max(4, ...data.map((item) => item.count));
   const totalVerticalCells = 10;
   const cellSize = 5;
   const cellGap = 1.8;
@@ -46,13 +46,7 @@ export default function OverdueTrendChart({ data = [] }) {
           preserveAspectRatio="xMidYMid meet"
         >
           {/* Y Axis Guide lines & Labels */}
-          {[
-            { val: 4000, label: '4k' },
-            { val: 3000, label: '3k' },
-            { val: 2000, label: '2k' },
-            { val: 1000, label: '1k' },
-            { val: 0, label: '0' },
-          ].map((tick, idx, arr) => {
+          {Array.from({ length: 5 }, (_, index) => { const val = Math.round(maxOverdue * (4 - index) / 4); return { val, label: String(val) }; }).map((tick, idx, arr) => {
             const y = paddingTop + (idx / (arr.length - 1)) * chartHeight;
             return (
               <g key={`y-${tick.label}`} className="overdue-y-line">
@@ -134,7 +128,7 @@ export default function OverdueTrendChart({ data = [] }) {
             className="overdue-x-label"
             fill={isDark ? '#A1A1AA' : '#8E8E8E'}
           >
-            1 NOV
+            {data[0]?.date || ''}
           </text>
           <text
             x={paddingLeft + chartWidth}
@@ -143,7 +137,7 @@ export default function OverdueTrendChart({ data = [] }) {
             className="overdue-x-label"
             fill={isDark ? '#A1A1AA' : '#8E8E8E'}
           >
-            30 NOV 2025
+            {data.at(-1)?.date || ''}
           </text>
 
           {/* Tooltip on hover */}

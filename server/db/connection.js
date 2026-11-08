@@ -1,15 +1,31 @@
 import fs from 'fs';
-import path from 'path';
+
 import { PGlite } from '@electric-sql/pglite';
 import pg from 'pg';
 import { config } from '../config.js';
 
 let dbInstance = null;
 let pgPool = null;
+let initialization = null;
+
+// Fail closed: an unreadable database must never be erased or replaced with
+// temporary storage. Keep the original files available for manual recovery.
+export async function initializeEmbeddedDatabase(directory, createDatabase = (dir) => new PGlite(dir)) {
+  fs.mkdirSync(directory, { recursive: true });
+  const instance = createDatabase(directory);
+  try {
+    await instance.waitReady;
+    return instance;
+  } catch (cause) {
+    try { await instance.close(); } catch { /* Preserve the original initialization error. */ }
+    throw new Error(`Cannot open database at ${directory}. Existing data was preserved.`, { cause });
+  }
+}
 
 export async function getDb() {
   if (config.databaseUrl) {
     if (!pgPool) {
+      pg.types.setTypeParser(1082, (value) => value);
       pgPool = new pg.Pool({ connectionString: config.databaseUrl });
     }
     return {
@@ -45,47 +61,18 @@ export async function getDb() {
       },
       async close() {
         if (pgPool) await pgPool.end();
+        pgPool = null;
       },
     };
   }
 
   // Use persistent embedded PostgreSQL (PGlite)
-  if (!dbInstance) {
-    if (!fs.existsSync(config.databaseDir)) {
-      fs.mkdirSync(config.databaseDir, { recursive: true });
-    } else {
-      // Remove stale lock/pid file if node was abruptly terminated
-      const pidPath = path.join(config.databaseDir, 'postmaster.pid');
-      if (fs.existsSync(pidPath)) {
-        try {
-          fs.unlinkSync(pidPath);
-        } catch (_) {}
-      }
-    }
-
-    try {
-      dbInstance = new PGlite(config.databaseDir);
-      await dbInstance.waitReady;
-    } catch (initErr) {
-      console.error('PGlite initialization failed, attempting recovery:', initErr);
-      try {
-        if (dbInstance) {
-          try { await dbInstance.close(); } catch (_) {}
-          dbInstance = null;
-        }
-        if (fs.existsSync(config.databaseDir)) {
-          try { fs.rmSync(config.databaseDir, { recursive: true, force: true }); } catch (_) {}
-        }
-        try { fs.mkdirSync(config.databaseDir, { recursive: true }); } catch (_) {}
-        dbInstance = new PGlite(config.databaseDir);
-        await dbInstance.waitReady;
-      } catch (recoveryErr) {
-        console.warn('PGlite directory initialization failed, falling back to in-memory instance:', recoveryErr);
-        dbInstance = new PGlite();
-        await dbInstance.waitReady;
-      }
-    }
+  if (!initialization) {
+    initialization = initializeEmbeddedDatabase(config.databaseDir)
+      .then((instance) => { dbInstance = instance; })
+      .catch((error) => { initialization = null; throw error; });
   }
+  await initialization;
 
   return {
     type: 'pglite',
@@ -108,6 +95,7 @@ export async function getDb() {
       if (dbInstance) {
         await dbInstance.close();
         dbInstance = null;
+        initialization = null;
       }
     },
   };

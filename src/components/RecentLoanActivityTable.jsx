@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, MoreHorizontal, Check, RefreshCw } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import TablePagination from './TablePagination';
 
 export default function RecentLoanActivityTable({

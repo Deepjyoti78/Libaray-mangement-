@@ -1,173 +1,10 @@
+import { todayInKolkata } from '../utils/dates';
+import useCollection from '../hooks/useCollection';
+import CollectionStatus from '../components/CollectionStatus';
 import React, { useState, useMemo } from 'react';
-import {
-  Search,
-  Plus,
-  Download,
-  ArrowLeftRight,
-  CheckCircle2,
-  AlertCircle,
-  Clock,
-  Calendar,
-  RotateCcw,
-  Printer,
-  X,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Barcode,
-  BookOpen,
-  User,
-  ExternalLink,
-  ShieldAlert,
-} from 'lucide-react';
+import { Search, Plus, Download, ArrowLeftRight, CheckCircle2, AlertCircle, Clock, RotateCcw, Printer, X, Check, Barcode } from 'lucide-react';
 import TablePagination from '../components/TablePagination';
 
-const INITIAL_LOANS = [
-  {
-    id: 1,
-    loanCode: '#04102',
-    bookTitle: 'Norwegian Wood',
-    bookJa: 'ノルウェイの森',
-    bookCategory: 'Fiction',
-    shelf: 'JPN.813.6/M97n',
-    memberName: 'Aoi Kinoshita',
-    memberNo: 'MEM-10492',
-    memberEmail: 'aoi.k@university.delhi.edu',
-    issueDate: '2026-10-14',
-    dueDate: '2026-10-28',
-    returnDate: null,
-    status: 'active',
-    fineAmount: 0,
-  },
-  {
-    id: 2,
-    loanCode: '#04103',
-    bookTitle: 'Kokoro',
-    bookJa: 'こころ',
-    bookCategory: 'Literature',
-    shelf: 'JPN.813.5/N27k',
-    memberName: 'Rohit Deshmukh',
-    memberNo: 'MEM-10381',
-    memberEmail: 'rohit.desh@gmail.com',
-    issueDate: '2026-10-18',
-    dueDate: '2026-11-01',
-    returnDate: null,
-    status: 'active',
-    fineAmount: 0,
-  },
-  {
-    id: 3,
-    loanCode: '#04104',
-    bookTitle: 'One Piece: Romance Dawn (Vol. 1)',
-    bookJa: 'ONE PIECE 巻一',
-    bookCategory: 'Manga',
-    shelf: 'MANGA.J.741/O21o',
-    memberName: 'Priyanka Sharma',
-    memberNo: 'MEM-10115',
-    memberEmail: 'priyanka.s@nihongo-delhi.org',
-    issueDate: '2026-10-05',
-    dueDate: '2026-10-19',
-    returnDate: null,
-    status: 'overdue',
-    fineAmount: 70, // 7 days @ ₹10
-  },
-  {
-    id: 4,
-    loanCode: '#04105',
-    bookTitle: 'Rashomon and Other Stories',
-    bookJa: '羅生門・鼻',
-    bookCategory: 'Literature',
-    shelf: 'JPN.813.4/A38r',
-    memberName: 'Takeshi Yamada',
-    memberNo: 'MEM-10024',
-    memberEmail: 't.yamada@j-corp.in',
-    issueDate: '2026-10-10',
-    dueDate: '2026-10-24',
-    returnDate: '2026-10-23',
-    status: 'returned',
-    fineAmount: 0,
-  },
-  {
-    id: 5,
-    loanCode: '#04106',
-    bookTitle: 'Modern Japanese Architecture & Spatial Design',
-    bookJa: '日本の現代建築と空間',
-    bookCategory: 'Arts & Culture',
-    shelf: 'ART.720.9/K96m',
-    memberName: 'Ananya Roy',
-    memberNo: 'MEM-10873',
-    memberEmail: 'ananya.roy@jnu.ac.in',
-    issueDate: '2026-10-20',
-    dueDate: '2026-10-27',
-    returnDate: null,
-    status: 'due_soon',
-    fineAmount: 0,
-  },
-  {
-    id: 6,
-    loanCode: '#04107',
-    bookTitle: 'Your Name (Kimi no Na wa)',
-    bookJa: '君の名は。',
-    bookCategory: 'Fiction',
-    shelf: 'JPN.813.6/S52y',
-    memberName: 'Siddharth Varma',
-    memberNo: 'MEM-10550',
-    memberEmail: 'sid.varma88@outlook.com',
-    issueDate: '2026-09-28',
-    dueDate: '2026-10-12',
-    returnDate: null,
-    status: 'overdue',
-    fineAmount: 140, // 14 days @ ₹10
-  },
-  {
-    id: 7,
-    loanCode: '#04108',
-    bookTitle: 'Snow Country',
-    bookJa: '雪国',
-    bookCategory: 'Literature',
-    shelf: 'JPN.813.5/K22s',
-    memberName: 'Meera Krishnan',
-    memberNo: 'MEM-10904',
-    memberEmail: 'meera.krish@arts.du.ac.in',
-    issueDate: '2026-10-22',
-    dueDate: '2026-11-05',
-    returnDate: null,
-    status: 'active',
-    fineAmount: 0,
-  },
-  {
-    id: 8,
-    loanCode: '#04109',
-    bookTitle: 'AI, Robotics & High-Speed Rail Innovation',
-    bookJa: '日本のAIロボティクス',
-    bookCategory: 'Science & Tech',
-    shelf: 'SCI.629.8/I77a',
-    memberName: 'Hiroshi Sato',
-    memberNo: 'MEM-10619',
-    memberEmail: 'sato.hiroshi@embassy-japan.org',
-    issueDate: '2026-10-08',
-    dueDate: '2026-10-22',
-    returnDate: '2026-10-21',
-    status: 'returned',
-    fineAmount: 0,
-  },
-  {
-    id: 9,
-    loanCode: '#04110',
-    bookTitle: 'The Memory Police',
-    bookJa: '密やかな結晶',
-    bookCategory: 'Fiction',
-    shelf: 'JPN.813.6/O34m',
-    memberName: 'Aoi Kinoshita',
-    memberNo: 'MEM-10492',
-    memberEmail: 'aoi.k@university.delhi.edu',
-    issueDate: '2026-10-24',
-    dueDate: '2026-11-07',
-    returnDate: null,
-    status: 'active',
-    fineAmount: 0,
-  },
-];
 
 const STATUS_TABS = [
   { key: 'all', label: 'All Transactions' },
@@ -178,13 +15,13 @@ const STATUS_TABS = [
 ];
 
 export default function AdminLoansPage() {
-  const [loans, setLoans] = useState(INITIAL_LOANS);
+  const [loans, setLoans, collectionStatus] = useCollection('loans');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const [quickReturnCode, setQuickReturnCode] = useState('');
   const [quickReturnMsg, setQuickReturnMsg] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize] = useState(8);
 
   // Modals state
   const [isNewLoanOpen, setIsNewLoanOpen] = useState(false);
@@ -235,7 +72,7 @@ export default function AdminLoansPage() {
   const totalReturned = loans.filter((l) => l.status === 'returned').length;
 
   // Rapid Barcode / Loan Code Return
-  const handleQuickReturn = (e) => {
+  const handleQuickReturn = async (e) => {
     e.preventDefault();
     if (!quickReturnCode.trim()) return;
 
@@ -255,24 +92,24 @@ export default function AdminLoansPage() {
     }
 
     const updated = [...loans];
-    const today = new Date().toISOString().split('T')[0];
+    const today = todayInKolkata();
     updated[foundIdx] = {
       ...updated[foundIdx],
       status: 'returned',
       returnDate: today,
     };
 
-    setLoans(updated);
+    if (!(await setLoans(updated))) return;
     setQuickReturnMsg(`Successfully returned ${updated[foundIdx].bookTitle} (${updated[foundIdx].loanCode})!`);
     setQuickReturnCode('');
     setTimeout(() => setQuickReturnMsg(''), 4500);
   };
 
   // 1-Click Mark Returned
-  const handleMarkReturned = (id) => {
-    const today = new Date().toISOString().split('T')[0];
+  const handleMarkReturned = async (id) => {
+    const today = todayInKolkata();
     let returnedTitle = '';
-    setLoans(
+    if (!(await setLoans(
       loans.map((l) => {
         if (l.id === id) {
           returnedTitle = l.bookTitle;
@@ -280,14 +117,14 @@ export default function AdminLoansPage() {
         }
         return l;
       })
-    );
+    ))) return;
     showToast(`Successfully returned "${returnedTitle || 'Book'}".`);
   };
 
   // Extend due date +14 days
-  const handleExtendLoan = (id) => {
+  const handleExtendLoan = async (id) => {
     let extendedTitle = '';
-    setLoans(
+    if (!(await setLoans(
       loans.map((l) => {
         if (l.id === id) {
           extendedTitle = l.bookTitle;
@@ -301,12 +138,12 @@ export default function AdminLoansPage() {
         }
         return l;
       })
-    );
+    ))) return;
     showToast(`Loan period for "${extendedTitle || 'Book'}" extended by 14 days.`);
   };
 
   // Issue new loan
-  const handleCreateLoan = (e) => {
+  const handleCreateLoan = async (e) => {
     e.preventDefault();
     const today = new Date();
     const due = new Date();
@@ -321,7 +158,7 @@ export default function AdminLoansPage() {
       bookCategory: 'General Collection',
       shelf: 'JPN.813.0/GEN',
       memberName: newLoanForm.memberName,
-      memberNo: newLoanForm.memberNo || `MEM-${Math.floor(10000 + Math.random() * 89999)}`,
+      memberNo: newLoanForm.memberNo.trim(),
       memberEmail: `${newLoanForm.memberName.toLowerCase().replace(/\s+/g, '.')}@example.com`,
       issueDate: today.toISOString().split('T')[0],
       dueDate: due.toISOString().split('T')[0],
@@ -330,9 +167,10 @@ export default function AdminLoansPage() {
       fineAmount: 0,
     };
 
-    setLoans([created, ...loans]);
+    const savedLoans = await setLoans([created, ...loans]);
+    if (!savedLoans) return;
     setIsNewLoanOpen(false);
-    setSlipLoan(created);
+    setSlipLoan(savedLoans[0]);
     setNewLoanForm({
       memberName: '',
       memberNo: '',
@@ -359,7 +197,7 @@ export default function AdminLoansPage() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Circulation_Ledger_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `Circulation_Ledger_${todayInKolkata()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -367,6 +205,8 @@ export default function AdminLoansPage() {
 
   return (
     <div className="admin-bookings-page admin-loans-page">
+      <CollectionStatus {...collectionStatus} />
+      <fieldset disabled={collectionStatus.loading || collectionStatus.saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {/* 1. Page Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -714,9 +554,10 @@ export default function AdminLoansPage() {
                   />
                 </div>
                 <div className="form-field-item">
-                  <label>Member Card No (Optional)</label>
+                  <label>Member Card No *</label>
                   <input
                     type="text"
+                    required
                     placeholder="e.g. MEM-10492"
                     value={newLoanForm.memberNo}
                     onChange={(e) => setNewLoanForm({ ...newLoanForm, memberNo: e.target.value })}
@@ -873,6 +714,7 @@ export default function AdminLoansPage() {
           <span>{toastMessage}</span>
         </div>
       )}
+      </fieldset>
     </div>
   );
 }

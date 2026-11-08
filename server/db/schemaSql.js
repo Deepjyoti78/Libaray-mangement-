@@ -1,4 +1,8 @@
-export const SCHEMA_SQL = `
+export const SCHEMA_SQL = `-- ═══════════════════════════════════════════════════════════
+-- The Library · Japan Foundation New Delhi
+-- Database Schema (PostgreSQL)
+-- ═══════════════════════════════════════════════════════════
+
 -- Facilities
 CREATE TABLE IF NOT EXISTS facilities (
   id VARCHAR(50) PRIMARY KEY,
@@ -168,4 +172,34 @@ CREATE INDEX IF NOT EXISTS idx_loans_status ON loans(status);
 CREATE INDEX IF NOT EXISTS idx_loans_issue_date ON loans(issue_date);
 CREATE INDEX IF NOT EXISTS idx_books_category ON books(category);
 CREATE INDEX IF NOT EXISTS idx_members_status ON members(status);
+
+-- Transaction guards for per-visitor limits and per-slot capacity.
+CREATE TABLE IF NOT EXISTS booking_locks (lock_key TEXT PRIMARY KEY);
+
+-- Additional management metadata; existing relational records stay authoritative.
+ALTER TABLE books ADD COLUMN IF NOT EXISTS details JSONB NOT NULL DEFAULT '{}';
+ALTER TABLE members ADD COLUMN IF NOT EXISTS details JSONB NOT NULL DEFAULT '{}';
+ALTER TABLE loans ADD COLUMN IF NOT EXISTS details JSONB NOT NULL DEFAULT '{}';
+ALTER TABLE staff_users ADD COLUMN IF NOT EXISTS details JSONB NOT NULL DEFAULT '{}';
+
+CREATE TABLE IF NOT EXISTS branches (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  details JSONB NOT NULL DEFAULT '{}'
+);
+CREATE TABLE IF NOT EXISTS fines (
+  id SERIAL PRIMARY KEY,
+  invoice_no VARCHAR(50) UNIQUE NOT NULL,
+  member_id INT NOT NULL REFERENCES members(id),
+  amount NUMERIC(12, 2) NOT NULL CHECK (amount > 0),
+  status VARCHAR(20) NOT NULL DEFAULT 'unpaid' CHECK (status IN ('unpaid', 'paid', 'waived')),
+  details JSONB NOT NULL DEFAULT '{}'
+);
+ALTER TABLE books ADD COLUMN IF NOT EXISTS version INT NOT NULL DEFAULT 1;
+ALTER TABLE members ADD COLUMN IF NOT EXISTS version INT NOT NULL DEFAULT 1;
+ALTER TABLE loans ADD COLUMN IF NOT EXISTS version INT NOT NULL DEFAULT 1;
+ALTER TABLE staff_users ADD COLUMN IF NOT EXISTS version INT NOT NULL DEFAULT 1;
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS version INT NOT NULL DEFAULT 1;
+ALTER TABLE fines ADD COLUMN IF NOT EXISTS version INT NOT NULL DEFAULT 1;
+
 `;

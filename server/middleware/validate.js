@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidDate } from '../utils/dates.js';
 
 export function validateBody(schema) {
   return (req, res, next) => {
@@ -24,7 +25,7 @@ export const createBookingSchema = z.object({
   sessionId: z.string().min(1, 'Please select a session.'),
   visitDate: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Visit date must be in YYYY-MM-DD format.'),
+    .refine(isValidDate, 'Visit date must be a valid date in YYYY-MM-DD format.'),
   visitorName: z
     .string()
     .min(2, 'Name must be at least 2 characters.')

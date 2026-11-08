@@ -1,89 +1,11 @@
+import useCollection from '../hooks/useCollection';
+import CollectionStatus from '../components/CollectionStatus';
 import React, { useState } from 'react';
-import {
-  Building2,
-  Plus,
-  MapPin,
-  Clock,
-  Users,
-  CheckCircle2,
-  Edit2,
-  Trash2,
-  X,
-  Check,
-  Wifi,
-  VolumeX,
-  Zap,
-  BookOpen,
-  Headphones,
-  Shield,
-  Layers,
-} from 'lucide-react';
+import { Building2, Plus, MapPin, Clock, Users, CheckCircle2, Edit2, X, Check, Layers } from 'lucide-react';
 
-const INITIAL_BRANCHES = [
-  {
-    id: 'central-reading-room',
-    name: 'Central Reading Room & Study Hall',
-    japaneseName: '中央閲覧室・学習ホール',
-    location: '5A, Ring Road, Lajpat Nagar-IV, New Delhi 110024',
-    totalSeats: 120,
-    currentOccupancy: 84,
-    hours: 'Tuesday – Saturday: 11:00 AM – 6:30 PM',
-    supervisor: 'Aarav Mehta & Rohit Sen',
-    phone: '+91 11 2644 2967',
-    email: 'readingroom@library.delhi',
-    status: 'open',
-    amenities: ['Silent Study Zone', 'Power Sockets at each desk', 'High-Speed Wi-Fi', 'Reference Desk', 'Climate Controlled'],
-    volumesCount: '12,480+ Volumes',
-  },
-  {
-    id: 'manga-corner',
-    name: 'Manga Corner & Cultural Media Center',
-    japaneseName: 'マンガコーナー・文化メディア室',
-    location: 'First Floor East Wing, Lajpat Nagar-IV, New Delhi',
-    totalSeats: 45,
-    currentOccupancy: 38,
-    hours: 'Tuesday – Saturday: 11:00 AM – 6:30 PM',
-    supervisor: 'Haruka Sato',
-    phone: '+91 11 2644 2968',
-    email: 'manga@library.delhi',
-    status: 'open',
-    amenities: ['Lounge & Beanbag Seating', 'Japanese Audio Stations', 'Bilingual Display Racks', 'Periodicals Archive'],
-    volumesCount: '3,800+ Manga Volumes',
-  },
-  {
-    id: 'nihongo-lab',
-    name: 'Japanese Language Learning Lab',
-    japaneseName: '日本語学習研究室',
-    location: 'Pavilion Level 2, Japan Foundation Campus, New Delhi',
-    totalSeats: 30,
-    currentOccupancy: 19,
-    hours: 'Tuesday – Saturday: 11:30 AM – 6:00 PM',
-    supervisor: 'Mayumi Endo',
-    phone: '+91 11 2644 2969',
-    email: 'language.lab@library.delhi',
-    status: 'open',
-    amenities: ['Multimedia Listening Booths', 'JLPT Test Prep Terminals', 'Digital Kanji Practice Workstations'],
-    volumesCount: '1,650+ Textbooks & Media',
-  },
-  {
-    id: 'special-collections',
-    name: 'Rare Manuscripts & Arts Folio Studio',
-    japaneseName: '特別収蔵庫・浮世絵美術資料室',
-    location: 'South Vault Archive Room, New Delhi',
-    totalSeats: 15,
-    currentOccupancy: 6,
-    hours: 'Wednesdays & Fridays: 1:00 PM – 5:00 PM (By Reservation)',
-    supervisor: 'Keiko Tanaka (Chief Curator)',
-    phone: '+91 11 2644 2970',
-    email: 'archives@library.delhi',
-    status: 'by_appointment',
-    amenities: ['Climate & Humidity Regulated', 'UV-Filtered Illumination', 'Archival Glove Handling Stations'],
-    volumesCount: '850+ Rare Folios & Prints',
-  },
-];
 
 export default function AdminBranchesPage() {
-  const [branches, setBranches] = useState(INITIAL_BRANCHES);
+  const [branches, setBranches, collectionStatus] = useCollection('branches');
   const [isAddBranchOpen, setIsAddBranchOpen] = useState(false);
   const [editingBranch, setEditingBranch] = useState(null);
 
@@ -104,7 +26,7 @@ export default function AdminBranchesPage() {
   const currentOccupancy = branches.reduce((acc, b) => acc + b.currentOccupancy, 0);
 
   // Add branch
-  const handleAddBranch = (e) => {
+  const handleAddBranch = async (e) => {
     e.preventDefault();
     const created = {
       id: `branch-${Date.now()}`,
@@ -114,22 +36,24 @@ export default function AdminBranchesPage() {
       status: 'open',
       amenities: ['High-Speed Wi-Fi', 'Power Outlets', 'Quiet Zone'],
     };
-    setBranches([...branches, created]);
+    if (!(await setBranches([...branches, created]))) return;
     setIsAddBranchOpen(false);
   };
 
   // Save edit
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
     if (!editingBranch) return;
-    setBranches(
+    if (!(await setBranches(
       branches.map((b) => (b.id === editingBranch.id ? { ...b, ...editingBranch } : b))
-    );
+    ))) return;
     setEditingBranch(null);
   };
 
   return (
     <div className="admin-bookings-page admin-branches-page">
+      <CollectionStatus {...collectionStatus} />
+      <fieldset disabled={collectionStatus.loading || collectionStatus.saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {/* 1. Page Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -460,6 +384,7 @@ export default function AdminBranchesPage() {
           </div>
         </div>
       )}
+      </fieldset>
     </div>
   );
 }

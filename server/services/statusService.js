@@ -43,5 +43,6 @@ export async function logAuditEvent(db, { actorType, actorId, action, entityType
     );
   } catch (err) {
     console.error('Failed to write audit event:', err.message);
+    throw err;
   }
 }

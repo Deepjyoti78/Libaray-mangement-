@@ -1,134 +1,9 @@
+import useCollection from '../hooks/useCollection';
+import CollectionStatus from '../components/CollectionStatus';
 import React, { useState, useMemo } from 'react';
-import {
-  Search,
-  Plus,
-  Download,
-  Receipt,
-  CreditCard,
-  AlertCircle,
-  CheckCircle2,
-  X,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  DollarSign,
-  Printer,
-  FileText,
-  ShieldCheck,
-  Calendar,
-} from 'lucide-react';
+import { Search, Plus, Download, Receipt, CreditCard, AlertCircle, CheckCircle2, X, Check, Printer } from 'lucide-react';
 import TablePagination from '../components/TablePagination';
 
-const INITIAL_FINES = [
-  {
-    id: 1,
-    invoiceNo: 'FINE-9021',
-    memberNo: 'MEM-10115',
-    memberName: 'Priyanka Sharma',
-    memberEmail: 'priyanka.s@nihongo-delhi.org',
-    itemTitle: 'One Piece: Romance Dawn (Vol. 1)',
-    loanCode: '#04104',
-    reason: 'Overdue Penalty (7 days late)',
-    amount: 70,
-    ratePerDay: 10,
-    incurredDate: '2026-10-19',
-    dueDate: '2026-10-26',
-    status: 'unpaid',
-    paymentMethod: null,
-    paidAt: null,
-    waivedReason: null,
-  },
-  {
-    id: 2,
-    invoiceNo: 'FINE-9018',
-    memberNo: 'MEM-10550',
-    memberName: 'Siddharth Varma',
-    memberEmail: 'sid.varma88@outlook.com',
-    itemTitle: 'Your Name (Kimi no Na wa)',
-    loanCode: '#04107',
-    reason: 'Overdue Penalty (14 days late)',
-    amount: 140,
-    ratePerDay: 10,
-    incurredDate: '2026-10-12',
-    dueDate: '2026-10-26',
-    status: 'unpaid',
-    paymentMethod: null,
-    paidAt: null,
-    waivedReason: null,
-  },
-  {
-    id: 3,
-    invoiceNo: 'FINE-8994',
-    memberNo: 'MEM-10381',
-    memberName: 'Rohit Deshmukh',
-    memberEmail: 'rohit.desh@gmail.com',
-    itemTitle: 'Tokyo Architecture Survey Folio',
-    loanCode: '#04088',
-    reason: 'Spine Binding Wear & Minor Stain',
-    amount: 250,
-    ratePerDay: null,
-    incurredDate: '2026-10-15',
-    dueDate: '2026-10-22',
-    status: 'paid',
-    paymentMethod: 'UPI (GPay / Paytm)',
-    paidAt: '2026-10-16',
-    waivedReason: null,
-  },
-  {
-    id: 4,
-    invoiceNo: 'FINE-8970',
-    memberNo: 'MEM-10492',
-    memberName: 'Aoi Kinoshita',
-    memberEmail: 'aoi.k@university.delhi.edu',
-    itemTitle: 'Japanese Calligraphy Masterclass',
-    loanCode: '#04071',
-    reason: 'Overdue Penalty (3 days late)',
-    amount: 30,
-    ratePerDay: 10,
-    incurredDate: '2026-10-10',
-    dueDate: '2026-10-17',
-    status: 'waived',
-    paymentMethod: null,
-    paidAt: null,
-    waivedReason: 'Authorized academic extension approved by Senior Librarian',
-  },
-  {
-    id: 5,
-    invoiceNo: 'FINE-8955',
-    memberNo: 'MEM-10873',
-    memberName: 'Ananya Roy',
-    memberEmail: 'ananya.roy@jnu.ac.in',
-    itemTitle: 'Lost Library Smart Access Card',
-    loanCode: null,
-    reason: 'Smart Card Replacement Fee',
-    amount: 100,
-    ratePerDay: null,
-    incurredDate: '2026-10-08',
-    dueDate: '2026-10-15',
-    status: 'paid',
-    paymentMethod: 'Cash (Desk Counter)',
-    paidAt: '2026-10-09',
-    waivedReason: null,
-  },
-  {
-    id: 6,
-    invoiceNo: 'FINE-8922',
-    memberNo: 'MEM-10024',
-    memberName: 'Takeshi Yamada',
-    memberEmail: 't.yamada@j-corp.in',
-    itemTitle: 'JLPT N1 Comprehensive Grammar',
-    loanCode: '#04012',
-    reason: 'Overdue Penalty (5 days late)',
-    amount: 50,
-    ratePerDay: 10,
-    incurredDate: '2026-09-25',
-    dueDate: '2026-10-02',
-    status: 'paid',
-    paymentMethod: 'Credit Card (Visa)',
-    paidAt: '2026-09-26',
-    waivedReason: null,
-  },
-];
 
 const STATUS_TABS = [
   { key: 'all', label: 'All Fines & Fees' },
@@ -138,11 +13,11 @@ const STATUS_TABS = [
 ];
 
 export default function AdminFinesPage() {
-  const [fines, setFines] = useState(INITIAL_FINES);
+  const [fines, setFines, collectionStatus] = useCollection('fines');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize] = useState(8);
 
   // Modals state
   const [isAddFineOpen, setIsAddFineOpen] = useState(false);
@@ -202,11 +77,11 @@ export default function AdminFinesPage() {
   const pendingAccountsCount = fines.filter((f) => f.status === 'unpaid').length;
 
   // Process payment
-  const handleConfirmPayment = (e) => {
+  const handleConfirmPayment = async (e) => {
     e.preventDefault();
     if (!collectingFine) return;
     const today = new Date().toISOString().split('T')[0];
-    setFines(
+    if (!(await setFines(
       fines.map((f) =>
         f.id === collectingFine.id
           ? {
@@ -214,10 +89,11 @@ export default function AdminFinesPage() {
               status: 'paid',
               paidAt: today,
               paymentMethod: paymentForm.method,
+              paymentReference: paymentForm.reference,
             }
           : f
       )
-    );
+    ))) return;
     setReceiptFine({
       ...collectingFine,
       status: 'paid',
@@ -228,10 +104,10 @@ export default function AdminFinesPage() {
   };
 
   // Process waiver
-  const handleConfirmWaiver = (e) => {
+  const handleConfirmWaiver = async (e) => {
     e.preventDefault();
     if (!waivingFine) return;
-    setFines(
+    if (!(await setFines(
       fines.map((f) =>
         f.id === waivingFine.id
           ? {
@@ -241,19 +117,19 @@ export default function AdminFinesPage() {
             }
           : f
       )
-    );
+    ))) return;
     setWaivingFine(null);
   };
 
   // Create manual fine
-  const handleCreateFine = (e) => {
+  const handleCreateFine = async (e) => {
     e.preventDefault();
     const today = new Date().toISOString().split('T')[0];
     const due = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
     const newFine = {
       id: Date.now(),
       invoiceNo: `FINE-${Math.floor(9030 + Math.random() * 900)}`,
-      memberNo: newFineForm.memberNo || `MEM-${Math.floor(10000 + Math.random() * 89999)}`,
+      memberNo: newFineForm.memberNo.trim(),
       memberName: newFineForm.memberName,
       memberEmail: `${newFineForm.memberName.toLowerCase().replace(/\s+/g, '.')}@example.com`,
       itemTitle: newFineForm.itemTitle || 'Library Materials / Facility Service',
@@ -269,7 +145,7 @@ export default function AdminFinesPage() {
       waivedReason: null,
     };
 
-    setFines([newFine, ...fines]);
+    if (!(await setFines([newFine, ...fines]))) return;
     setIsAddFineOpen(false);
     setNewFineForm({
       memberName: '',
@@ -306,6 +182,8 @@ export default function AdminFinesPage() {
 
   return (
     <div className="admin-bookings-page admin-fines-page">
+      <CollectionStatus {...collectionStatus} />
+      <fieldset disabled={collectionStatus.loading || collectionStatus.saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {/* 1. Page Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -887,6 +765,7 @@ export default function AdminFinesPage() {
           </div>
         </div>
       )}
+      </fieldset>
     </div>
   );
 }

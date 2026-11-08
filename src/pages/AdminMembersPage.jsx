@@ -1,163 +1,10 @@
+import useCollection from '../hooks/useCollection';
+import CollectionStatus from '../components/CollectionStatus';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import {
-  Search,
-  Plus,
-  Download,
-  Users,
-  BookOpen,
-  GraduationCap,
-  AlertCircle,
-  Eye,
-  Edit2,
-  CheckCircle2,
-  X,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  QrCode,
-  Calendar,
-  Mail,
-  Phone,
-  ShieldCheck,
-  CreditCard,
-  RotateCw,
-  Ban,
-  SlidersHorizontal,
-  ChevronDown,
-} from 'lucide-react';
+import { Search, Plus, Download, Users, BookOpen, GraduationCap, AlertCircle, Eye, Edit2, CheckCircle2, X, Check, QrCode, RotateCw, Ban, SlidersHorizontal, ChevronDown } from 'lucide-react';
 import ConfirmationModal from '../components/ConfirmationModal';
 import TablePagination from '../components/TablePagination';
 
-const INITIAL_MEMBERS = [
-  {
-    id: 1,
-    memberNo: 'MEM-10492',
-    name: 'Aoi Kinoshita',
-    email: 'aoi.k@university.delhi.edu',
-    phone: '+91 98101 23456',
-    tier: 'Japanese Scholar',
-    status: 'active',
-    activeLoans: 2,
-    totalHistoricalLoans: 38,
-    joinDate: '2023-04-15',
-    expiryDate: '2027-04-15',
-    address: 'Room 204, Graduate Hall, North Campus, Delhi',
-    idProof: 'Delhi University Student ID / JLPT N1 Certificate',
-    finesDue: 0,
-  },
-  {
-    id: 2,
-    memberNo: 'MEM-10381',
-    name: 'Rohit Deshmukh',
-    email: 'rohit.desh@gmail.com',
-    phone: '+91 98712 34567',
-    tier: 'General',
-    status: 'active',
-    activeLoans: 1,
-    totalHistoricalLoans: 19,
-    joinDate: '2024-01-10',
-    expiryDate: '2026-01-10',
-    address: 'B-42, Defence Colony, New Delhi',
-    idProof: 'Aadhaar Card Verified',
-    finesDue: 0,
-  },
-  {
-    id: 3,
-    memberNo: 'MEM-10115',
-    name: 'Priyanka Sharma',
-    email: 'priyanka.s@nihongo-delhi.org',
-    phone: '+91 99100 45678',
-    tier: 'Student',
-    status: 'expiring_soon',
-    activeLoans: 3,
-    totalHistoricalLoans: 45,
-    joinDate: '2024-11-01',
-    expiryDate: '2026-11-05',
-    address: 'Flat 12, Lajpat Nagar-II, New Delhi',
-    idProof: 'Japan Foundation Student ID',
-    finesDue: 50,
-  },
-  {
-    id: 4,
-    memberNo: 'MEM-10024',
-    name: 'Takeshi Yamada',
-    email: 't.yamada@j-corp.in',
-    phone: '+91 98200 98765',
-    tier: 'Lifetime / VIP',
-    status: 'active',
-    activeLoans: 0,
-    totalHistoricalLoans: 72,
-    joinDate: '2021-08-20',
-    expiryDate: '2030-08-20',
-    address: 'Shanti Niketan, New Delhi',
-    idProof: 'Japanese Diplomatic / Expat Passport',
-    finesDue: 0,
-  },
-  {
-    id: 5,
-    memberNo: 'MEM-10873',
-    name: 'Ananya Roy',
-    email: 'ananya.roy@jnu.ac.in',
-    phone: '+91 98111 55667',
-    tier: 'Japanese Scholar',
-    status: 'active',
-    activeLoans: 1,
-    totalHistoricalLoans: 24,
-    joinDate: '2024-06-12',
-    expiryDate: '2027-06-12',
-    address: 'Mahi Mandavi Hostel, JNU, New Delhi',
-    idProof: 'JNU School of Language Literature Studies ID',
-    finesDue: 0,
-  },
-  {
-    id: 6,
-    memberNo: 'MEM-10550',
-    name: 'Siddharth Varma',
-    email: 'sid.varma88@outlook.com',
-    phone: '+91 97110 33445',
-    tier: 'General',
-    status: 'suspended',
-    activeLoans: 2,
-    totalHistoricalLoans: 12,
-    joinDate: '2023-09-05',
-    expiryDate: '2025-09-05',
-    address: 'C-15, Greater Kailash-I, New Delhi',
-    idProof: 'Passport Verified',
-    finesDue: 240,
-  },
-  {
-    id: 7,
-    memberNo: 'MEM-10904',
-    name: 'Meera Krishnan',
-    email: 'meera.krish@arts.du.ac.in',
-    phone: '+91 98118 77889',
-    tier: 'Student',
-    status: 'active',
-    activeLoans: 1,
-    totalHistoricalLoans: 8,
-    joinDate: '2025-02-14',
-    expiryDate: '2027-02-14',
-    address: 'D-3, South Extension-I, New Delhi',
-    idProof: 'DU College of Art Student ID',
-    finesDue: 0,
-  },
-  {
-    id: 8,
-    memberNo: 'MEM-10619',
-    name: 'Hiroshi Sato',
-    email: 'sato.hiroshi@embassy-japan.org',
-    phone: '+91 98990 11223',
-    tier: 'Lifetime / VIP',
-    status: 'active',
-    activeLoans: 2,
-    totalHistoricalLoans: 56,
-    joinDate: '2022-03-01',
-    expiryDate: '2032-03-01',
-    address: 'Chanakyapuri, New Delhi',
-    idProof: 'Official Mission Accreditation',
-    finesDue: 0,
-  },
-];
 
 const TIERS = ['All', 'General', 'Student', 'Japanese Scholar', 'Lifetime / VIP'];
 
@@ -169,13 +16,12 @@ const MEMBER_STATUS_OPTIONS = [
 ];
 
 export default function AdminMembersPage() {
-  const [members, setMembers] = useState(INITIAL_MEMBERS);
+  const [members, setMembers, collectionStatus] = useCollection('members');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTier, setSelectedTier] = useState('All');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedMembers, setSelectedMembers] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize] = useState(8);
 
   // Custom theme dropdown state
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -253,7 +99,7 @@ export default function AdminMembersPage() {
   const overdueCount = members.filter((m) => m.finesDue > 0).length;
 
   // Handle register
-  const handleRegisterMember = (e) => {
+  const handleRegisterMember = async (e) => {
     e.preventDefault();
     const now = new Date();
     const expiry = new Date();
@@ -276,7 +122,7 @@ export default function AdminMembersPage() {
       finesDue: 0,
     };
 
-    setMembers([created, ...members]);
+    if (!(await setMembers([created, ...members]))) return;
     setIsRegisterModalOpen(false);
     setNewMemberForm({
       name: '',
@@ -290,40 +136,41 @@ export default function AdminMembersPage() {
   };
 
   // Handle save edit
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
     if (!editingMember) return;
-    setMembers(
+    if (!(await setMembers(
       members.map((m) => (m.id === editingMember.id ? { ...m, ...editingMember } : m))
-    );
+    ))) return;
     setEditingMember(null);
   };
 
   // Renew membership
-  const handleRenewMember = (id) => {
+  const handleRenewMember = async (id) => {
     let renewedName = '';
-    setMembers(
+    if (!(await setMembers(
       members.map((m) => {
         if (m.id === id) {
           renewedName = m.name;
-          const curr = new Date(m.expiryDate);
+          const curr = m.expiryDate ? new Date(m.expiryDate) : new Date();
+          if (curr < new Date()) curr.setTime(Date.now());
           curr.setFullYear(curr.getFullYear() + 1);
           return { ...m, expiryDate: curr.toISOString().split('T')[0], status: 'active' };
         }
         return m;
       })
-    );
+    ))) return;
     showToast(`Membership for ${renewedName || 'patron'} renewed for 1 additional year.`);
   };
 
   // Toggle status / Suspend account with permission modal
-  const handleToggleStatus = (id) => {
+  const handleToggleStatus = async (id) => {
     const member = members.find((m) => m.id === id);
     if (!member) return;
     if (member.status === 'suspended') {
-      setMembers(
+      if (!(await setMembers(
         members.map((m) => (m.id === id ? { ...m, status: 'active' } : m))
-      );
+      ))) return;
       if (inspectedMember && inspectedMember.id === id) {
         setInspectedMember((prev) => (prev ? { ...prev, status: 'active' } : null));
       }
@@ -333,13 +180,13 @@ export default function AdminMembersPage() {
     }
   };
 
-  const executeSuspendMember = () => {
+  const executeSuspendMember = async () => {
     if (!memberToSuspend) return;
     const memberId = memberToSuspend.id;
     const memberName = memberToSuspend.name;
-    setMembers(
+    if (!(await setMembers(
       members.map((m) => (m.id === memberId ? { ...m, status: 'suspended' } : m))
-    );
+    ))) return;
     if (inspectedMember && inspectedMember.id === memberId) {
       setInspectedMember((prev) => (prev ? { ...prev, status: 'suspended' } : null));
     }
@@ -380,6 +227,8 @@ export default function AdminMembersPage() {
 
   return (
     <div className="admin-bookings-page admin-members-page">
+      <CollectionStatus {...collectionStatus} />
+      <fieldset disabled={collectionStatus.loading || collectionStatus.saving} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {/* 1. Page Header */}
       <div className="bookings-header-wrap">
         <div className="bookings-header-titles">
@@ -611,7 +460,7 @@ export default function AdminMembersPage() {
                   </td>
                   <td>
                     <div className="date-time-cell">
-                      <span className="date-main-text">Expires {member.expiryDate}</span>
+                      <span className="date-main-text">{member.expiryDate ? `Expires ${member.expiryDate}` : 'Expiry not recorded'}</span>
                       <span className="date-sub-day">Joined {member.joinDate}</span>
                     </div>
                   </td>
@@ -1018,6 +867,7 @@ export default function AdminMembersPage() {
           <span>{toastMessage}</span>
         </div>
       )}
+      </fieldset>
     </div>
   );
 }

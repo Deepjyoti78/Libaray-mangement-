@@ -1,7 +1,5 @@
 // Lightweight in-memory rate limiter
 
-const requestRecords = new Map();
-
 /**
  * Creates rate limiter middleware
  * @param {number} windowMs - Time window in milliseconds
@@ -9,6 +7,7 @@ const requestRecords = new Map();
  * @param {string} message - Custom error message
  */
 export function rateLimit({ windowMs = 60000, maxRequests = 10, message = 'Too many requests. Please try again later.' } = {}) {
+  const requestRecords = new Map();
   return (req, res, next) => {
     const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
     const now = Date.now();

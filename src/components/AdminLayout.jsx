@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, Navigate, Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import {
   BookOpen,
   LayoutDashboard,
@@ -21,7 +21,7 @@ import {
   Moon,
   Sun,
 } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 import GlobalSearchModal from './GlobalSearchModal';
 import AdminLoadingScreen from './AdminLoadingScreen';
 
@@ -387,10 +387,10 @@ export default function AdminLayout() {
       </div>
 
       {/* Global Search Modal */}
-      <GlobalSearchModal
+      {searchModalOpen && <GlobalSearchModal
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
-      />
+      />}
     </div>
   );
 }

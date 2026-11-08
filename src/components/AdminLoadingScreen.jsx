@@ -30,7 +30,7 @@ export default function AdminLoadingScreen({
       clearInterval(interval);
       clearTimeout(timer);
     };
-  }, []);
+  }, [steps.length]);
 
   return (
     <div className="admin-loading-screen" role="status" aria-live="polite">
