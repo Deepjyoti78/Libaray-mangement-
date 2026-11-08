@@ -47,6 +47,8 @@
 .reservation-card :is(.step-main-title, .pass-page-title) { font-size: var(--reservation-title-size) !important; line-height: 1.15 !important; }
 .reservation-card :where(button, a, input, [tabindex="0"]):focus-visible { outline: 2px solid #AC512E; outline-offset: 3px; }
 .reservation-card [data-reservation-autofocus]:focus { outline: none; }
+.action-btn-text-full { display: inline; }
+.action-btn-text-short { display: none; }
 
 @media (max-width: 860px) {
   .reservation-overlay {
@@ -58,29 +60,51 @@
     -webkit-backdrop-filter: blur(8px);
   }
   .reservation-overlay .reservation-card {
-    grid-template-columns: minmax(0, 1fr);
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
     width: min(380px, 100%);
-    height: auto;
-    max-height: 86dvh;
+    height: auto !important;
+    max-height: 86dvh !important;
     border-radius: 14px;
     background: #FAF7F2;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
-    overflow: hidden;
+    overflow: hidden !important;
   }
   .reservation-card .reservation-photo { display: none !important; }
   .reservation-dialog { max-width: 380px; }
   .reservation-overlay .reservation-panel {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
     padding: 0.95rem 0.95rem 0.85rem 0.95rem !important;
     background: #FAF7F2 !important;
     border-radius: 14px;
-    height: auto;
-    max-height: 86dvh;
+    height: auto !important;
+    max-height: 86dvh !important;
     overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch !important;
     scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
-  .reservation-overlay .reservation-panel::-webkit-scrollbar {
+  .reservation-overlay,
+  .reservation-overlay *,
+  .reservation-card,
+  .reservation-card *,
+  .reservation-panel,
+  .reservation-panel * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  .reservation-overlay::-webkit-scrollbar,
+  .reservation-overlay *::-webkit-scrollbar,
+  .reservation-card::-webkit-scrollbar,
+  .reservation-card *::-webkit-scrollbar,
+  .reservation-panel::-webkit-scrollbar,
+  .reservation-panel *::-webkit-scrollbar {
     display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
   }
   .reservation-card .reservation-close {
     top: 0.85rem !important;
@@ -490,6 +514,38 @@
     color: #73655A !important;
     text-align: center !important;
     margin: 0 !important;
+  }
+
+  /* Confirmation Step Action Buttons on Mobile */
+  .action-btn-text-full {
+    display: none !important;
+  }
+  .action-btn-text-short {
+    display: inline !important;
+  }
+  .confirmed-action-buttons-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.35rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin-top: 0.35rem !important;
+  }
+  .confirmed-action-pill-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0.45rem 0.2rem !important;
+    font-size: 0.68rem !important;
+    gap: 0.22rem !important;
+    border-radius: 7px !important;
+    white-space: nowrap !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+  .confirmed-action-pill-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0 !important;
   }
 }
 @media print {

@@ -1438,8 +1438,9 @@ export default function BookingWizard({ isModal = false, onClose }) {
                         onClick={handleAddToCalendar}
                         title="Add to your calendar (.ics)"
                       >
-                        <CalendarPlus className="w-4 h-4 text-stone-700" />
-                        <span>Add to calendar</span>
+                        <CalendarPlus className="w-3.5 h-3.5 text-stone-700" />
+                        <span className="action-btn-text-full">Add to calendar</span>
+                        <span className="action-btn-text-short">Calendar</span>
                       </button>
 
                       <button
@@ -1449,8 +1450,9 @@ export default function BookingWizard({ isModal = false, onClose }) {
                         onClick={() => window.print()}
                         title="Print your reservation pass"
                       >
-                        <Printer className="w-4 h-4 text-stone-700" />
-                        <span>Print pass</span>
+                        <Printer className="w-3.5 h-3.5 text-stone-700" />
+                        <span className="action-btn-text-full">Print pass</span>
+                        <span className="action-btn-text-short">Print</span>
                       </button>
 
                       <button
@@ -1460,8 +1462,9 @@ export default function BookingWizard({ isModal = false, onClose }) {
                         onClick={() => { setCancelError(''); setShowCancelConfirm(true); }}
                         title="Cancel this reservation"
                       >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                        <span>Cancel reservation</span>
+                        <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                        <span className="action-btn-text-full">Cancel reservation</span>
+                        <span className="action-btn-text-short">Cancel</span>
                       </button>
                     </div>
 
