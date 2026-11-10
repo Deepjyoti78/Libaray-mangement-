@@ -50,6 +50,27 @@
 .action-btn-text-full { display: inline; }
 .action-btn-text-short { display: none; }
 
+.reservation-card .facility-pill-card {
+  height: auto !important;
+  min-height: 84px !important;
+  max-height: none !important;
+  padding: 0.75rem 0.85rem 0.85rem 0.85rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+}
+.reservation-card .facility-pill-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.18rem !important;
+}
+.reservation-card .facility-pill-desc {
+  margin: 0 !important;
+  line-height: 1.35 !important;
+  padding-bottom: 2px !important;
+}
+
 @media (max-width: 860px) {
   .reservation-overlay {
     padding: 0.75rem 0.65rem;
@@ -203,10 +224,10 @@
   }
   .facility-pill-card {
     height: auto !important;
-    min-height: 82px !important;
+    min-height: 86px !important;
     max-height: none !important;
     border-radius: 8px !important;
-    padding: 0.6rem 0.65rem !important;
+    padding: 0.65rem 0.75rem 0.75rem 0.75rem !important;
     background: #FFFFFF !important;
     border: 1px solid #ECE7E0 !important;
     display: flex !important;
@@ -288,6 +309,7 @@
     text-overflow: clip !important;
     -webkit-line-clamp: unset !important;
     max-height: none !important;
+    padding-bottom: 2px !important;
   }
 
   /* STEP 1: Date & Time Slot Grid stacks vertically */
